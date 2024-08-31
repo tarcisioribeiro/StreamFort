@@ -1,0 +1,8 @@
+[Unit]
+Description=Gerenciador de Senhas
+
+[Service]
+ExecStart=/usr/bin/pmscript.sh
+
+[Install]
+WantedBy=multi-user.target

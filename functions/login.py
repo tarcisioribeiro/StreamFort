@@ -57,6 +57,11 @@ class User:
                                 with st.spinner("Aguarde..."):
                                     sleep(1)
                                     st.toast("Login bem-sucedido!")
+
+                                    log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES (%s, %s, %s)'''
+                                    log_values = (user, 'Acesso', 'O usuário acessou o sistema.')
+                                    query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+
                                     with open("data/session_state.py", "w") as arquivo:
                                         arquivo.write("logged_user = '{}'\n".format(user))
                                         arquivo.write(

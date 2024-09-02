@@ -50,8 +50,6 @@ class Passwords:
             user_passwords_quantity = query_executor.treat_simple_result(user_passwords_quantity, to_remove_list)
             user_passwords_quantity = int(user_passwords_quantity)
 
-            
-
             col1, col2, col3 = st.columns(3)
 
             if user_passwords_quantity == 0:

@@ -6,7 +6,7 @@ load_dotenv()
 absolute_app_path = os.getcwd()
 backup_sh_path: str = "services/backup.sh"
 
-menu_options = ["Selecione uma opção", "Senhas", "Arquivos", "Cartões"]
+menu_options = ["Selecione uma opção", "Senhas", "Arquivos", "Cartões", "Contas Bancárias"]
 
 server_config = """
 [server]

@@ -43,5 +43,5 @@ to_remove_archive_list: list = [
     "datetime.date",
 ]
 
-financial_institution_list = ['Mercado Pago', 'Itaú', 'Nubank', 'Bradesco', 'Sicoob', 'C6 Bank', 'Banco do Brasil']
+financial_institution_list = ['Mercado Pago', 'Itaú', 'Nubank', 'Bradesco', 'Sicoob', 'C6 Bank', 'Banco do Brasil', 'Pagbank', 'Picpay']
 financial_institution_list.sort()

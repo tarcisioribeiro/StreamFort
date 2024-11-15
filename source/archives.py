@@ -23,7 +23,7 @@ class Archives:
 
             if user_archives_quantity >= 1:
 
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)
 
                 archives_names = ["Selecione uma opção"]
                 user_archives_name = query_executor.complex_consult_query(search_user_archives_name)
@@ -32,7 +32,7 @@ class Archives:
                 for i in range(0, len(user_archives_name)):
                     archives_names.append(user_archives_name[i])
 
-                with col1:
+                with col2:
 
                     with st.expander(label="Consulta", expanded=True):
                         selected_archive = st.selectbox(label="Selecione o arquivo", options=archives_names)
@@ -101,9 +101,9 @@ class Archives:
 
         def get_new_archive():
 
-            col1, col2 = st.columns(2)
+            col1, col2, col3 = st.columns(3)
 
-            with col1:
+            with col2:
 
                 with st.expander(label="Entrada de Dados", expanded=True):
                     archive_name = st.text_input(label="Nome do arquivo", max_chars=100)
@@ -118,7 +118,7 @@ class Archives:
                             with st.expander(label="Arquivo carregado", expanded=True):
                                 st.info(content)
 
-                if st.button("Fazer upload do arquivo") and uploaded_file is not None:
+                if st.button(":floppy_disk: Fazer upload do arquivo") and uploaded_file is not None:
 
                     archive_query = "INSERT INTO arquivo_texto (nome_arquivo, conteudo, comentario, usuario_associado, documento_usuario_associado) VALUES (%s, %s, %s, %s, %s)"
                     archive_values = (archive_name,content,archive_comentary,logged_user_name,logged_user_document)

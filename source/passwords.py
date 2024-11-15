@@ -28,7 +28,7 @@ class Passwords:
                     password = st.text_input(label="Senha", type="password")
                     comment = st.text_input(label="Comentário")
 
-                send_button = st.button('Cadastrar Senha')
+                send_button = st.button(':floppy_disk: Cadastrar Senha')
 
                 if send_button:
 
@@ -70,16 +70,22 @@ class Passwords:
                     for i in range(0, len(accounts)):
                         user_accounts.append(accounts[i])
 
-                    with cl2:
+                    with col1:
 
-                        selected_option = st.selectbox(label="Selecione a conta", options=user_accounts)
+                        cl1, cl2 = st.columns(2)
+
+                        with cl1:
+
+                            selected_option = st.selectbox(label="Selecione a conta", options=user_accounts)
+
+                            consult_button = st.button(label=":floppy_disk: Consultar senha")
 
                     account_details_query = '''SELECT senhas.nome_site, senhas.url_site, senhas.login, senhas.senha FROM senhas WHERE senhas.nome_site = '{}' AND senhas.usuario_associado = '{}' AND senhas.documento_usuario_associado = '{}';'''.format(selected_option, logged_user_name, logged_user_document)
 
                     result_list = query_executor.complex_consult_query(query=account_details_query)
                     result_list = query_executor.treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
 
-                    if selected_option != "Selecione uma opção":
+                    if selected_option != "Selecione uma opção" and consult_button:
 
                         with col2:
                             with st.spinner(text="Aguarde..."):

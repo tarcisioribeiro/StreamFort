@@ -36,15 +36,17 @@ class CreditCards:
                 for i in range(0, len(user_credit_cards_names)):
                     credit_cards_options.append(user_credit_cards_names[i])
 
-                with col3:
+                with col1:
 
                     cl1, cl2 = st.columns(2)
 
-                    with cl2:
+                    with cl1:
 
                         selected_user_card = st.selectbox(label="Selecione o cartão", options=credit_cards_options)
 
-                        if selected_user_card != "Selecione uma opção":
+                        consult_button = st.button(label=":floppy_disk: Consultar cartão")
+
+                        if selected_user_card != "Selecione uma opção" and consult_button:
 
                             card_field_names = ["Nome do cartão", "Número do cartão", "Nome do titular no cartão", "Data da validade", "Código de segurança"]
                         

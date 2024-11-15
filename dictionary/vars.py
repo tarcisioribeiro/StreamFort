@@ -29,6 +29,7 @@ db_config = {
 }
 
 field_names: list = ["Site", "Link", "Login", "Senha"]
+bank_account_field_names: list = ["Nome", "Instituição", "Código da Instituição", "Agência", "Número da Conta", "Dígito", "Senha bancária", "Senha digital"]
 
 to_remove_list: list = ["'", ")", "(", ",", "Decimal", "[", "]", "\\", "datetime.date"]
 to_remove_archive_list: list = [
@@ -41,3 +42,6 @@ to_remove_archive_list: list = [
     "]",
     "datetime.date",
 ]
+
+financial_institution_list = ['Mercado Pago', 'Itaú', 'Nubank', 'Bradesco', 'Sicoob', 'C6 Bank', 'Banco do Brasil']
+financial_institution_list.sort()

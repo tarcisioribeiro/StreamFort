@@ -114,3 +114,17 @@ check_user_bank_accounts_query = '''
         usuarios.login = '{}'
             AND usuarios.senha = '{}';
 '''.format(logged_user, logged_user_password)
+
+search_bank_accounts_query = """
+    SELECT 
+        contas_bancarias.nome_conta
+    FROM
+        contas_bancarias
+            INNER JOIN
+        usuarios ON contas_bancarias.nome_proprietario_conta = usuarios.nome
+            AND contas_bancarias.documento_proprietario_conta = usuarios.documento_usuario
+    WHERE
+        usuarios.login = '{}'
+            AND usuarios.senha = '{}'
+    ORDER BY contas_bancarias.nome_conta;
+""".format(logged_user, logged_user_password)

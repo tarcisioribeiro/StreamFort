@@ -16,18 +16,22 @@ class BankAccount:
         def get_new_bank_account():
             col1, col2, col3 = st.columns(3)
 
-            with col2:
+            with col1:
                 with st.expander(label="Dados da Conta", expanded=True):
                     account_name = st.text_input(label="Nome", max_chars=100, placeholder='Conta')
                     financial_institution = st.selectbox(label='Instituição', options=financial_institution_list)
                     financial_institution_code = st.number_input(label="Código da instituição", max_value=99999, step=1)
                     agency = st.number_input(label="Agência", max_value=9999999999, step=1)
+                
+                confirm_data = st.checkbox(label="Confirmar dados")
+
+            with col2:
+                with st.expander(label="Dados da Conta", expanded=True):
                     account_number = st.number_input(label="Número da conta", max_value=999999999999999, step=1)
                     account_digit = st.number_input(label="Dígito", max_value=9, step=1)
                     account_password = st.text_input(label="Senha da conta", max_chars=30, type='password')
                     digital_account_password = st.text_input(label="Senha digital da conta", max_chars=30, type='password')
-                    confirm_data = st.checkbox(label="Confirmar dados")
-
+                    
                 register_new_account = st.button(label=":floppy_disk: Cadastrar conta")
 
                 if confirm_data == True and register_new_account:
@@ -50,7 +54,7 @@ class BankAccount:
 
             if user_accounts_quantity == 0:
                 with col2:
-                    st.warning(body="Você ainda não possui senhas cadastradas.", icon="⚠️")
+                    st.warning(body="Você ainda não possui senhas cadastradas.")
 
             elif user_accounts_quantity >= 1:
 
@@ -76,7 +80,7 @@ class BankAccount:
 
                             consult_button = st.button(label=":floppy_disk: Consultar senha")
 
-                    account_details_query = '''SELECT contas_bancarias.nome_conta, contas_bancarias.instituicao_financeira, contas_bancarias.codigo_instituicao_financeira, contas_bancarias.agencia, contas_bancarias.numero_conta, contas_bancarias.digito_conta, contas_bancarias.senha_bancaria_conta, contas_bancarias.senha_digital_conta FROM contas_bancarias WHERE contas_bancarias.nome_conta = '{}' AND contas_bancarias.nome_proprietario_conta = '{}' AND contas_bancarias.documento_proprietario_conta = '{}';'''.format(selected_option, logged_user_name, logged_user_document)
+                    account_details_query = '''SELECT CONCAT('', contas_bancarias.nome_conta, ' - ', contas_bancarias.instituicao_financeira), contas_bancarias.agencia, CONCAT('', contas_bancarias.numero_conta, '-', contas_bancarias.digito_conta), contas_bancarias.senha_bancaria_conta, contas_bancarias.senha_digital_conta FROM contas_bancarias WHERE contas_bancarias.nome_conta = '{}' AND contas_bancarias.nome_proprietario_conta = '{}' AND contas_bancarias.documento_proprietario_conta = '{}';'''.format(selected_option, logged_user_name, logged_user_document)
 
                     result_list = query_executor.complex_consult_query(query=account_details_query)
                     result_list = query_executor.treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)

@@ -57,7 +57,7 @@ class Home:
 
             col4, col5, col6 = st.columns(3)
 
-            with col4:
+            with col5:
 
                 get_very_low, get_low, get_medium, get_strong, get_very_strong = password_analysis()
 

@@ -23,26 +23,43 @@ class Passwords:
 
                     site = st.text_input(label='Nome Site')
                     url = st.text_input(label='URL do Site')
-                    name = st.text_input(label='Nome')
                     login = st.text_input(label='Login')
                     password = st.text_input(label="Senha", type="password")
-                    comment = st.text_input(label="Comentário")
+                    confirm_values = st.checkbox(label="Confirmar dados", value=False)
 
                 send_button = st.button(':floppy_disk: Cadastrar Senha')
 
-                if send_button:
+                if send_button and confirm_values == True:
 
                     with st.spinner(text="Aguarde..."):
                         sleep(1.5)
 
-                    insert_password_query = "INSERT INTO senhas(nome_site, url_site, nome, login, senha, comentario, usuario_associado, documento_usuario_associado) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                    query_values = (site, url, name, login, password, comment, logged_user_name, logged_user_document)
+                    if site != '' and url != '' and login != '' and password != '':
 
-                    query_executor.insert_query(query=insert_password_query, values=query_values, success_message='Senha cadastrada com sucesso!', error_message='Erro ao cadastrar senha:')
+                        insert_password_query = "INSERT INTO senhas(nome_site, url_site, login, senha, usuario_associado, documento_usuario_associado) VALUES(%s, %s, %s, %s, %s, %s)"
+                        query_values = (site, url, login, password, logged_user_name, logged_user_document)
 
-                    log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
-                    log_query_values = (logged_user, 'Cadastro', 'Cadastrou a senha {} associada ao email {}'.format(query_values[0], query_values[3]))
-                    query_executor.insert_query(query=log_query, values=log_query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
+                        query_executor.insert_query(query=insert_password_query, values=query_values, success_message='Senha cadastrada com sucesso!', error_message='Erro ao cadastrar senha:')
+
+                        log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
+                        log_query_values = (logged_user, 'Cadastro', 'Cadastrou a senha {} associada ao email {}'.format(query_values[0], query_values[3]))
+                        query_executor.insert_query(query=log_query, values=log_query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
+                    
+                    else:
+                        with col3:
+                            with st.spinner(text="Aguarde..."):
+                                sleep(2.5)
+                            cl1, cl2 = st.columns(2)
+                            with cl2:
+                                st.error('Há um ou mais campos vazios.')
+
+                elif send_button and confirm_values == False:
+                    with col3:
+                        with st.spinner(text="Aguarde..."):
+                            sleep(2.5)
+                        cl1, cl2 = st.columns(2)
+                        with cl2:
+                            st.warning(body="Você deve confirmar os dados antes de prosseguir.")
 
         def show_account():
 
@@ -54,7 +71,7 @@ class Passwords:
 
             if user_passwords_quantity == 0:
                 with col2:
-                    st.warning(body="Você ainda não possui senhas cadastradas.", icon="⚠️")
+                    st.warning(body="Você ainda não possui senhas cadastradas.")
 
             elif user_passwords_quantity >= 1:
 

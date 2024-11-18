@@ -29,7 +29,7 @@ db_config = {
 }
 
 field_names: list = ["Site", "Link", "Login", "Senha"]
-bank_account_field_names: list = ["Nome", "Instituição", "Código da Instituição", "Agência", "Número da Conta", "Dígito", "Senha bancária", "Senha digital"]
+bank_account_field_names: list = ["Nome", "Agência", "Número da Conta", "Senha bancária", "Senha digital"]
 
 to_remove_list: list = ["'", ")", "(", ",", "Decimal", "[", "]", "\\", "datetime.date"]
 to_remove_archive_list: list = [

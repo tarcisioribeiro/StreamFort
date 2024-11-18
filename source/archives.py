@@ -39,7 +39,7 @@ class Archives:
                         safe_password = st.text_input(label="Senha do cofre", type="password")
                         confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
-                    consult_button = st.button(label="Consultar arquivo")
+                    consult_button = st.button(label=":file_folder: Consultar arquivo")
 
                     if consult_button:
 

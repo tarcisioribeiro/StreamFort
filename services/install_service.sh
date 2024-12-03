@@ -1,7 +1,15 @@
+#!/bin/bash
+
+FOLDER=$(pwd)
+
+cd $FOLDER
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
 echo "#!/bin/bash" >> pmscript.sh
-echo "sleep 1" >> pmscript.sh
-echo "cd /home/$(whoami)/repos/Password_Manager/" >> pmscript.sh
-echo "sleep 1" >> pmscript.sh
+echo "cd $FOLDER" >> pmscript.sh
+echo "source venv/bin/activate" >> pmscript.sh
 echo "streamlit run main.py --server.port 8502" >> pmscript.sh
 chmod +x pmscript.sh
 sudo mv pmscript.sh /usr/bin/

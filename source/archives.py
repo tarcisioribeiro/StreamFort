@@ -120,8 +120,8 @@ class Archives:
 
                 if st.button(":floppy_disk: Fazer upload do arquivo") and uploaded_file is not None:
 
-                    archive_query = "INSERT INTO arquivo_texto (nome_arquivo, conteudo, comentario, usuario_associado, documento_usuario_associado) VALUES (%s, %s, %s, %s, %s)"
-                    archive_values = (archive_name,content,archive_comentary,logged_user_name,logged_user_document)
+                    archive_query = "INSERT INTO arquivo_texto (nome_arquivo, conteudo, usuario_associado, documento_usuario_associado) VALUES (%s, %s, %s, %s)"
+                    archive_values = (archive_name,content,logged_user_name,logged_user_document)
 
                     if content is not None:
 

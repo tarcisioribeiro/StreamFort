@@ -22,12 +22,10 @@ class CreateUser:
             )
             check_user_quantity = int(check_user_quantity)
 
-            sex_options = ["M", "F"]
-
             if check_user_quantity == 0:
                 col1, col2, col3 = st.columns(3)
-                with col2:
-                    st.subheader(body=":floppy_disk: Cadastro de usuário")
+                with col1:
+                    st.header(body=":floppy_disk: Cadastro de usuário")
                 st.divider()
 
             col4, col5, col6 = st.columns(3)
@@ -37,21 +35,31 @@ class CreateUser:
                 with col6:
                     cl1, cl2 = st.columns(2)
                     with cl2:
-                        st.warning(body=":warning: Nenhum usuário cadastrado. Cadastre o primeiro usuário.")
+                        st.warning(body="Nenhum usuário cadastrado. Cadastre o primeiro usuário.")
 
+            with col4:
+                with st.expander(label="Dados de login", expanded=True):
+                    user_login = st.text_input(label="Login de usuário",max_chars=25,help="O nome do usuário deve ter no máximo 25 caracteres.",)
+                    user_password = st.text_input(label="Senha de usuário",max_chars=100,help="A senha deve conter no máximo 100 caracteres.",type="password", key="user_password")
+                    confirm_user_password = st.text_input(label="Senha de usuário",max_chars=100,help="A senha deve conter no máximo 100 caracteres.",type="password", key="confirm_user_password")
+
+                confirm_values = st.checkbox(label="Confirmar dados")
+
+            sex_options = {
+                "Masculino": "M",
+                "Feminino": "F"
+            }
+            
             with col5:
                 with st.expander(label="Dados do usuário", expanded=True):
-
-                    user_login = st.text_input(label="Login de usuário",max_chars=25,help="O nome do usuário deve ter no máximo 25 caracteres.",)
-                    user_password = st.text_input(label="Senha de usuário",max_chars=100,help="A senha deve conter no máximo 100 caracteres.",type="password")
                     user_name = st.text_input(label="Nome de usuário",max_chars=100,help="Informe aqui seu nome completo.",)
-                    user_document = st.text_input(label="CPF do usuário")
-                    user_sex = st.selectbox(label="Sexo do usuário", options=sex_options)
-                    confirm_values = st.checkbox(label="Confirmar dados")
+                    user_document = st.text_input(label="Documento do usuário", help="Informe seu CPF neste campo.")
+                    user_sex = st.selectbox(label="Sexo do usuário", options=sex_options.keys())
 
                 insert_new_user_button = st.button(label=":floppy_disk: Cadastrar novo usuário")
 
                 if insert_new_user_button:
+                    user_sex = sex_options[user_sex]
                     if confirm_values == True:
                         with st.spinner(text="Aguarde..."):
                             sleep(2)
@@ -60,7 +68,7 @@ class CreateUser:
                             with cl2:
                                 is_document_valid = document.validate_owner_document(user_document)
 
-                        if user_login != "" and user_password != "" and user_name != "" and is_document_valid == True and user_sex != "":
+                        if user_login != "" and user_password != "" and confirm_user_password != "" and (user_password == confirm_user_password) and user_name != "" and is_document_valid == True and user_sex != "":
 
                             if check_user_quantity == 0:
                                 insert_new_user_query = """INSERT INTO usuarios (login, senha, nome, documento_usuario, sexo) VALUES (%s, %s, %s, %s, %s)"""
@@ -94,25 +102,28 @@ class CreateUser:
                                             log_values = (logged_user, "Registro", "Cadastrou o usuário {} associado ao documento {} no sistema.".format(user_name, user_document))
                                             query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
-                                            sleep(0.75)
+                                            sleep(2)
                                         elif check_if_user_exists >= 1:
                                             st.error(
-                                                "Já existe um usuário cadastrado associado ao documento {}.".format(
-                                                    user_document
-                                                ),
-                                                icon="🚨",
+                                                "Já existe um usuário cadastrado associado ao documento {}.".format(user_document)
                                             )
 
-                        elif user_login != "" and user_password != "" and user_name != "" and is_document_valid == False and user_sex != "":
+                        elif user_login == "" or user_password == "" or user_name == "" or is_document_valid == False or confirm_user_password == "" or (user_password != confirm_user_password):
                             with cl2:
-                                st.error("O documento {} é inválido.".format(user_document),icon="🚨")
+                                if is_document_valid == False:
+                                    st.error("O documento {} é inválido.".format(user_document))
+                                if user_login == "":
+                                    st.error("O login não foi preenchido.")
+                                if user_password == "":
+                                    st.error("A senha não foi preenchida.")
+                                if user_name == "":
+                                    st.error("O nome não foi preenchido.")
+                                if confirm_user_password:
+                                    st.error("A confirmação da senha não foi preenchida.")
+                                if user_password != confirm_user_password and (user_password != "" and confirm_user_password != ""):
+                                    st.error("As senhas não correspondem.")
 
                     elif confirm_values == False:
                         st.warning(body=":warning: Revise os dados e confirme-os antes de prosseguir.")
 
         self.main_menu = main_menu
-
-
-if __name__ == "__main__":
-    create_user = CreateUser()
-    create_user.main_menu()

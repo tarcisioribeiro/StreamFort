@@ -43,7 +43,7 @@ class User:
 
             with col2:
 
-                st.header(body=":key: Gerenciador de Senhas")
+                st.header(body=":key: StreamFort")
 
                 with st.container():
                     with st.expander(label=":computer: Login", expanded=True):

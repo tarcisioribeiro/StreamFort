@@ -54,7 +54,7 @@ class BankAccount:
 
             if user_accounts_quantity == 0:
                 with col2:
-                    st.warning(body="Você ainda não possui senhas cadastradas.")
+                    st.warning(body="Você ainda não possui contas cadastradas.")
 
             elif user_accounts_quantity >= 1:
 

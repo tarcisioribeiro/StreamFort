@@ -124,9 +124,8 @@ class CreditCards:
                     )
                     expiration_date = st.date_input(label="Data de validade")
                     expiration_date = str(expiration_date)
-                    security_code = st.text_input(
-                        label="Código de segurança", max_chars=3
-                    )
+                    security_code = st.text_input(label="Código de segurança", max_chars=3, type="password", key="security_code")
+                    confirm_security_code = st.text_input(label="Confirmação de código", max_chars=3, type="password", key="confirm_security_code")
                     confirm_data = st.checkbox(label="Confirmar dados", value=False)
 
                     actual_date = call_actual_time.get_actual_data()
@@ -135,7 +134,7 @@ class CreditCards:
 
                 if register_button and confirm_data == True:
 
-                    if card_name != '' and card_number != '' and owner_on_card_name != '' and expiration_date != '' and security_code != '':
+                    if card_name != '' and card_number != '' and owner_on_card_name != '' and expiration_date != '' and security_code != '' and confirm_security_code != "" and (security_code == confirm_security_code):
 
                         with st.spinner(text="Aguarde..."):
                             sleep(2)

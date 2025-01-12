@@ -75,7 +75,7 @@ class CreateUser:
                                 new_user_values = (user_login,user_password,user_name,user_document,user_sex)
                                 query_executor.insert_query(insert_new_user_query,new_user_values,"Novo usuário cadastrado com sucesso!","Erro ao cadastrar novo usuário:")
 
-                                log_query = '''INSERT INTO financas.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
+                                log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
                                 log_values = (user_login, "Registro", "O usuário foi cadastrado no sistema.")
                                 query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
@@ -98,7 +98,7 @@ class CreateUser:
                                             new_user_values = (user_login,user_password,user_name,user_document,user_sex)
                                             query_executor.insert_query(insert_new_user_query,new_user_values,"Novo usuário cadastrado com sucesso!","Erro ao cadastrar novo usuário:")
 
-                                            log_query = '''INSERT INTO financas.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
+                                            log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
                                             log_values = (logged_user, "Registro", "Cadastrou o usuário {} associado ao documento {} no sistema.".format(user_name, user_document))
                                             query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 

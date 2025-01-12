@@ -46,7 +46,7 @@ def HomePage():
         with sidebar:
 
             query_executor = QueryExecutor()
-            log_query = '''INSERT INTO financas.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
+            log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
             log_values = (logged_user, "Logoff", "O usuário realizou logoff.")
             query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 

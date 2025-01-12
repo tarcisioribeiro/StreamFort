@@ -57,7 +57,7 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 <details>
    <summary>Vídeo explicativo</summary>
 
-   ![StreamFort]()
+   <!-- ![StreamFort]() -->
 
 </details>
 
@@ -94,7 +94,10 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 
 ## Instalação
 
-Para realizar a instalação, siga este passo a passo: [Instalação](Installation.md)
+Para realizar a instalação, siga o passo a passo: 
+
+- [Instalação em ambientes Microsoft Windows](Linux_Installation.md)
+- [Instalação em ambientes GNU/Linux de base Debian](Windows_Installation.md)
 
 ---
 

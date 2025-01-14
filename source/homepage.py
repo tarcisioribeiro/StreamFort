@@ -1,4 +1,4 @@
-from dictionary.sql import user_passwords_query
+from dictionary.sql import user_passwords_query, check_user_passwords_quantity_query
 from dictionary.vars import to_remove_list
 from functions.check_password_health import PasswordValidator
 from functions.query_executor import QueryExecutor
@@ -11,6 +11,12 @@ class Home:
 
         query_executor = QueryExecutor()
         check_password = PasswordValidator()
+
+        def general_information():
+            user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query)
+            user_passwords_quantity = query_executor.treat_simple_result(user_passwords_quantity, to_remove_list)
+
+            return user_passwords_quantity
 
         def password_analysis():
                 
@@ -49,9 +55,8 @@ class Home:
 
             col1, col2, col3 = st.columns(3)
 
-            with col2:
-
-                st.header(body=":closed_lock_with_key: Gerenciador de Senhas")
+            with col1:
+                st.header(body=":closed_lock_with_key: Streamfort")
 
             st.divider()
 
@@ -59,13 +64,16 @@ class Home:
 
             with col5:
 
+                user_passwords_quantity = general_information()
                 get_very_low, get_low, get_medium, get_strong, get_very_strong = password_analysis()
 
                 with st.expander(label="Análise de Senhas", expanded=True):
+                    st.info(body="Senhas cadastradas: {}".format(user_passwords_quantity))
+                    st.divider()
                     st.error(body="Senhas muito fracas: {}.".format(get_very_low))
                     st.warning(body="Senhas fracas: {}.".format(get_low))
                     st.info(body="Senhas médias: {}.".format(get_medium))
                     st.info(body="Senhas fortes: {}.".format(get_strong))
                     st.success(body="Senhas muito fortes: {}.".format(get_very_strong))
 
-        self.show_home_page = show_home_page
+        self.main_menu = show_home_page

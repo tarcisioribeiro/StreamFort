@@ -62,8 +62,10 @@ class Documents:
                 if first_division_rest == int(
                     owner_document_list[9]
                 ) and second_division_rest == int(owner_document_list[10]):
+                    st.success(body="O documento {} é válido.".format(owner_document))
                     return True
                 else:
+                    st.error(body="O documento {} é inválido.".format(owner_document))
                     return False
 
         self.validate_owner_document = validate_owner_document

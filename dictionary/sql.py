@@ -98,8 +98,7 @@ user_passwords_query = '''
             AND usuarios.documento_usuario = senhas.documento_usuario_associado
     WHERE
         usuarios.login = '{}'
-            AND usuarios.senha = '{}'
-            AND senhas.ativa = 'S';
+            AND usuarios.senha = '{}';
 '''.format(logged_user, logged_user_password)
 
 check_user_bank_accounts_query = '''

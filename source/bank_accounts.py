@@ -20,15 +20,15 @@ class BankAccount:
                 with st.expander(label="Dados da Conta", expanded=True):
                     account_name = st.text_input(label="Nome", max_chars=100, placeholder='Conta')
                     financial_institution = st.selectbox(label='Instituição', options=financial_institution_list)
-                    financial_institution_code = st.number_input(label="Código da instituição", max_value=99999, step=1)
-                    agency = st.number_input(label="Agência", max_value=9999999999, step=1)
+                    financial_institution_code = st.text_input(label="Código da instituição", max_chars=5)
+                    agency = st.text_input(label="Agência", max_chars=10)
                 
                 confirm_data = st.checkbox(label="Confirmar dados")
 
             with col2:
                 with st.expander(label="Dados da Conta", expanded=True):
-                    account_number = st.number_input(label="Número da conta", max_value=999999999999999, step=1)
-                    account_digit = st.number_input(label="Dígito", max_value=9, step=1)
+                    account_number = st.text_input(label="Número da conta", max_chars=15)
+                    account_digit = st.text_input(label="Dígito", max_chars=1)
                     account_password = st.text_input(label="Senha da conta", max_chars=30, type='password')
                     digital_account_password = st.text_input(label="Senha digital da conta", max_chars=30, type='password')
                     
@@ -89,7 +89,7 @@ class BankAccount:
 
                         with col2:
                             with st.spinner(text="Aguarde..."):
-                                sleep(1.5)
+                                sleep(2.5)
 
                             with st.expander(label="Dados", expanded=True):
 
@@ -111,6 +111,9 @@ class BankAccount:
 
         def back_account_main_menu():
             col1, col2, col3 = st.columns(3)
+
+            with col1:
+                st.header(body=":bank: Contas Bancárias")
 
             with col2:
                 menu_options = ["Cadastrar conta", "Consultar contas"]

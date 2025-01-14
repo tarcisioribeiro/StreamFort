@@ -14,12 +14,32 @@ class CreateUser:
         query_executor = QueryExecutor()
         document = Documents()
 
+        def is_login_valid(login: str):
+            has_upper = any(c.isupper() for c in login)
+            has_digit = any(c.isdigit() for c in login)
+            has_special = any(not c.isalnum() for c in login)
+            if " " in login or has_upper or has_digit or has_special:
+                st.error(body="O Login '{}' é inválido.".format(login))
+                return False
+            else:
+                st.success(body="O login '{}' é válido.".format(login))
+                return True
+            
+        def is_password_valid(password: str):
+            has_upper = any(c.isupper() for c in password)
+            has_digit = any(c.isdigit() for c in password)
+            has_special = any(not c.isalnum() for c in password)
+            if " " in password or has_upper == False or has_digit == False or has_special == False or len(password) < 8:
+                st.error(body="A senha informada é inválida.".format(password))
+                return False
+            else:
+                st.success(body="A senha informada é válida.".format(password))
+                return True
+
         def main_menu():
 
             check_user_quantity = query_executor.simple_consult_query(check_user_query)
-            check_user_quantity = query_executor.treat_simple_result(
-                check_user_quantity, to_remove_list
-            )
+            check_user_quantity = query_executor.treat_simple_result(check_user_quantity, to_remove_list)
             check_user_quantity = int(check_user_quantity)
 
             if check_user_quantity == 0:
@@ -39,16 +59,13 @@ class CreateUser:
 
             with col4:
                 with st.expander(label="Dados de login", expanded=True):
-                    user_login = st.text_input(label="Login de usuário",max_chars=25,help="O nome do usuário deve ter no máximo 25 caracteres.",)
-                    user_password = st.text_input(label="Senha de usuário",max_chars=100,help="A senha deve conter no máximo 100 caracteres.",type="password", key="user_password")
-                    confirm_user_password = st.text_input(label="Senha de usuário",max_chars=100,help="A senha deve conter no máximo 100 caracteres.",type="password", key="confirm_user_password")
+                    user_login = st.text_input(label="Login de usuário",max_chars=25,help="O login deve conter apenas letras minúsculas, sem espaços.",)
+                    user_password = st.text_input(label="Senha de usuário",max_chars=100,help="A senha deve conter ao mínimo 8 caracteres, 1 letra maiúscula, 1 minúscula e 1 caractere especial, sem espaços.",type="password", key="user_password")
+                    confirm_user_password = st.text_input(label="Confirmação de senha",max_chars=100,help="Deve ser a mesma informada no campo acima.",type="password", key="confirm_user_password")
 
                 confirm_values = st.checkbox(label="Confirmar dados")
 
-            sex_options = {
-                "Masculino": "M",
-                "Feminino": "F"
-            }
+            sex_options = {"Masculino": "M", "Feminino": "F"}
             
             with col5:
                 with st.expander(label="Dados do usuário", expanded=True):
@@ -67,8 +84,10 @@ class CreateUser:
                             cl1, cl2 = st.columns(2)
                             with cl2:
                                 is_document_valid = document.validate_owner_document(user_document)
+                                valid_login = is_login_valid(user_login)
+                                valid_password = is_password_valid(user_password)
 
-                        if user_login != "" and user_password != "" and confirm_user_password != "" and (user_password == confirm_user_password) and user_name != "" and is_document_valid == True and user_sex != "":
+                        if user_login != "" and user_password != "" and confirm_user_password != "" and (user_password == confirm_user_password) and user_name != "" and is_document_valid == True and valid_login == True and valid_password == True:
 
                             if check_user_quantity == 0:
                                 insert_new_user_query = """INSERT INTO usuarios (login, senha, nome, documento_usuario, sexo) VALUES (%s, %s, %s, %s, %s)"""
@@ -108,17 +127,15 @@ class CreateUser:
                                                 "Já existe um usuário cadastrado associado ao documento {}.".format(user_document)
                                             )
 
-                        elif user_login == "" or user_password == "" or user_name == "" or is_document_valid == False or confirm_user_password == "" or (user_password != confirm_user_password):
+                        elif user_login == "" or user_password == "" or user_name == "" or is_document_valid == False or valid_login == False or valid_password == False or confirm_user_password == "" or (user_password != confirm_user_password):
                             with cl2:
-                                if is_document_valid == False:
-                                    st.error("O documento {} é inválido.".format(user_document))
                                 if user_login == "":
                                     st.error("O login não foi preenchido.")
                                 if user_password == "":
                                     st.error("A senha não foi preenchida.")
                                 if user_name == "":
                                     st.error("O nome não foi preenchido.")
-                                if confirm_user_password:
+                                if confirm_user_password == "":
                                     st.error("A confirmação da senha não foi preenchida.")
                                 if user_password != confirm_user_password and (user_password != "" and confirm_user_password != ""):
                                     st.error("As senhas não correspondem.")

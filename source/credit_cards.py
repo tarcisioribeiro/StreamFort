@@ -28,6 +28,9 @@ class CreditCards:
 
                 col1, col2, col3 = st.columns(3)
 
+                with col3:
+                    cl1, cl2 = st.columns(2)
+
                 credit_cards_options = ["Selecione uma opção"]
 
                 user_credit_cards_names = query_executor.complex_consult_query(search_user_credit_cards_names)
@@ -38,58 +41,62 @@ class CreditCards:
 
                 with col1:
 
-                    cl1, cl2 = st.columns(2)
-
-                    with cl1:
-
+                    with st.expander(label="Consulta", expanded=True):
                         selected_user_card = st.selectbox(label="Selecione o cartão", options=credit_cards_options)
+                        safe_password = st.text_input(label="Senha do cofre", type="password", help="A senha do cofre é a mesma utilizada para acessar a aplicação.")
 
-                        consult_button = st.button(label=":floppy_disk: Consultar cartão")
+                    consult_button = st.button(label=":floppy_disk: Consultar cartão")
 
-                        if selected_user_card != "Selecione uma opção" and consult_button:
+                    if selected_user_card != "Selecione uma opção" and consult_button and safe_password == logged_user_password:
 
-                            card_field_names = ["Nome do cartão", "Número do cartão", "Nome do titular no cartão", "Data da validade", "Código de segurança"]
+                        card_field_names = ["Nome do cartão", "Número do cartão", "Nome do titular no cartão", "Data da validade", "Código de segurança"]
+                    
+                        credit_card_data_query = '''
+                        SELECT 
+                            cartao_credito.nome_cartao,
+                            cartao_credito.numero_cartao,
+                            cartao_credito.nome_titular,
+                            DATE_FORMAT(cartao_credito.data_validade, '%d/%m/%Y'),
+                            cartao_credito.codigo_seguranca
+                        FROM
+                            cartao_credito
+                                INNER JOIN
+                            usuarios ON cartao_credito.proprietario_cartao = usuarios.nome
+                                AND cartao_credito.documento_titular = usuarios.documento_usuario
+                        WHERE
+                            usuarios.login = '{}'
+                                AND usuarios.senha = '{}'
+                                AND cartao_credito.nome_cartao = '{}';'''.format(logged_user, logged_user_password, selected_user_card)
                         
-                            credit_card_data_query = '''
-                            SELECT 
-                                cartao_credito.nome_cartao,
-                                cartao_credito.numero_cartao,
-                                cartao_credito.nome_titular,
-                                DATE_FORMAT(cartao_credito.data_validade, '%d/%m/%Y'),
-                                cartao_credito.codigo_seguranca
-                            FROM
-                                cartao_credito
-                                    INNER JOIN
-                                usuarios ON cartao_credito.proprietario_cartao = usuarios.nome
-                                    AND cartao_credito.documento_titular = usuarios.documento_usuario
-                            WHERE
-                                usuarios.login = '{}'
-                                    AND usuarios.senha = '{}'
-                                    AND cartao_credito.nome_cartao = '{}';'''.format(logged_user, logged_user_password, selected_user_card)
-                            
-                            credit_card_data = query_executor.complex_compund_query(credit_card_data_query, 5, 'credit_card_')
-                            credit_card_data = query_executor.treat_numerous_simple_result(credit_card_data, to_remove_list)
+                        credit_card_data = query_executor.complex_compund_query(credit_card_data_query, 5, 'credit_card_')
+                        credit_card_data = query_executor.treat_numerous_simple_result(credit_card_data, to_remove_list)
 
-                            with col2:
+                        with col2:
 
-                                with st.spinner(text="Aguarde..."):
-                                    sleep(2.5)
+                            with st.spinner(text="Aguarde..."):
+                                sleep(2.5)
 
-                                with st.expander(label="Dados do cartão", expanded=True):
-                                    for i in range(0, len(credit_card_data)):
-                                        st.write(card_field_names[i])
-                                        st.code(credit_card_data[i])
+                            with st.expander(label="Dados do cartão", expanded=True):
+                                for i in range(0, len(credit_card_data)):
+                                    st.write(card_field_names[i])
+                                    st.code(credit_card_data[i])
 
-                                    last_card_numbers = str(credit_card_data[1])[-4:]
-                                    log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
-                                    log_values = (logged_user, "Consulta", "Consultou os dados do cartão {} com o final {}.".format(credit_card_data[0], last_card_numbers))
+                                last_card_numbers = str(credit_card_data[1])[-4:]
+                                log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
+                                log_values = (logged_user, "Consulta", "Consultou os dados do cartão {} com o final {}.".format(credit_card_data[0], last_card_numbers))
 
-                                    query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+                                query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+
+                    elif consult_button and (selected_user_card == "Selecione uma opção" or safe_password != logged_user_password):
+                        with cl2:
+                            with st.spinner(text="Aguarde..."):
+                                sleep(2.5)
+                            if selected_user_card == "Selecione uma opção":
+                                st.error(body="Nenhum cartão selecionado.")
+                            if safe_password != logged_user_password:
+                                st.error(body="A senha do cofre está incorreta.")
 
             else:
-
-                st.divider()
-
                 col1, col2, col3 = st.columns(3)
 
                 with col2:
@@ -99,10 +106,14 @@ class CreditCards:
 
             st.divider()
 
-            def validate_card_values(card_name: str, owner_on_card_name: str, expiration_date: str, actual_date: str, security_code: str):
+            def validate_card_values(card_name: str, card_number: str, owner_on_card_name: str, expiration_date: str, actual_date: str, security_code: str):
 
                 if card_name == '':
                     st.error("Informe o nome do cartão.")
+                if card_number == '':
+                    st.error("Informe o número do cartão.")
+                if " " in card_number:
+                    st.error(body="Não pode haver espaços vazios no número do cartão.")
                 if owner_on_card_name == '':
                     st.error("Informe o nome do titular no cartão.")
                 if expiration_date <= actual_date:
@@ -116,16 +127,14 @@ class CreditCards:
 
                 with st.expander(label="Dados do Cartão", expanded=True):
 
-                    card_name = st.text_input(label="Nome do cartão", max_chars=100)
-                    card_number = st.text_input(label="Número do cartão", max_chars=16)
+                    card_name = st.text_input(label="Nome do cartão", max_chars=100, help="Informe um nome representativo, por exemplo, 'Cartão Virtual Nubank'.")
+                    card_number = st.text_input(label="Número do cartão", max_chars=16, help="Informe o número do cartão sem espaços vazios.")
                     last_card_numbers = card_number[-4:]
-                    owner_on_card_name = st.text_input(
-                        label="Nome do titular no cartão", max_chars=100
-                    )
-                    expiration_date = st.date_input(label="Data de validade")
+                    owner_on_card_name = st.text_input(label="Nome do titular", max_chars=100, help="Nome do titular que está impresso no cartão.")
+                    expiration_date = st.date_input(label="Data de validade", help="Data de validade impressa no cartão.")
                     expiration_date = str(expiration_date)
-                    security_code = st.text_input(label="Código de segurança", max_chars=3, type="password", key="security_code")
-                    confirm_security_code = st.text_input(label="Confirmação de código", max_chars=3, type="password", key="confirm_security_code")
+                    security_code = st.text_input(label="Código de segurança", max_chars=3, type="password", key="security_code", help="Código de segurança do cartão, identificado como CVV ou CCV.")
+                    confirm_security_code = st.text_input(label="Confirmação de código", max_chars=3, type="password", key="confirm_security_code", help="Deve corresponder ao código informado acima.")
                     confirm_data = st.checkbox(label="Confirmar dados", value=False)
 
                     actual_date = call_actual_time.get_actual_data()
@@ -137,55 +146,55 @@ class CreditCards:
                     if card_name != '' and card_number != '' and owner_on_card_name != '' and expiration_date != '' and security_code != '' and confirm_security_code != "" and (security_code == confirm_security_code):
 
                         with st.spinner(text="Aguarde..."):
-                            sleep(2)
+                            sleep(2.5)
 
                         with col2:
-                            valid_card = validate_document.validate_credit_card(card_number)
+                            with st.expander(label="Validação dos dados", expanded=True):
+                                valid_card = validate_document.validate_credit_card(card_number)
 
-                            if valid_card == False:
-                                st.error(body="O número do cartão é inválido.")
-                                validate_card_values(card_name, owner_on_card_name, expiration_date, actual_date, security_code)
+                                if valid_card == False:
+                                    st.error(body="O número do cartão é inválido.")
+                                    validate_card_values(card_name, card_number, owner_on_card_name, expiration_date, actual_date, security_code)
 
-                            elif valid_card == True:
-                                st.success(body="Número de cartão válido.")
+                                elif valid_card == True:
+                                    st.success(body="Número de cartão válido.")
 
-                                if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '':
+                                    if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '':
 
-                                    user_data = query_executor.simple_consult_query(name_doc_query)
-                                    user_data = query_executor.treat_numerous_simple_result(user_data, to_remove_list)
+                                        user_data = query_executor.simple_consult_query(name_doc_query)
+                                        user_data = query_executor.treat_numerous_simple_result(user_data, to_remove_list)
 
-                                    card_owner_name, card_owner_document = user_data
+                                        card_owner_name, card_owner_document = user_data
 
-                                    card_insert_query = """INSERT INTO seguranca.cartao_credito (nome_cartao, numero_cartao, nome_titular, proprietario_cartao, documento_titular, data_validade, codigo_seguranca, ativo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"""
-                                    card_insert_values = (
-                                        card_name,
-                                        card_number,
-                                        owner_on_card_name,
-                                        card_owner_name,
-                                        card_owner_document,
-                                        expiration_date,
-                                        security_code,
-                                        "S",
-                                    )
-                                    query_executor.insert_query(
-                                        query=card_insert_query,
-                                        values=card_insert_values,
-                                        success_message="Cartão cadastrado com sucesso!",
-                                        error_message="Erro ao cadastrar cartão:",
-                                    )
+                                        card_insert_query = """INSERT INTO seguranca.cartao_credito (nome_cartao, numero_cartao, nome_titular, proprietario_cartao, documento_titular, data_validade, codigo_seguranca) VALUES (%s, %s, %s, %s, %s, %s, %s);"""
+                                        card_insert_values = (
+                                            card_name,
+                                            card_number,
+                                            owner_on_card_name,
+                                            card_owner_name,
+                                            card_owner_document,
+                                            expiration_date,
+                                            security_code
+                                        )
+                                        query_executor.insert_query(
+                                            query=card_insert_query,
+                                            values=card_insert_values,
+                                            success_message="Cartão cadastrado com sucesso!",
+                                            error_message="Erro ao cadastrar cartão:",
+                                        )
 
-                                    log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES (%s, %s, %s);'''
-                                    log_values = (logged_user, 'Cadastro', 'Cadastrou o cartão {} com o final {}.'.format(card_name, last_card_numbers))
+                                        log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES (%s, %s, %s);'''
+                                        log_values = (logged_user, 'Cadastro', 'Cadastrou o cartão {} com o final {}.'.format(card_name, last_card_numbers))
 
-                                    query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+                                        query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
 
-                                else:
-                                    validate_card_values(card_name, owner_on_card_name, expiration_date, actual_date, security_code)
+                                    else:
+                                        validate_card_values(card_name, owner_on_card_name, expiration_date, actual_date, security_code)
                     else:
                         with col1:
                             with st.spinner(text="Aguarde..."):
-                                sleep(2)
+                                sleep(2.5)
                         with col2:                            
                             cl1, cl2 = st.columns(2)
                             with cl2:
@@ -193,7 +202,7 @@ class CreditCards:
                 elif register_button and confirm_data == False:
 
                     with st.spinner(text="Aguarde..."):
-                        sleep(2)
+                        sleep(2.5)
 
                     with col2:
                         cl1, cl2 = st.columns(2)
@@ -203,6 +212,9 @@ class CreditCards:
         def credit_card_main_menu():
 
             col1, col2, col3 = st.columns(3)
+
+            with col1:
+                st.header(body=":credit_card: Cartões")
 
             with col2:
                 menu_options = ["Cadastrar cartão", "Consultar cartões"]

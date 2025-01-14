@@ -33,7 +33,7 @@ try:
         col1, col2, col3 = st.columns(3)
 
         with col2:
-            st.error(body="Não foi configurado o ambiente de conexão. Informe os dados de conexão.", icon="🚨")
+            st.error(body="Não foi configurado o ambiente de conexão. Informe a senha do banco de dados.",)
         
         st.divider()
 
@@ -41,10 +41,7 @@ try:
 
         with col5:
             with st.expander(label="Dados da conexão", expanded=True):
-                db_port = st.number_input(label="Porta do banco de dados", step=1, value=3306)
-                db_hostname = st.text_input(label="Host do banco de dados", placeholder="localhost")
-                db_user = st.text_input(label="Usuário do banco de dados", placeholder="root")
-                db_password = st.text_input(label="Senha do banco de dados", type="password")
+                db_password = st.text_input(label="Senha do banco de dados", help="Senha do banco de dados MySQL, configurada durante a instalação da aplicação.", type="password")
                 confirm_database_informations = st.checkbox(label="Confirmar Dados")
 
             record_database_informations = st.button(label=":floppy_disk: Gravar informações")
@@ -56,30 +53,30 @@ try:
                 
                 try:
                     connection = mysql.connector.connect(
-                        host=db_hostname,
+                        host='localhost',
                         database='seguranca',
-                        user=db_user,
+                        user='root',
                         password=db_password,
-                        port=db_port 
+                        port=3306
                     )
                     
                     if connection.is_connected():
                         with col6:
                             cl1, cl2 = st.columns(2)
                             with cl2:
-                                st.success(body="Conexão bem-sucedida ao banco de dados!", icon="✅")
+                                st.success(body="Conexão bem-sucedida ao banco de dados!",)
 
                         with open(software_env_path, 'w') as env_archive:
-                            env_archive.write("DB_PORT={}".format(db_port))
-                            env_archive.write("\nDB_HOSTNAME={}".format(db_hostname))
-                            env_archive.write("\nDB_USER={}".format(db_user))
+                            env_archive.write("DB_PORT={}".format(3306))
+                            env_archive.write("\nDB_HOSTNAME={}".format('localhost'))
+                            env_archive.write("\nDB_USER={}".format('root'))
                             env_archive.write("\nDB_NAME=seguranca")
                             env_archive.write("\nDB_PASSWORD={}".format(db_password))
 
                         with col6:
                             cl1, cl2 = st.columns(2)
                             with cl2:
-                                st.success(body="Dados gravados com sucesso!", icon="✅")
+                                st.success(body="Dados gravados com sucesso!",)
                                 sleep(5)
                         
                         st.rerun()
@@ -89,12 +86,18 @@ try:
                         cl1, cl2 = st.columns(2)
                         with cl2:
                             if error.errno == 1049:
-                                st.error(body="Erro ao conectar ao MySQL: O banco de dados seguranca não existe. Faça a importação do arquivo de backup/implantação.", icon="🚨")
+                                st.error(body="Erro ao conectar ao MySQL: O banco de dados seguranca não existe. Faça a importação do arquivo de backup/implantação.",)
                             elif error.errno == 1045:
-                                st.error(body="Conexão não realizada. Revise os dados de conexão e tente novamente.", icon="🚨")
+                                st.error(body="Conexão não realizada. Revise os dados de conexão e tente novamente.",)
                             else:
-                                st.error(body="Erro ao conectar ao MySQL: {} .".format(error), icon="🚨")
-
+                                st.error(body="Erro ao conectar ao MySQL: {} .".format(error),)
+            elif record_database_informations and confirm_database_informations == False:
+                with col2:
+                    with st.spinner(text="Aguarde..."):
+                        sleep(2.5)
+                    cl1, cl2 = st.columns(2)
+                    with cl2:
+                        st.warning(body="Você deve confirmar os dados antes de prosseguir.")
 
     if not os.path.isfile(session_state_path):
 
@@ -150,7 +153,7 @@ try:
             col1, col2, col3 = st.columns(3)
             with col2:
                 if error.errno == 1049:
-                    st.error(body="Erro ao conectar ao MySQL: O banco de dados seguranca não existe. Faça a importação do arquivo de backup/implantação.", icon="🚨")
+                    st.error(body="Erro ao conectar ao MySQL: O banco de dados 'seguranca' não existe. Faça a importação do arquivo de backup/implantação.",)
 
 except KeyError:
     st.rerun()

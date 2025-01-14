@@ -32,11 +32,11 @@ class Archives:
                 for i in range(0, len(user_archives_name)):
                     archives_names.append(user_archives_name[i])
 
-                with col2:
+                with col1:
 
                     with st.expander(label="Consulta", expanded=True):
                         selected_archive = st.selectbox(label="Selecione o arquivo", options=archives_names)
-                        safe_password = st.text_input(label="Senha do cofre", type="password")
+                        safe_password = st.text_input(label="Senha do cofre", type="password", help="A senha do cofre é a mesma utilizada para acessar a aplicação.")
                         confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
                     consult_button = st.button(label=":file_folder: Consultar arquivo")
@@ -76,13 +76,13 @@ class Archives:
                                             del archive_content[i]
 
                                     with col2:
-                                        with st.expander(label="Conteúdo", expanded=True):
+                                        with st.expander(label="Conteudo", expanded=True):
 
                                             display_content = ""
                                             for i in range(0, len(archive_content)):
                                                 display_content += str(archive_content[i]) + "\n\n"
                                             
-                                            st.write(display_content)
+                                            st.code(display_content)
 
                                         log_query = """INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)"""
                                         log_values = (logged_user, 'Consulta', "Consultou o arquivo {}.".format(selected_archive))
@@ -103,22 +103,33 @@ class Archives:
 
             col1, col2, col3 = st.columns(3)
 
-            with col2:
+            with col3:
+
+                cl1, cl2, = st.columns(2)
+
+            with col1:
 
                 with st.expander(label="Entrada de Dados", expanded=True):
-                    archive_name = st.text_input(label="Nome do arquivo", max_chars=100)
-                    archive_comentary = st.text_input(label="Comentário", max_chars=255)
-                    uploaded_file = st.file_uploader(label="Escolha um arquivo de texto", type=["txt"])
+                    archive_name = st.text_input(label="Nome do arquivo", max_chars=100, help="É necessário definir um nome para identificação e consulta posterior.")
+                    uploaded_file = st.file_uploader(label="Escolha um arquivo de texto", type=["txt"], help="São permitidos arquivos de texto, na extensão '.txt'. O tamanho do arquivo não pode exceder 200 MB.")
 
                     content = None
 
                     if uploaded_file:
                         content = uploaded_file.read().decode("utf-8")
                         with col2:
-                            with st.expander(label="Arquivo carregado", expanded=True):
-                                st.info(content)
+                            with st.spinner(text="Carregando arquivo..."):
+                                sleep(5)
+                            if content != "":
+                                with st.expander(label="Conteudo do arquivo carregado", expanded=True):
+                                    st.info(content)
+                            elif content == "":
+                                with cl2:
+                                    st.error(body="O Conteudo do arquivo está vazio.")
 
-                if st.button(":floppy_disk: Fazer upload do arquivo") and uploaded_file is not None:
+                register_archive_button = st.button(":floppy_disk: Fazer upload do arquivo")
+
+                if register_archive_button and uploaded_file is not None and content != "":
 
                     archive_query = "INSERT INTO arquivo_texto (nome_arquivo, conteudo, usuario_associado, documento_usuario_associado) VALUES (%s, %s, %s, %s)"
                     archive_values = (archive_name,content,logged_user_name,logged_user_document)
@@ -130,10 +141,25 @@ class Archives:
                         log_query = """INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)"""
                         log_query_values = (logged_user, "Cadastro", "Fez o upload do arquivo {}.".format(archive_name))
                         query_executor.insert_query(log_query, log_query_values, "Log gravado.", "Erro ao gravar log:")
+                
+                elif register_archive_button and (uploaded_file is None or content == "" or archive_name == ""):
+
+                        with cl2:
+                            with st.spinner(text=""):
+                                sleep(2.5)
+
+                            if uploaded_file is None:
+                                st.error(body="Não foi feito o upload de um arquivo.")
+                            if archive_name == "":
+                                st.error(body="Não foi informado um nome para o arquivo.")
+
 
         def archives_main_menu():
 
             col1, col2, col3 = st.columns(3)
+
+            with col1:
+                st.header(body=":spiral_note_pad: Arquivos")
 
             with col2:
                 menu_options = ["Registrar arquivo", "Consultar arquivo"]

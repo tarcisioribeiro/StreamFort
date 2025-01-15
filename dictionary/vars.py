@@ -10,6 +10,24 @@ operational_system = os.name
 
 menu_options = ["Selecione uma opção", "Senhas", "Arquivos", "Cartões", "Contas Bancárias"]
 
+dark_theme = '''[theme]
+primaryColor="#bd93f9"
+backgroundColor="#282a36"
+secondaryBackgroundColor="#44475a"
+textColor="#f8f8f2"'''
+
+light_theme = """[theme]
+primaryColor = "#61afef"
+backgroundColor = "#fefefe"
+secondaryBackgroundColor = "#e6e6e6"
+textColor = "#3c4048"
+"""
+
+server_config = """
+[server]
+headless = true
+enableStaticServing = true"""
+
 server_config = """
 [server]
 headless = true

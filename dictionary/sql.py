@@ -10,10 +10,10 @@ search_accounts_query = """
         usuarios ON senhas.usuario_associado = usuarios.nome
             AND senhas.documento_usuario_associado = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}'
+        usuarios.login = %s
+            AND usuarios.senha = %s
     ORDER BY senhas.nome_site;
-""".format(logged_user, logged_user_password)
+"""
 
 search_user_credit_cards_number = """
     SELECT 
@@ -24,9 +24,10 @@ search_user_credit_cards_number = """
         usuarios ON cartao_credito.proprietario_cartao = usuarios.nome
             AND cartao_credito.documento_titular = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-""".format(logged_user, logged_user_password)
+        cartao_credito.proprietario_cartao = %s
+        AND
+        cartao_credito.documento_titular = %s;
+"""
 
 search_user_credit_cards_names = """
     SELECT 
@@ -37,9 +38,9 @@ search_user_credit_cards_names = """
         usuarios ON cartao_credito.proprietario_cartao = usuarios.nome
             AND cartao_credito.documento_titular = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-""".format(logged_user, logged_user_password)
+        cartao_credito.proprietario_cartao = %s
+            AND cartao_credito.documento_titular = %s;
+"""
 
 search_user_archives_quantity = """
     SELECT 
@@ -50,9 +51,9 @@ search_user_archives_quantity = """
         usuarios ON arquivo_texto.usuario_associado = usuarios.nome
             AND arquivo_texto.documento_usuario_associado = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-""".format(logged_user, logged_user_password)
+        arquivo_texto.usuario_associado = %s
+            AND arquivo_texto.documento_usuario_associado = %s;
+"""
 
 search_user_archives_name = """
     SELECT 
@@ -63,9 +64,9 @@ search_user_archives_name = """
         usuarios ON arquivo_texto.usuario_associado = usuarios.nome
             AND arquivo_texto.documento_usuario_associado = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-""".format(logged_user, logged_user_password)
+        arquivo_texto.usuario_associado = %s
+            AND arquivo_texto.documento_usuario_associado = %s;
+"""
 
 check_user_query = '''SELECT COUNT(id_usuario) FROM usuarios;'''
 
@@ -78,9 +79,9 @@ check_user_passwords_quantity_query = '''
         usuarios ON usuarios.nome = senhas.usuario_associado
             AND usuarios.documento_usuario = senhas.documento_usuario_associado
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-'''.format(logged_user, logged_user_password)
+        usuarios.login = %s
+            AND usuarios.senha = %s;
+'''
 
 user_passwords_query = '''
     SELECT 
@@ -91,9 +92,9 @@ user_passwords_query = '''
         usuarios ON usuarios.nome = senhas.usuario_associado
             AND usuarios.documento_usuario = senhas.documento_usuario_associado
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-'''.format(logged_user, logged_user_password)
+        usuarios.login = %s
+            AND usuarios.senha = %s;
+'''
 
 check_user_bank_accounts_query = '''
     SELECT 
@@ -104,9 +105,9 @@ check_user_bank_accounts_query = '''
         usuarios ON contas_bancarias.nome_proprietario_conta = usuarios.nome
             AND contas_bancarias.documento_proprietario_conta = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}';
-'''.format(logged_user, logged_user_password)
+        contas_bancarias.nome_proprietario_conta = %s
+            AND contas_bancarias.documento_proprietario_conta = %s;
+'''
 
 search_bank_accounts_query = """
     SELECT 
@@ -117,7 +118,7 @@ search_bank_accounts_query = """
         usuarios ON contas_bancarias.nome_proprietario_conta = usuarios.nome
             AND contas_bancarias.documento_proprietario_conta = usuarios.documento_usuario
     WHERE
-        usuarios.login = '{}'
-            AND usuarios.senha = '{}'
+        contas_bancarias.nome_proprietario_conta = %s
+            AND contas_bancarias.documento_proprietario_conta = %s
     ORDER BY contas_bancarias.nome_conta;
-""".format(logged_user, logged_user_password)
+"""

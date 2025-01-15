@@ -1,4 +1,5 @@
 from data.session_state import logged_user, logged_user_password
+from data.user_data import logged_user_name, logged_user_document
 from dictionary.sql import search_user_credit_cards_number, search_user_credit_cards_names
 from dictionary.vars import to_remove_list
 from data.user_data import name_doc_query
@@ -18,8 +19,7 @@ class CreditCards:
         validate_document = Documents()
 
         def show_credit_cards():
-            
-            user_credit_cards_number = query_executor.simple_consult_query(search_user_credit_cards_number)
+            user_credit_cards_number = query_executor.simple_consult_query(search_user_credit_cards_number, params=(logged_user_name, logged_user_document))
             user_credit_cards_number = query_executor.treat_simple_result(user_credit_cards_number, to_remove_list)
             user_credit_cards_number = int(user_credit_cards_number)
 
@@ -34,7 +34,7 @@ class CreditCards:
 
                 credit_cards_options = ["Selecione uma opção"]
 
-                user_credit_cards_names = query_executor.complex_consult_query(search_user_credit_cards_names)
+                user_credit_cards_names = query_executor.complex_consult_query(search_user_credit_cards_names, params=(logged_user_name, logged_user_document))
                 user_credit_cards_names = query_executor.treat_numerous_simple_result(user_credit_cards_names, to_remove_list)
 
                 for i in range(0, len(user_credit_cards_names)):
@@ -44,11 +44,10 @@ class CreditCards:
 
                     with st.expander(label="Consulta", expanded=True):
                         selected_user_card = st.selectbox(label="Selecione o cartão", options=credit_cards_options)
-                        safe_password = st.text_input(label="Senha do cofre", type="password", help="A senha do cofre é a mesma utilizada para acessar a aplicação.")
 
                     consult_button = st.button(label=":floppy_disk: Consultar cartão")
 
-                    if selected_user_card != "Selecione uma opção" and consult_button and safe_password == logged_user_password:
+                    if selected_user_card != "Selecione uma opção" and consult_button:
 
                         card_field_names = ["Nome do cartão", "Número do cartão", "Nome do titular no cartão", "Data da validade", "Código de segurança"]
                     
@@ -65,11 +64,11 @@ class CreditCards:
                             usuarios ON cartao_credito.proprietario_cartao = usuarios.nome
                                 AND cartao_credito.documento_titular = usuarios.documento_usuario
                         WHERE
-                            usuarios.login = '{}'
-                                AND usuarios.senha = '{}'
-                                AND cartao_credito.nome_cartao = '{}';'''.format(logged_user, logged_user_password, selected_user_card)
+                            cartao_credito.proprietario_cartao = %s
+                                AND cartao_credito.documento_titular = %s
+                                AND cartao_credito.nome_cartao = %s;'''.format(logged_user_name, logged_user_document, selected_user_card)
                         
-                        credit_card_data = query_executor.complex_compund_query(credit_card_data_query, 5, 'credit_card_')
+                        credit_card_data = query_executor.complex_compund_query(credit_card_data_query, 5, 'credit_card_', params=(logged_user_name, logged_user_document, selected_user_card))
                         credit_card_data = query_executor.treat_numerous_simple_result(credit_card_data, to_remove_list)
 
                         with col2:
@@ -88,14 +87,12 @@ class CreditCards:
 
                                 query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
-                    elif consult_button and (selected_user_card == "Selecione uma opção" or safe_password != logged_user_password):
+                    elif consult_button and (selected_user_card == "Selecione uma opção"):
                         with cl2:
                             with st.spinner(text="Aguarde..."):
                                 sleep(2.5)
                             if selected_user_card == "Selecione uma opção":
                                 st.error(body="Nenhum cartão selecionado.")
-                            if safe_password != logged_user_password:
-                                st.error(body="A senha do cofre está incorreta.")
 
             else:
                 col1, col2, col3 = st.columns(3)
@@ -162,7 +159,7 @@ class CreditCards:
 
                                     if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '':
 
-                                        user_data = query_executor.simple_consult_query(name_doc_query.format(logged_user, logged_user_password))
+                                        user_data = query_executor.simple_consult_query(name_doc_query, params=(logged_user, logged_user_password))
                                         user_data = query_executor.treat_numerous_simple_result(user_data, to_remove_list)
 
                                         card_owner_name, card_owner_document = user_data

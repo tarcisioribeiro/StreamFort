@@ -1,4 +1,5 @@
 from dictionary.sql import user_passwords_query, check_user_passwords_quantity_query
+from data.session_state import logged_user, logged_user_password
 from dictionary.vars import to_remove_list
 from functions.check_password_health import PasswordValidator
 from functions.query_executor import QueryExecutor
@@ -13,14 +14,14 @@ class Home:
         check_password = PasswordValidator()
 
         def general_information():
-            user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query)
+            user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
             user_passwords_quantity = query_executor.treat_simple_result(user_passwords_quantity, to_remove_list)
 
             return user_passwords_quantity
 
         def password_analysis():
                 
-            user_passwords = query_executor.complex_consult_query(user_passwords_query)
+            user_passwords = query_executor.complex_consult_query(user_passwords_query, params=(logged_user, logged_user_password))
             user_passwords = query_executor.treat_numerous_simple_result(user_passwords, to_remove_list)
 
             empty_password = ''

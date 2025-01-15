@@ -24,15 +24,15 @@ class User:
             
             if result:
                 hashed_password = result[0]
-                return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
-            return False
+                return bcrypt.checkpw(password.encode('utf-8'), hashed_password), hashed_password
+            return False, '0'
 
         
         def check_user():
-            name = query_executor.simple_consult_query(name_query.format(logged_user, logged_user_password))
+            name = query_executor.simple_consult_query(name_query, params=(logged_user, logged_user_password))
             name = query_executor.treat_simple_result(name, to_remove_list)
 
-            sex = query_executor.simple_consult_query(sex_query.format(logged_user, logged_user_password))
+            sex = query_executor.simple_consult_query(sex_query, params=(logged_user, logged_user_password))
             sex = query_executor.treat_simple_result(sex, to_remove_list)
 
             return name, sex
@@ -60,8 +60,11 @@ class User:
                         password = st.text_input(":key: Senha", type="password")
                         login_button = st.button(label=":unlock: Entrar")
 
+                        is_login_valid, hashed_password = check_login(user, password)
+                            
+
                         if login_button:
-                            if check_login(user, password):
+                            if is_login_valid:
                                 with st.spinner("Aguarde..."):
                                     sleep(1)
                                     st.toast("Login bem-sucedido!")
@@ -72,9 +75,7 @@ class User:
 
                                     with open("data/session_state.py", "w") as arquivo:
                                         arquivo.write("logged_user = '{}'\n".format(user))
-                                        arquivo.write("logged_user_password = '{}'\n".format(password))
-                                    sleep(1)
-                                    os.chmod("data/session_state.py", 0o600)
+                                        arquivo.write("logged_user_password = {}\n".format(hashed_password))
                                     sleep(1)
 
                                 st.session_state.is_logged_in = True

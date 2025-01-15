@@ -122,7 +122,7 @@ try:
                 
                 query_executor = QueryExecutor()
 
-                check_user_quantity = query_executor.simple_consult_query(check_user_query)
+                check_user_quantity = query_executor.simple_consult_brute_query(check_user_query)
                 check_user_quantity = query_executor.treat_simple_result(check_user_quantity, to_remove_list)
                 check_user_quantity = int(check_user_quantity)
 

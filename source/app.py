@@ -8,7 +8,7 @@ from source.bank_accounts import BankAccount
 from source.credit_cards import CreditCards
 from source.homepage import Home
 from source.passwords import Passwords
-from source.database_backup import Backup
+from source.configuration.main import Configuration
 from time import sleep
 
 
@@ -31,7 +31,7 @@ def HomePage():
         "Arquivos": Archives(),
         "Cartões": CreditCards(),
         "Contas Bancárias": BankAccount(),
-        "Backup": Backup()
+        "Configurações": Configuration()
     }
 
     sidebar_choice = st.sidebar.selectbox(label="Menu", options=sidebar_menu_dictionary.keys())

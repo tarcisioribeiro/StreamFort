@@ -17,7 +17,7 @@ class Archives:
 
         def show_archive():
 
-            user_archives_quantity = query_executor.simple_consult_query(search_user_archives_quantity)
+            user_archives_quantity = query_executor.simple_consult_query(search_user_archives_quantity, params=(logged_user_name, logged_user_document))
             user_archives_quantity = query_executor.treat_simple_result(user_archives_quantity, to_remove_list)
             user_archives_quantity = int(user_archives_quantity)
 
@@ -26,7 +26,7 @@ class Archives:
                 col1, col2, col3 = st.columns(3)
 
                 archives_names = ["Selecione uma opção"]
-                user_archives_name = query_executor.complex_consult_query(search_user_archives_name)
+                user_archives_name = query_executor.complex_consult_query(search_user_archives_name, params=(logged_user_name, logged_user_document))
                 user_archives_name = query_executor.treat_numerous_simple_result(user_archives_name, to_remove_list)
 
                 for i in range(0, len(user_archives_name)):
@@ -36,7 +36,6 @@ class Archives:
 
                     with st.expander(label="Consulta", expanded=True):
                         selected_archive = st.selectbox(label="Selecione o arquivo", options=archives_names)
-                        safe_password = st.text_input(label="Senha do cofre", type="password", help="A senha do cofre é a mesma utilizada para acessar a aplicação.")
                         confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
                     consult_button = st.button(label=":file_folder: Consultar arquivo")
@@ -50,46 +49,42 @@ class Archives:
                             if selected_archive == "Selecione uma opção":
                                 st.error(body="Selecione uma opção válida.")
                             elif selected_archive != "Selecione uma opção":
-                                if safe_password == logged_user_password:
-                                    archive_content_query = """SELECT 
-                                                                    arquivo_texto.conteudo
-                                                                FROM
-                                                                    arquivo_texto
-                                                                        INNER JOIN
-                                                                    usuarios ON arquivo_texto.usuario_associado = usuarios.nome
-                                                                        AND arquivo_texto.documento_usuario_associado = usuarios.documento_usuario
-                                                                WHERE
-                                                                    arquivo_texto.nome_arquivo = '{}'
-                                                                    AND
-                                                                    usuarios.login = '{}'
-                                                                        AND usuarios.senha = '{}';
-                                                                """.format(selected_archive,logged_user,logged_user_password)
+                                archive_content_query = """SELECT 
+                                                                arquivo_texto.conteudo
+                                                            FROM
+                                                                arquivo_texto
+                                                                    INNER JOIN
+                                                                usuarios ON arquivo_texto.usuario_associado = usuarios.nome
+                                                                    AND arquivo_texto.documento_usuario_associado = usuarios.documento_usuario
+                                                            WHERE
+                                                                arquivo_texto.nome_arquivo = %s
+                                                                AND
+                                                                arquivo_texto.usuario_associado = %s
+                                                                    AND arquivo_texto.documento_usuario_associado = %s;
+                                                            """
 
-                                    archive_content = (query_executor.simple_consult_query(archive_content_query))
-                                    archive_content = (query_executor.treat_simple_result(archive_content, to_remove_archive_list))
-                                    archive_content = archive_content.replace("\\n", " ")
-                                    archive_content = archive_content.replace("  ", " ")
-                                    archive_content = archive_content.split(" ")
+                                archive_content = (query_executor.simple_consult_query(archive_content_query, params=(selected_archive, logged_user_name, logged_user_document)))
+                                archive_content = (query_executor.treat_simple_result(archive_content, to_remove_archive_list))
+                                archive_content = archive_content.replace("\\n", " ")
+                                archive_content = archive_content.replace("  ", " ")
+                                archive_content = archive_content.split(" ")
 
-                                    for i in range(0, len(archive_content)):
-                                        if archive_content[i] == "":
-                                            del archive_content[i]
+                                for i in range(0, len(archive_content)):
+                                    if archive_content[i] == "":
+                                        del archive_content[i]
 
-                                    with col2:
-                                        with st.expander(label="Conteudo", expanded=True):
+                                with col2:
+                                    with st.expander(label="Conteudo", expanded=True):
 
-                                            display_content = ""
-                                            for i in range(0, len(archive_content)):
-                                                display_content += str(archive_content[i]) + "\n\n"
-                                            
-                                            st.code(display_content)
+                                        display_content = ""
+                                        for i in range(0, len(archive_content)):
+                                            display_content += str(archive_content[i]) + "\n\n"
+                                        
+                                        st.code(display_content)
 
-                                        log_query = """INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)"""
-                                        log_values = (logged_user, 'Consulta', "Consultou o arquivo {}.".format(selected_archive))
-                                        query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
-
-                                elif safe_password != logged_user_password:
-                                    st.error(body="A senha do cofre está incorreta.")
+                                    log_query = """INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)"""
+                                    log_values = (logged_user, 'Consulta', "Consultou o arquivo {}.".format(selected_archive))
+                                    query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
                         elif confirm_selection == False:
                             st.error(body="Confirme a seleção dos dados.")

@@ -9,8 +9,9 @@ import subprocess
 
 
 class Backup:
-    
     def __init__(self):
+
+        
 
         def make_backup(backup_path: str, operational_system: str = operational_system):
             

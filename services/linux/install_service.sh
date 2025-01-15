@@ -10,23 +10,29 @@ blue() {
     echo -e "\033[34m$1\033[0m"
 }
 
+title() {
+    echo -e "$(toilet --font pagga --filter border --width 120 "$1")"
+}
+
 FOLDER=$(pwd)
+
+title "Intalação - StreamFort"
 
 while true; do
     blue "\nDigite a senha de root:"
     read -s root_password
-    sleep 5
+    sleep 1
     blue "\nDigite a senha de root novamente: "
     read -s confirm_root_password
-    sleep 5
+    sleep 1
 
     echo "$root_password" | sudo -S echo "Senha de root aceita."
 
     if [ $? -eq 0 ]; then
         green "\nVocê tem permissões de root. Continuando com o script..."
-        sleep 5
+        sleep 1
         blue "\nInstalando dependências..."
-        sleep 5
+        sleep 1
         apt install build-essential openssh-server git neofetch curl net-tools wget python3-venv python3-tk python3-pip python3.10-full python3.10-dev dkms perl gcc make default-libmysqlclient-dev libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev libncursesw5-dev llvm xz-utils tk-dev libffi-dev liblzma-dev python3-openssl -y
         ufw enable
         ufw allow 8502
@@ -34,17 +40,21 @@ while true; do
         break
     else
         red "\nSenha de root incorreta. Saindo..."
-        sleep 5
+        sleep 1
         exit 1
     fi
 done
 
-sleep 5
+sleep 1
 clear
+
+echo ""
+title "Configuração do banco de dados"
+echo ""
 
 if ! command -v mysql &> /dev/null; then
     red "O banco de dados MySQL não está instalado. Instalando agora...\n"
-    sleep 5
+    sleep 1
     sudo apt update && sudo apt install -y mysql-server
     if [ $? -ne 0 ]; then
         red "\nErro ao instalar o MySQL. Saindo."
@@ -54,11 +64,11 @@ if ! command -v mysql &> /dev/null; then
 fi
 
 blue "\nAgora, defina uma senha para o banco de dados, executando estes comando no console do MySQL:\n"
-sleep 5
-blue "\nALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'senha'; FLUSH PRIVILEGES;\n"
-blue "\nCopie o comando acima e troque 'senha' pela senha que deseja definir, mantendo as aspas simples.\n"
+sleep 1
+echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'senha'; FLUSH PRIVILEGES;"
+blue "\nCopie o comando acima e troque 'senha' pela senha que deseja definir, mantendo as aspas simples."
 blue "\nApós definir a senha, saia do console do MySQL pelo comando exit.\n"
-sleep 50
+read -p "Pressione ENTER para continuar..."
 sudo mysql
 
 while true; do
@@ -85,19 +95,19 @@ while true; do
     fi
 done
 
-sleep 5
+sleep 1
 clear
 
 cd $FOLDER
 blue "\nCriando ambiente virtual..."
-sleep 5
+sleep 1
 python3 -m venv venv
 blue "\nAtivando ambiente virtual..."
-sleep 5
+sleep 1
 source venv/bin/activate
 pip install -r requirements.txt
 
-sleep 5
+sleep 1
 clear
 
 echo "#!/bin/bash" >> streamfort.sh
@@ -123,7 +133,11 @@ green "\nInstalação concluída."
 
 link=$(python3 services/linux/get_ipv4.py)
 
-sleep 5
+sleep 1
 
 blue "\nVocê pode realizar o acesso a aplicação através dos seguintes links:\n"
-green "$link"
+green "$link" 
+
+sleep 4
+
+read -p "\nPressione ENTER para sair do instalador."

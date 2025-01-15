@@ -12,20 +12,25 @@ class Documents:
 
             if len(card_number) != 16:
                 return False
+            
+            elif len(card_number) == 16:
 
-            for i in range(0, 16, 2):
-                accumulated = int(card_number[i]) * 2
-                if accumulated > 9:
-                    accumulated = accumulated - 9
-                total = total + accumulated
+                if " " in card_number:
+                    return False
 
-            for i in range(1, 17, 2):
-                total = total + int(card_number[i])
+                for i in range(0, 16, 2):
+                    accumulated = int(card_number[i]) * 2
+                    if accumulated > 9:
+                        accumulated = accumulated - 9
+                    total = total + accumulated
 
-            if (total % 10) != 0 or total > 150:
-                return False
+                for i in range(1, 17, 2):
+                    total = total + int(card_number[i])
 
-            return True
+                if (total % 10) != 0 or total > 150:
+                    return False
+
+                return True
 
         def validate_owner_document(owner_document: str):
 

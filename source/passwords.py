@@ -3,6 +3,7 @@ from data.user_data import logged_user_name, logged_user_document
 from dictionary.vars import field_names, to_remove_list
 from dictionary.sql import search_accounts_query, check_user_passwords_quantity_query
 from functions.query_executor import QueryExecutor
+from functions.login import User
 from time import sleep
 import streamlit as st
 
@@ -12,6 +13,7 @@ class Passwords:
     def __init__(self) -> None:
 
         query_executor = QueryExecutor()
+        user = User()
         
         def get_new_password():
 
@@ -38,10 +40,8 @@ class Passwords:
 
                         insert_password_query = "INSERT INTO senhas(nome_site, url_site, login, senha, usuario_associado, documento_usuario_associado) VALUES(%s, %s, %s, %s, %s, %s)"
                         query_values = (site, url, login, password, logged_user_name, logged_user_document)
-                        st.info(logged_user_document)
-                        st.info(logged_user_name)
 
-                        # query_executor.insert_query(query=insert_password_query, values=query_values, success_message='Senha cadastrada com sucesso!', error_message='Erro ao cadastrar senha:')
+                        query_executor.insert_query(query=insert_password_query, values=query_values, success_message='Senha cadastrada com sucesso!', error_message='Erro ao cadastrar senha:')
 
                         log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
                         log_query_values = (logged_user, 'Cadastro', 'Cadastrou a senha {} associada ao email {}'.format(query_values[0], query_values[3]))
@@ -65,7 +65,7 @@ class Passwords:
 
         def show_account():
 
-            user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query)
+            user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
             user_passwords_quantity = query_executor.treat_simple_result(user_passwords_quantity, to_remove_list)
             user_passwords_quantity = int(user_passwords_quantity)
 
@@ -83,7 +83,7 @@ class Passwords:
 
                     user_accounts = ["Selecione uma opção"]
 
-                    accounts = query_executor.complex_consult_query(query=search_accounts_query)
+                    accounts = query_executor.complex_consult_query(query=search_accounts_query, params=(logged_user, logged_user_password))
                     accounts = query_executor.treat_numerous_simple_result(accounts, to_remove_list)
 
                     for i in range(0, len(accounts)):
@@ -92,19 +92,30 @@ class Passwords:
                     with col1:
                         with st.expander(label="Consulta", expanded=True):
                             selected_option = st.selectbox(label="Selecione a conta", options=user_accounts)
-                            safe_password = st.text_input(label="Senha do cofre", type="password", help="A senha do cofre é a mesma utilizada para acessar a aplicação.")
                             confirm_selection = st.checkbox(label="Confirmar seleção")
                         
                         consult_button = st.button(label=":floppy_disk: Consultar senha")
+  
+                    account_details_query = '''
+                        SELECT 
+                            senhas.nome_site,
+                            senhas.url_site,
+                            senhas.login,
+                            senhas.senha
+                        FROM
+                            senhas
+                        WHERE
+                            senhas.nome_site = '{}'
+                                AND senhas.usuario_associado = '{}'
+                                AND senhas.documento_usuario_associado = {};
+                    '''.format(selected_option, logged_user_name, logged_user_document)
 
-                    account_details_query = '''SELECT senhas.nome_site, senhas.url_site, senhas.login, senhas.senha FROM senhas WHERE senhas.nome_site = '{}' AND senhas.usuario_associado = '{}' AND senhas.documento_usuario_associado = '{}';'''.format(selected_option, logged_user_name, logged_user_document)
-
-                    result_list = query_executor.complex_consult_query(query=account_details_query)
+                    result_list = query_executor.complex_consult_brute_query(query=account_details_query)
                     result_list = query_executor.treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
 
                     if confirm_selection and consult_button:
 
-                        if selected_option != "Selecione uma opção" and safe_password == logged_user_password:
+                        if selected_option != "Selecione uma opção":
 
                             with col2:
                                 with st.spinner(text="Aguarde..."):
@@ -125,10 +136,10 @@ class Passwords:
                                             st.code(body="{}".format(aux_string))
 
                                     log_query = '''INSERT into logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
-                                    query_values = (logged_user, 'Consulta', 'Consultou a senha {} associada ao email {}'.format(result_list[0], result_list[2]))
+                                    query_values = (logged_user, 'Consulta', 'Consultou a senha do site {}'.format(selected_option))
                                     query_executor.insert_query(query=log_query, values=query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
 
-                        elif selected_option == "Selecione uma opção" or safe_password != logged_user_password:
+                        elif selected_option == "Selecione uma opção":
 
                             with col2:
                                 with st.spinner(text="Aguarde..."):
@@ -137,10 +148,6 @@ class Passwords:
                                 with st.expander(label="Aviso", expanded=True):
                                     if selected_option == "Selecione uma opção":
                                         st.warning(body="Selecione uma senha para consultar.")
-                                    if safe_password != logged_user_password and safe_password != "":
-                                        st.error(body="A senha do cofre está incorreta.")
-                                    if safe_password == "":
-                                        st.error(body="Informe a senha do cofre.")
 
                     elif confirm_selection == False and consult_button:
                         with col2:

@@ -24,7 +24,26 @@ class QueryExecutor:
                     connection.close()
                     st.toast(body="Inserção finalizada.")
 
-        def simple_consult_query(query: str):
+        def simple_consult_query(query: str, params: tuple):
+
+            try:
+                connection = mysql.connector.connect(**db_config)
+                cursor = connection.cursor()
+                cursor.execute(query, params)
+                simple_value = cursor.fetchone()
+                cursor.close()
+                if simple_value is not None:
+                    return simple_value
+                else:
+                    return 0
+            except mysql.connector.Error as error:
+                st.toast(":warning: Erro ao consultar dado: {}".format(error))
+                st.error(error)
+            finally:
+                if connection.is_connected():
+                    connection.close()
+
+        def simple_consult_brute_query(query: str):
 
             try:
                 connection = mysql.connector.connect(**db_config)
@@ -43,31 +62,48 @@ class QueryExecutor:
                 if connection.is_connected():
                     connection.close()
 
-        def complex_compund_query(query: str, list_quantity: int, list_prefix_name: str):
+        def complex_compund_query(query: str, list_quantity: int, list_prefix_name: str, params: tuple):
             try:
                 connection = mysql.connector.connect(**db_config)
                 cursor = connection.cursor()
-                cursor.execute(query)
+                cursor.execute(query, params)
 
                 lists = [[] for _ in range(list_quantity)]
 
-                for i in range(list_quantity):
-                    globals()[f'{list_prefix_name}{i + 1}'] = lists[i]
-
                 for row in cursor.fetchall():
                     for i in range(list_quantity):
-                        globals()[f'{list_prefix_name}{i + 1}'].append(row[i])
+                        lists[i].append(row[i])
 
                 return lists
 
             except mysql.connector.Error as err:
                 st.error("Erro ao consultar dados compostos: {}".format(err))
+                return None
 
             finally:
                 if connection.is_connected():
                     connection.close()
 
-        def complex_consult_query(query: str):
+        def complex_consult_query(query: str, params: tuple):
+
+            try:
+                connection = mysql.connector.connect(**db_config)
+                cursor = connection.cursor()
+                cursor.execute(query, params)
+                complex_value = cursor.fetchall()
+                cursor.close()
+                if complex_value is not None:
+                    return complex_value
+                else:
+                    return [0]
+            except mysql.connector.Error as error:
+                st.toast(":warning: Erro ao consultar dados: {}".format(error))
+                st.error(error)
+            finally:
+                if connection.is_connected():
+                    connection.close()
+
+        def complex_consult_brute_query(query: str):
 
             try:
                 connection = mysql.connector.connect(**db_config)
@@ -190,3 +226,5 @@ class QueryExecutor:
         self.check_if_value_exists = check_if_value_exists
         self.update_table_registers = update_table_registers
         self.update_table_unique_register = update_table_unique_register
+        self.simple_consult_brute_query = simple_consult_brute_query
+        self.complex_consult_brute_query = complex_consult_brute_query

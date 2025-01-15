@@ -18,19 +18,19 @@ class BankAccount:
 
             with col1:
                 with st.expander(label="Dados da Conta", expanded=True):
-                    account_name = st.text_input(label="Nome", max_chars=100, placeholder='Conta')
-                    financial_institution = st.selectbox(label='Instituição', options=financial_institution_list)
-                    financial_institution_code = st.text_input(label="Código da instituição", max_chars=5)
-                    agency = st.text_input(label="Agência", max_chars=10)
+                    account_name = st.text_input(label="Nome", max_chars=100, placeholder='Conta', help="Necessário para identificação. A sugestão é informar algo direto e descritivo, como por exemplo 'Conta Corrente BB'.")
+                    financial_institution = st.selectbox(label='Instituição', options=financial_institution_list, help='Insituição financeira a qual pertence a conta.')
+                    financial_institution_code = st.text_input(label="Código da instituição", max_chars=5, help="Código da insituição financiera no SPB (Sistemas de Pagamentos Brasileiro).")
+                    agency = st.text_input(label="Agência", max_chars=10, help="Número da agência.")
                 
                 confirm_data = st.checkbox(label="Confirmar dados")
 
             with col2:
                 with st.expander(label="Dados da Conta", expanded=True):
-                    account_number = st.text_input(label="Número da conta", max_chars=15)
-                    account_digit = st.text_input(label="Dígito", max_chars=1)
-                    account_password = st.text_input(label="Senha da conta", max_chars=30, type='password')
-                    digital_account_password = st.text_input(label="Senha digital da conta", max_chars=30, type='password')
+                    account_number = st.text_input(label="Número da conta", max_chars=15, help="Número de identificação da conta.")
+                    account_digit = st.text_input(label="Dígito", max_chars=1, placeholder='0', help='Dígito identificador da conta. Caso não haja, preencha como 0.')
+                    account_password = st.text_input(label="Senha da conta", max_chars=30, type='password', help='Senha utilizada para saques e demais operações em terminais físicos.')
+                    digital_account_password = st.text_input(label="Senha digital da conta", max_chars=30, type='password', help='Senha digital da conta, utilizada para operações virtuais como Pix.')
                     
                 register_new_account = st.button(label=":floppy_disk: Cadastrar conta")
 
@@ -50,78 +50,82 @@ class BankAccount:
                     query_executor.insert_query(query=log_query, values=log_query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
 
         def show_bank_accounts():
-            col1, col2 = st.columns(2)
 
             user_accounts_quantity = query_executor.simple_consult_query(check_user_bank_accounts_query, params=(logged_user_name, logged_user_document))
             user_accounts_quantity = query_executor.treat_simple_result(user_accounts_quantity, to_remove_list)
             user_accounts_quantity = int(user_accounts_quantity)
 
             if user_accounts_quantity == 0:
+
+                col1, col2, col3 = st.columns(3)
+
                 with col2:
                     st.warning(body="Você ainda não possui contas cadastradas.")
 
             elif user_accounts_quantity >= 1:
+                    
+                col1, col2 = st.columns(2)
 
-                    user_bank_accounts = ["Selecione uma opção"]
+                user_bank_accounts = ["Selecione uma opção"]
 
-                    bank_accounts = query_executor.complex_consult_query(query=search_bank_accounts_query, params=(logged_user_name, logged_user_document))
-                    bank_accounts = query_executor.treat_numerous_simple_result(bank_accounts, to_remove_list)
+                bank_accounts = query_executor.complex_consult_query(query=search_bank_accounts_query, params=(logged_user_name, logged_user_document))
+                bank_accounts = query_executor.treat_numerous_simple_result(bank_accounts, to_remove_list)
 
-                    for i in range(0, len(bank_accounts)):
-                        user_bank_accounts.append(bank_accounts[i])
+                for i in range(0, len(bank_accounts)):
+                    user_bank_accounts.append(bank_accounts[i])
 
-                    with col1:
+                with col1:
 
-                        cl1, cl2 = st.columns(2)
+                    cl1, cl2 = st.columns(2)
 
-                        with cl1:
-                            selected_option = st.selectbox(label="Selecione a conta", options=user_bank_accounts)
-                            consult_button = st.button(label=":floppy_disk: Consultar senha")
+                    with cl1:
+                        selected_option = st.selectbox(label="Selecione a conta", options=user_bank_accounts)
+                        consult_button = st.button(label=":floppy_disk: Consultar senha")
 
-                    account_details_query = '''
-                    SELECT 
-                        CONCAT('Conta: ',
-                                contas_bancarias.nome_conta,
-                                ' - Instituição: ',
-                                contas_bancarias.instituicao_financeira),
-                        contas_bancarias.agencia,
-                        CONCAT('',
-                                contas_bancarias.numero_conta,
-                                '-',
-                                contas_bancarias.digito_conta),
-                        contas_bancarias.senha_bancaria_conta,
-                        contas_bancarias.senha_digital_conta
-                    FROM
-                        contas_bancarias
-                    WHERE
-                        contas_bancarias.nome_conta = %s
-                            AND contas_bancarias.nome_proprietario_conta = %s
-                            AND contas_bancarias.documento_proprietario_conta = %s;'''
+                account_details_query = '''
+                SELECT 
+                    CONCAT('Conta: ',
+                            contas_bancarias.nome_conta,
+                            ' - Instituição: ',
+                            contas_bancarias.instituicao_financeira),
+                    contas_bancarias.agencia,
+                    CONCAT('',
+                            contas_bancarias.numero_conta,
+                            '-',
+                            contas_bancarias.digito_conta),
+                    contas_bancarias.senha_bancaria_conta,
+                    contas_bancarias.senha_digital_conta
+                FROM
+                    contas_bancarias
+                WHERE
+                    contas_bancarias.nome_conta = %s
+                        AND contas_bancarias.nome_proprietario_conta = %s
+                        AND contas_bancarias.documento_proprietario_conta = %s;'''
 
-                    result_list = query_executor.complex_consult_query(query=account_details_query, params=(selected_option, logged_user_name, logged_user_document))
-                    result_list = query_executor.treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
+                result_list = query_executor.complex_consult_query(query=account_details_query, params=(selected_option, logged_user_name, logged_user_document))
+                result_list = query_executor.treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
 
-                    if selected_option != "Selecione uma opção" and consult_button:
+                if selected_option != "Selecione uma opção" and consult_button:
 
-                        with col2:
-                            with st.spinner(text="Aguarde..."):
-                                sleep(2.5)
+                    with col2:
+                        with st.spinner(text="Aguarde..."):
+                            sleep(2.5)
 
-                            with st.expander(label="Dados", expanded=True):
+                        with st.expander(label="Dados", expanded=True):
 
-                                aux_string = ''
+                            aux_string = ''
 
-                                for i in range(0, len(result_list)):
-                                    
-                                    st.write(bank_account_field_names[i])
-                                    aux_string = str(result_list[i])
-                                    aux_string = aux_string.replace('"', '')
-                                    aux_string = aux_string.replace('b', '')
-                                    st.code(body="{}".format(aux_string))
+                            for i in range(0, len(result_list)):
+                                
+                                st.write(bank_account_field_names[i])
+                                aux_string = str(result_list[i])
+                                aux_string = aux_string.replace('"', '')
+                                aux_string = aux_string.replace('b', '')
+                                st.code(body="{}".format(aux_string))
 
-                                log_query = '''INSERT into logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
-                                query_values = (logged_user, 'Consulta', 'Consultou a conta bancária {}'.format(selected_option))
-                                query_executor.insert_query(query=log_query, values=query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
+                            log_query = '''INSERT into logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
+                            query_values = (logged_user, 'Consulta', 'Consultou a conta bancária {}'.format(selected_option))
+                            query_executor.insert_query(query=log_query, values=query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
 
         def back_account_main_menu():
             col1, col2, col3 = st.columns(3)

@@ -73,9 +73,11 @@ class User:
                                     log_values = (user, 'Acesso', 'O usuário acessou o sistema.')
                                     query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
-                                    with open("data/session_state.py", "w") as arquivo:
-                                        arquivo.write("logged_user = '{}'\n".format(user))
-                                        arquivo.write("logged_user_password = {}\n".format(hashed_password))
+                                    with open("data/session_state.py", "w") as archive:
+                                        archive.write("logged_user = '{}'\n".format(user))
+                                        archive.write("logged_user_password = {}\n".format(hashed_password))
+                                        sleep(1)
+                                        os.chmod(archive, 0o600)
                                     sleep(1)
 
                                 st.session_state.is_logged_in = True

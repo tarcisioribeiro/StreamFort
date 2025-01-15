@@ -141,10 +141,10 @@ class CreditCards:
 
                 if register_button and confirm_data == True:
 
-                    if card_name != '' and card_number != '' and owner_on_card_name != '' and expiration_date != '' and security_code != '' and confirm_security_code != "" and (security_code == confirm_security_code):
+                    with st.spinner(text="Aguarde..."):
+                        sleep(2.5)
 
-                        with st.spinner(text="Aguarde..."):
-                            sleep(2.5)
+                    if card_name != '' and card_number != '' and owner_on_card_name != '' and security_code != '' and confirm_security_code != '' and (security_code == confirm_security_code):
 
                         with col2:
                             with st.expander(label="Validação dos dados", expanded=True):
@@ -157,7 +157,7 @@ class CreditCards:
                                 elif valid_card == True:
                                     st.success(body="Número de cartão válido.")
 
-                                    if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '':
+                                    if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '' and security_code == confirm_security_code:
 
                                         user_data = query_executor.simple_consult_query(name_doc_query, params=(logged_user, logged_user_password))
                                         user_data = query_executor.treat_numerous_simple_result(user_data, to_remove_list)
@@ -186,10 +186,13 @@ class CreditCards:
 
                                         query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
+                                    elif expiration_date <= actual_date or owner_on_card_name == '' or card_name == '' or security_code == '' or security_code != confirm_security_code:
+                                        if expiration_date <= actual_date or owner_on_card_name == '' or card_name == '' or security_code == '':
+                                            validate_card_values(card_name, owner_on_card_name, expiration_date, actual_date, security_code)
+                                        if security_code != confirm_security_code:
+                                            st.error(body='Os códigos informados não coincidem.')
 
-                                    else:
-                                        validate_card_values(card_name, owner_on_card_name, expiration_date, actual_date, security_code)
-                    else:
+                    elif card_name == '' or card_number == '' or owner_on_card_name == '' or security_code == '' or confirm_security_code == '':
                         with col1:
                             with st.spinner(text="Aguarde..."):
                                 sleep(2.5)
@@ -197,6 +200,7 @@ class CreditCards:
                             cl1, cl2 = st.columns(2)
                             with cl2:
                                 st.error(body="Há um ou mais campos vazios.")
+
                 elif register_button and confirm_data == False:
 
                     with st.spinner(text="Aguarde..."):

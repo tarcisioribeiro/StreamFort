@@ -126,14 +126,12 @@ class Passwords:
                                     aux_string = ''
 
                                     for i in range(0, len(result_list)):
-                                        if i == len(result_list) - 1:
-                                            st.write(field_names[i])
-                                            st.code(body="{}".format(result_list[i]))
-                                        else:
-                                            st.write(field_names[i])
-                                            aux_string = str(result_list[i])
-                                            aux_string = aux_string.replace('"', '')
-                                            st.code(body="{}".format(aux_string))
+                                        st.write(field_names[i])
+                                        aux_string = str(result_list[i])
+                                        if i == 3:
+                                            aux_string = aux_string.replace('"b', '')
+                                        aux_string = aux_string.replace('"', '')
+                                        st.code(body="{}".format(aux_string))
 
                                     log_query = '''INSERT into logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
                                     query_values = (logged_user, 'Consulta', 'Consultou a senha do site {}'.format(selected_option))
@@ -172,7 +170,6 @@ class Passwords:
 
             if password_option == 'Consultar Senha':
                 show_account()
-
             elif password_option == 'Cadastrar Senha':
                 get_new_password()
 

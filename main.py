@@ -72,6 +72,9 @@ try:
                             env_archive.write("\nDB_USER={}".format('root'))
                             env_archive.write("\nDB_NAME=seguranca")
                             env_archive.write("\nDB_PASSWORD={}".format(db_password))
+                        sleep(1)
+                        os.chmod(software_env_path, 0o600)
+                        sleep(1)
 
                         with col6:
                             cl1, cl2 = st.columns(2)

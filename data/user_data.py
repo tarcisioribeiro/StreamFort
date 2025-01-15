@@ -1,6 +1,12 @@
-from dictionary.sql import name_doc_query
 from dictionary.vars import to_remove_list
+from data.session_state import logged_user, logged_user_password
 from functions.query_executor import QueryExecutor
+import streamlit as st
+
+
+name_query: str = "SELECT nome FROM usuarios WHERE login = '{}' AND senha = '{}'"
+sex_query: str = "SELECT sexo FROM usuarios WHERE login = '{}' AND senha = '{}'"
+name_doc_query = """SELECT nome, documento_usuario FROM usuarios WHERE login = '{}' AND senha = '{}';""".format(logged_user, logged_user_password)
 
 query_executor = QueryExecutor()
 

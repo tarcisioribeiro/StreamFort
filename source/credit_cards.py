@@ -1,6 +1,7 @@
 from data.session_state import logged_user, logged_user_password
-from dictionary.sql import name_doc_query, search_user_credit_cards_number, search_user_credit_cards_names
+from dictionary.sql import search_user_credit_cards_number, search_user_credit_cards_names
 from dictionary.vars import to_remove_list
+from data.user_data import name_doc_query
 from functions.get_actual_time import GetActualTime
 from functions.query_executor import QueryExecutor
 from functions.validate_document import Documents
@@ -161,7 +162,7 @@ class CreditCards:
 
                                     if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '':
 
-                                        user_data = query_executor.simple_consult_query(name_doc_query)
+                                        user_data = query_executor.simple_consult_query(name_doc_query.format(logged_user, logged_user_password))
                                         user_data = query_executor.treat_numerous_simple_result(user_data, to_remove_list)
 
                                         card_owner_name, card_owner_document = user_data

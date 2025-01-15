@@ -80,7 +80,7 @@ Contribuições são sempre bem vindas! Se quiser ajudar a melhorar o projeto, v
 - Propor melhorias ou novas funcionalidades na aba **Issues** deste repositório;
 - Enviar pull requests com correções de bugs ou novos recursos.
 
-Certifique-se de ler o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) antes de contribuir.
+Certifique-se de ler o arquivo [CONTRIBUTING.md](documentation/pages/CONTRIBUTING.md) antes de contribuir.
 
 ## 🐞 Relatório de Bugs e Problemas
 
@@ -96,8 +96,8 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 
 Para realizar a instalação, siga o passo a passo: 
 
-- [Instalação em ambientes Microsoft Windows](Linux_Installation.md)
-- [Instalação em ambientes GNU/Linux de base Debian](Windows_Installation.md)
+- [Instalação em ambientes Microsoft Windows](documentation/pages/Linux_Installation.md)
+- [Instalação em ambientes GNU/Linux de base Debian](documentation/pages/Windows_Installation.md)
 
 ---
 

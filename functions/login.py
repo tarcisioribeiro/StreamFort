@@ -1,6 +1,8 @@
 import streamlit as st
 import mysql.connector
-from dictionary.sql import name_query, sex_query
+import bcrypt, os
+from data.user_data import name_query, sex_query
+from data.session_state import logged_user, logged_user_password
 from dictionary.vars import absolute_app_path, db_config, to_remove_list
 from functions.query_executor import QueryExecutor
 from time import sleep
@@ -16,15 +18,21 @@ class User:
         query_executor = QueryExecutor()
 
         def check_login(user, password):
-            query = "SELECT * FROM usuarios WHERE login = %s AND senha = %s"
-            cursor.execute(query, (user, password))
-            return cursor.fetchone() is not None
+            query = "SELECT senha FROM usuarios WHERE login = %s"
+            cursor.execute(query, (user,))
+            result = cursor.fetchone()
+            
+            if result:
+                hashed_password = result[0]
+                return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+            return False
+
         
         def check_user():
-            name = query_executor.simple_consult_query(name_query)
+            name = query_executor.simple_consult_query(name_query.format(logged_user, logged_user_password))
             name = query_executor.treat_simple_result(name, to_remove_list)
 
-            sex = query_executor.simple_consult_query(sex_query)
+            sex = query_executor.simple_consult_query(sex_query.format(logged_user, logged_user_password))
             sex = query_executor.treat_simple_result(sex, to_remove_list)
 
             return name, sex
@@ -64,9 +72,9 @@ class User:
 
                                     with open("data/session_state.py", "w") as arquivo:
                                         arquivo.write("logged_user = '{}'\n".format(user))
-                                        arquivo.write(
-                                            "logged_user_password = '{}'\n".format(password)
-                                        )
+                                        arquivo.write("logged_user_password = '{}'\n".format(password))
+                                    sleep(1)
+                                    os.chmod("data/session_state.py", 0o600)
                                     sleep(1)
 
                                 st.session_state.is_logged_in = True
@@ -77,4 +85,5 @@ class User:
 
         self.get_login = get_login
         self.check_user = check_user
+        self.check_login = check_login
         self.show_user = show_user

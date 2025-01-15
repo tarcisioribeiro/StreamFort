@@ -3,8 +3,10 @@ from dictionary.sql import check_user_query
 from dictionary.vars import to_remove_list
 from functions.query_executor import QueryExecutor
 from functions.validate_document import Documents
+from functions.variables import Variables
 from time import sleep
 import streamlit as st
+import bcrypt
 
 
 class CreateUser:
@@ -13,6 +15,10 @@ class CreateUser:
 
         query_executor = QueryExecutor()
         document = Documents()
+
+        def hash_password(password: str) -> bytes:
+            salt = bcrypt.gensalt()
+            return bcrypt.hashpw(password.encode('utf-8'), salt)
 
         def is_login_valid(login: str):
             has_upper = any(c.isupper() for c in login)
@@ -89,9 +95,11 @@ class CreateUser:
 
                         if user_login != "" and user_password != "" and confirm_user_password != "" and (user_password == confirm_user_password) and user_name != "" and is_document_valid == True and valid_login == True and valid_password == True:
 
+                            hashed_password = hash_password(user_password)
+
                             if check_user_quantity == 0:
                                 insert_new_user_query = """INSERT INTO usuarios (login, senha, nome, documento_usuario, sexo) VALUES (%s, %s, %s, %s, %s)"""
-                                new_user_values = (user_login,user_password,user_name,user_document,user_sex)
+                                new_user_values = (user_login,hashed_password,user_name,user_document,user_sex)
                                 query_executor.insert_query(insert_new_user_query,new_user_values,"Novo usuário cadastrado com sucesso!","Erro ao cadastrar novo usuário:")
 
                                 log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
@@ -114,7 +122,7 @@ class CreateUser:
 
                                         if check_if_user_exists == 0:
                                             insert_new_user_query = """INSERT INTO usuarios (login, senha, nome, cpf, sexo) VALUES (%s, %s, %s, %s, %s)"""
-                                            new_user_values = (user_login,user_password,user_name,user_document,user_sex)
+                                            new_user_values = (user_login,hashed_password,user_name,user_document,user_sex)
                                             query_executor.insert_query(insert_new_user_query,new_user_values,"Novo usuário cadastrado com sucesso!","Erro ao cadastrar novo usuário:")
 
                                             log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''

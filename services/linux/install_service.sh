@@ -14,12 +14,12 @@ BOLD="\033[1m"
 RESET="\033[0m"
 
 title() {
-    echo -e "$(toilet --font pagga --filter border --width 120 "$1")"
+    echo -e "$(toilet --font pagga --filter border --width 200 "$1")"
 }
 
 FOLDER=$(pwd)
 
-title "Intalação - StreamFort"
+title "Instalação - StreamFort"
 
 while true; do
     blue "\nDigite a senha de root:"
@@ -68,10 +68,10 @@ fi
 
 blue "\nAgora, defina uma senha para o banco de dados, executando estes comando no console do MySQL:\n"
 sleep 1
-echo "${BOLD}ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'senha'; FLUSH PRIVILEGES;${RESET}"
+echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'senha'; FLUSH PRIVILEGES;"
 blue "\nCopie o comando acima e troque 'senha' pela senha que deseja definir, mantendo as aspas simples."
 blue "\nApós definir a senha, saia do console do MySQL pelo comando exit.\n"
-read -p "Pressione ${BOLD}ENTER${RESET} para continuar..."
+read -p "Pressione ENTER para continuar..."
 sudo mysql
 
 while true; do
@@ -142,5 +142,5 @@ blue "\nVocê pode realizar o acesso a aplicação através dos seguintes links:
 green "$link" 
 
 sleep 4
-echo "\n"
+echo ""
 read -p "Pressione ENTER para sair do instalador."

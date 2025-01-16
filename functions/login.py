@@ -77,7 +77,7 @@ class User:
                                         archive.write("logged_user = '{}'\n".format(user))
                                         archive.write("logged_user_password = {}\n".format(hashed_password))
                                         sleep(1)
-                                        os.chmod(archive, 0o600)
+                                        os.chmod("data/session_state.py", 0o600)
                                     sleep(1)
 
                                 st.session_state.is_logged_in = True

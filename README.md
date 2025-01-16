@@ -57,7 +57,7 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 <details>
    <summary>Vídeo demonstrativo</summary>
 
-   ![StreamFort](https://youtu.be/YqLTeAxbOlw)
+   ![StreamFort]([https://youtu.be/YqLTeAxbOlw](https://youtu.be/PrM4zF2M8PM))
 
 </details>
 
@@ -96,8 +96,8 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 
 Para realizar a instalação, siga o passo a passo: 
 
-- [Instalação em ambientes Microsoft Windows](documentation/pages/Linux_Installation.md)
-- [Instalação em ambientes GNU/Linux de base Debian](documentation/pages/Windows_Installation.md)
+- [Instalação em ambientes Microsoft Windows](documentation/pages/Windows_Installation.md)
+- [Instalação em ambientes GNU/Linux de base Debian](documentation/pages/Linux_Installation.md)
 
 ---
 

@@ -57,7 +57,7 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 <details>
    <summary>Vídeo demonstrativo</summary>
 
-   ![StreamFort]([https://youtu.be/YqLTeAxbOlw](https://youtu.be/PrM4zF2M8PM))
+   ![StreamFort](https://youtu.be/PrM4zF2M8PM)
 
 </details>
 

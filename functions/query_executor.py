@@ -29,7 +29,7 @@ class QueryExecutor:
             try:
                 connection = mysql.connector.connect(**db_config)
                 cursor = connection.cursor()
-                cursor.execute(query, params)
+                cursor.execute(query, params, multi=True)
                 simple_value = cursor.fetchone()
                 cursor.close()
                 if simple_value is not None:
@@ -66,7 +66,7 @@ class QueryExecutor:
             try:
                 connection = mysql.connector.connect(**db_config)
                 cursor = connection.cursor()
-                cursor.execute(query, params)
+                cursor.execute(query, params, multi=True)
 
                 lists = [[] for _ in range(list_quantity)]
 
@@ -89,7 +89,7 @@ class QueryExecutor:
             try:
                 connection = mysql.connector.connect(**db_config)
                 cursor = connection.cursor()
-                cursor.execute(query, params)
+                cursor.execute(query, params, multi=True)
                 complex_value = cursor.fetchall()
                 cursor.close()
                 if complex_value is not None:

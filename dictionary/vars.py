@@ -53,13 +53,26 @@ db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
 db_database = os.getenv("DB_NAME")
 
-db_config = {
-    "host": db_host,
-    "port": db_port,
-    "user": db_user,
-    "password": db_password,
-    "database": db_database,
-}
+if os.name == "nt":
+    db_config = {
+        "host": db_host,
+        "port": db_port,
+        "user": db_user,
+        "password": db_password,
+        "database": db_database,
+        "use_pure": True,
+        "ssl_disabled": True,
+        "charset": "utf8"
+    }
+
+if os.name == "posix":
+    db_config = {
+        "host": db_host,
+        "port": db_port,
+        "user": db_user,
+        "password": db_password,
+        "database": db_database
+    }
 
 field_names: list = ["Site", "Link", "Login", "Senha"]
 bank_account_field_names: list = ["Nome", "Agência", "Número da Conta", "Senha bancária", "Senha digital"]

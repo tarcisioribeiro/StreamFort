@@ -19,7 +19,7 @@
 -- Current Database: `seguranca`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `seguranca` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `seguranca` /*!40100 DEFAULT CHARACTER SET utf8mb4 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE `seguranca`;
 
@@ -39,7 +39,7 @@ CREATE TABLE `arquivo_texto` (
   PRIMARY KEY (`id_arquivo`),
   KEY `fk_arquivo_texto_usuarios` (`usuario_associado`,`documento_usuario_associado`),
   CONSTRAINT `fk_arquivo_texto_usuarios` FOREIGN KEY (`usuario_associado`, `documento_usuario_associado`) REFERENCES `usuarios` (`nome`, `documento_usuario`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `cartao_credito` (
   PRIMARY KEY (`id_cartao`),
   KEY `fk_cartao_credito_usuarios` (`proprietario_cartao`,`documento_titular`),
   CONSTRAINT `fk_cartao_credito_usuarios` FOREIGN KEY (`proprietario_cartao`, `documento_titular`) REFERENCES `usuarios` (`nome`, `documento_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +105,7 @@ CREATE TABLE `contas_bancarias` (
   UNIQUE KEY `unq_contas_bancarias` (`documento_proprietario_conta`,`instituicao_financeira`,`agencia`,`numero_conta`),
   KEY `fk_contas_bancarias_usuarios` (`nome_proprietario_conta`,`documento_proprietario_conta`),
   CONSTRAINT `fk_contas_bancarias_usuarios` FOREIGN KEY (`nome_proprietario_conta`, `documento_proprietario_conta`) REFERENCES `usuarios` (`nome`, `documento_usuario`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,16 +126,30 @@ DROP TABLE IF EXISTS `logs_atividades`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `logs_atividades` (
   `id_log` int NOT NULL AUTO_INCREMENT,
-  `data_log` date NOT NULL DEFAULT (curdate()),
-  `horario_log` time NOT NULL DEFAULT (curtime()),
+  `data_log` date NOT NULL,
+  `horario_log` time NOT NULL,
   `usuario_log` varchar(15) NOT NULL,
   `tipo_log` varchar(100) NOT NULL,
   `conteudo_log` text NOT NULL,
   PRIMARY KEY (`id_log`),
   KEY `fk_logs_atividades_usuarios` (`usuario_log`),
   CONSTRAINT `fk_logs_atividades_usuarios` FOREIGN KEY (`usuario_log`) REFERENCES `usuarios` (`login`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+DELIMITER //
+
+CREATE TRIGGER `before_insert_logs_atividades`
+BEFORE INSERT ON `logs_atividades`
+FOR EACH ROW
+BEGIN
+  SET NEW.data_log = CURDATE();
+  SET NEW.horario_log = CURTIME();
+END;
+//
+
+DELIMITER ;
+
 
 --
 -- Dumping data for table `logs_atividades`
@@ -160,7 +174,7 @@ CREATE TABLE `senhas` (
   UNIQUE KEY `unq_senhas` (`nome_site`,`url_site`,`login`,`senha`),
   KEY `fk_senhas_usuarios` (`usuario_associado`,`documento_usuario_associado`),
   CONSTRAINT `fk_senhas_usuarios` FOREIGN KEY (`usuario_associado`, `documento_usuario_associado`) REFERENCES `usuarios` (`nome`, `documento_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +199,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `unq_usuarios_nome` (`nome`,`documento_usuario`),
   UNIQUE KEY `unq_usuarios` (`login`,`senha`,`nome`,`documento_usuario`),
   UNIQUE KEY `unq_usuarios_login` (`login`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

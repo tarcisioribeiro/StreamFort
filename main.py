@@ -73,8 +73,9 @@ try:
                             env_archive.write("\nDB_NAME=seguranca")
                             env_archive.write("\nDB_PASSWORD={}".format(db_password))
                         sleep(1)
-                        os.chmod(software_env_path, 0o600)
-                        sleep(1)
+                        if os.name != "nt":
+                            os.chmod(software_env_path, 0o600)
+                            sleep(1)
 
                         with col6:
                             cl1, cl2 = st.columns(2)
@@ -158,5 +159,5 @@ try:
                 if error.errno == 1049:
                     st.error(body="Erro ao conectar ao MySQL: O banco de dados 'seguranca' não existe. Faça a importação do arquivo de backup/implantação.",)
 
-except KeyError:
-    st.rerun()
+except KeyError as key_error:
+    st.info(key_error)

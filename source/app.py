@@ -44,7 +44,7 @@ def HomePage():
     if sidebar_reload_button:
         with sidebar:
             with st.spinner(text="Recarregando..."):
-                sleep(2.5)
+                sleep(1.25)
                 st.rerun()
 
     if sidebar_logoff_button:
@@ -56,9 +56,9 @@ def HomePage():
             query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
             with st.spinner("Aguarde um momento..."):    
-                sleep(2.5)
+                sleep(1.25)
                 st.toast("Saindo do sistema...")
-                sleep(2.5)
+                sleep(1.25)
                 logout()
 
     if sidebar_choice:
@@ -68,7 +68,7 @@ def HomePage():
     elif sidebar.button(label=":lock: Sair"):
         with sidebar:
             with st.spinner("Aguarde um momento..."):
-                sleep(2.5)
+                sleep(1.25)
                 st.toast("Saindo do sistema...")
-                sleep(2.5)
+                sleep(1.25)
                 logout()

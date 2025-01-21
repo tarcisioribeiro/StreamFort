@@ -33,7 +33,6 @@ class Home:
             strong = 0
             very_strong = 0
 
-
             for i in range(0, len(user_passwords)):
 
                 empty_password = user_passwords[i]
@@ -65,16 +64,21 @@ class Home:
 
             with col5:
 
-                user_passwords_quantity = general_information()
-                get_very_low, get_low, get_medium, get_strong, get_very_strong = password_analysis()
+                user_passwords_quantity = int(general_information())
 
-                with st.expander(label="Análise de Senhas", expanded=True):
-                    st.info(body="Senhas cadastradas: {}".format(user_passwords_quantity))
-                    st.divider()
-                    st.error(body="Senhas muito fracas: {}.".format(get_very_low))
-                    st.warning(body="Senhas fracas: {}.".format(get_low))
-                    st.info(body="Senhas médias: {}.".format(get_medium))
-                    st.info(body="Senhas fortes: {}.".format(get_strong))
-                    st.success(body="Senhas muito fortes: {}.".format(get_very_strong))
+                if user_passwords_quantity >= 1:
+                    get_very_low, get_low, get_medium, get_strong, get_very_strong = password_analysis()
+
+                    with st.expander(label="Análise de Senhas", expanded=True):
+                        st.info(body="Senhas cadastradas: {}".format(user_passwords_quantity))
+                        st.divider()
+                        st.error(body="Senhas muito fracas: {}.".format(get_very_low))
+                        st.warning(body="Senhas fracas: {}.".format(get_low))
+                        st.info(body="Senhas médias: {}.".format(get_medium))
+                        st.info(body="Senhas fortes: {}.".format(get_strong))
+                        st.success(body="Senhas muito fortes: {}.".format(get_very_strong))
+
+                elif user_passwords_quantity == 0:
+                    st.warning(body="Você ainda não possui senhas cadastradas.")
 
         self.main_menu = show_home_page

@@ -3,7 +3,6 @@ from dictionary.sql import check_user_query
 from dictionary.vars import to_remove_list
 from functions.query_executor import QueryExecutor
 from functions.validate_document import Documents
-from functions.variables import Variables
 from time import sleep
 import streamlit as st
 import bcrypt

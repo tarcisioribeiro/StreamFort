@@ -11,9 +11,9 @@ class PasswordValidator:
     @staticmethod
     def check_password_length(password):
         length = len(password)
-        if length < 4:
+        if length < 8:
             return "LOW"
-        elif 4 <= length <= 8:
+        elif 8 <= length <= 16:
             return "MEDIUM"
         else:
             return "STRONG"

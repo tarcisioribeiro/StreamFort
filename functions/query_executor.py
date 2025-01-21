@@ -62,7 +62,7 @@ class QueryExecutor:
                 if connection.is_connected():
                     connection.close()
 
-        def complex_compund_query(query: str, list_quantity: int, list_prefix_name: str, params: tuple):
+        def complex_compund_query(query: str, list_quantity: int, params: tuple):
             try:
                 connection = mysql.connector.connect(**db_config)
                 cursor = connection.cursor()
@@ -155,17 +155,12 @@ class QueryExecutor:
 
             aux_str = ""
             aux_list = []
-            
-            for i in range(0, len(values_to_treat)):
-                aux_str = str(values_to_treat[i])
-                aux_str = aux_str.split(", ")
-                aux_list.append(aux_str)
 
             final_str = ""
             final_list = []
 
-            for i in range(0, len(aux_list)):
-                aux_str = str(aux_list[i])
+            for i in range(0, len(values_to_treat)):
+                aux_str = str(values_to_treat[i])
                 aux_list = aux_str.split(", ")
                 for i in range(0, len(aux_list)):
                     final_str = str(aux_list[i])

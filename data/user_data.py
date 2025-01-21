@@ -10,7 +10,7 @@ name_doc_query = """SELECT nome, documento_usuario FROM usuarios WHERE login = %
 
 query_executor = QueryExecutor()
 
-user_name_doc = query_executor.complex_compund_query(query=name_doc_query, list_quantity=2, list_prefix_name='user_', params=(logged_user, logged_user_password))
+user_name_doc = query_executor.complex_compund_query(query=name_doc_query, list_quantity=2, params=(logged_user, logged_user_password))
 user_name_doc = query_executor.treat_numerous_simple_result(user_name_doc, to_remove_list)
 
 logged_user_name = user_name_doc[0]

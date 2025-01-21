@@ -64,7 +64,7 @@ class CreditCards:
                     with st.spinner(text="Aguarde..."):
                         sleep(2.5)
 
-                    if card_name != '' and card_number != '' and owner_on_card_name != '' and security_code != '' and confirm_security_code != '' and (security_code == confirm_security_code) and expiration_date > today:
+                    if card_name != '' and card_number != '' and owner_on_card_name != '' and security_code != '' and confirm_security_code != '' and (security_code == confirm_security_code):
 
                         with col2:
                             with st.expander(label="Validação dos dados", expanded=True):
@@ -77,7 +77,7 @@ class CreditCards:
                                 elif valid_card == True:
                                     st.success(body="Número de cartão válido.")
 
-                                    if expiration_date > actual_date and owner_on_card_name != '' and card_name != '' and security_code != '' and security_code == confirm_security_code:
+                                    if owner_on_card_name != '' and card_name != '' and security_code != '' and security_code == confirm_security_code:
 
                                         user_data = query_executor.simple_consult_query(name_doc_query, params=(logged_user, logged_user_password))
                                         user_data = query_executor.treat_numerous_simple_result(user_data, to_remove_list)
@@ -118,11 +118,11 @@ class CreditCards:
                                 sleep(0.5)
                             st.error(body="Há um ou mais campos vazios.")
 
-                    if expiration_date <= today:
-                        with col2:
-                            with st.spinner(text="Aguarde..."):
-                                sleep(0.5)
-                            st.error(body="A data de expiração do cartão não pode ser menor ou igual a data atual.")
+                    # if expiration_date <= today:
+                    #     with col2:
+                    #         with st.spinner(text="Aguarde..."):
+                    #             sleep(0.5)
+                    #         st.error(body="A data de expiração do cartão não pode ser menor ou igual a data atual.")
 
                 elif register_button and confirm_data == False:
                     with col2:

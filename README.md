@@ -14,7 +14,7 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 
 ## 🚧 Limitações
 
-<!-- - **Versão nativa para Windows**: Atualmente, o projeto não oferece suporte nativo para sistemas Microsoft Windows, devido a um erro na execução do Streamlit em conjunto com o conector MySQL para o Python, que faz com que o processo seja encerrado em sequência. Devido a isso, a alternativa é a execução do aplicativo através do **[Subsistema Linux para Windows](https://learn.microsoft.com/pt-br/windows/wsl/install)**; -->
+- **Versão nativa para Windows**: Atualmente, o projeto não oferece suporte nativo para sistemas Microsoft Windows, devido a um erro na execução do Streamlit em conjunto com o conector MySQL para o Python, que faz com que o processo seja encerrado em sequência. Devido a isso, a alternativa é a execução do aplicativo através do **[Subsistema Linux para Windows](https://learn.microsoft.com/pt-br/windows/wsl/install)**;
 - **Escalabilidade**: A solução foi projetada para uso em rede local, apesar de ser possível o acesso externo através do encaminhamento das portas usadas pelo Streamlit, utilizando o utilitário **[Ngrok](https://ngrok.com/)**;
 
 - **Autenticação**: Não há suporte ao login por email e autenticação de dois fatores no momento, o que pode representar uma limitação de segurança.
@@ -54,10 +54,11 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 
 </details>
 
-<details>
-   <summary>Vídeo demonstrativo</summary>
 
-   ![StreamFort](https://youtu.be/YqLTeAxbOlw)
+<details>
+   <summary>Documentação</summary>
+
+   [Documentação do Código](documentation/pages/index.html)
 
 </details>
 
@@ -80,7 +81,7 @@ Contribuições são sempre bem vindas! Se quiser ajudar a melhorar o projeto, v
 - Propor melhorias ou novas funcionalidades na aba **Issues** deste repositório;
 - Enviar pull requests com correções de bugs ou novos recursos.
 
-Certifique-se de ler o arquivo [CONTRIBUTING.md](documentation/pages/CONTRIBUTING.md) antes de contribuir.
+Certifique-se de ler o arquivo [CONTRIBUTING.md](documentation/markdown/CONTRIBUTING.md) antes de contribuir.
 
 ## 🐞 Relatório de Bugs e Problemas
 
@@ -96,8 +97,8 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 
 Para realizar a instalação, siga o passo a passo: 
 
-- [Instalação em ambientes Microsoft Windows](documentation/pages/Windows_Installation.md)
-- [Instalação em ambientes GNU/Linux de base Debian](documentation/pages/Linux_Installation.md)
+- [Instalação em ambientes Microsoft Windows](documentation/markdown/Windows_Installation.md)
+- [Instalação em ambientes GNU/Linux de base Debian](documentation/markdown/Linux_Installation.md)
 
 ---
 

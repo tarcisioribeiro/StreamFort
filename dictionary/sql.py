@@ -1,4 +1,6 @@
-from data.session_state import logged_user, logged_user_password
+"""
+Consultas SQL utilizadas pela aplicação.
+"""
 
 
 search_accounts_query = """

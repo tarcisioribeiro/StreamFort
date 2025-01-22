@@ -4,43 +4,53 @@ import streamlit as st
 
 
 class ChangeTheme:
-    def __init__(self):
+    """
+    Classe com métodos para a mudança de tema.
+    """
 
-        def change_theme(theme_option: str):
+    def change_theme(self, theme_option: str):
+        """
+        Realiza a troca do tema com base na opção escolhida pelo usuário.
 
-            config_archive: str = absolute_app_path + "/.streamlit/config.toml"
+        Parameters
+        ----------
+        theme_option (str): Tema escolhido pelo usuário.
+        """
 
-            if theme_option == "Escuro":
-                with open(config_archive, "w") as archive:
-                    archive.write(dark_theme)
-                    archive.write("\n")
-                    archive.write(server_config)
+        config_archive: str = absolute_app_path + "/.streamlit/config.toml"
 
-            elif theme_option == "Claro":
-                with open(config_archive, "w") as archive:
-                    archive.write(light_theme)
-                    archive.write("\n")
-                    archive.write(server_config)
-    
-        def main_menu():
+        if theme_option == "Escuro":
+            with open(config_archive, "w") as archive:
+                archive.write(dark_theme)
+                archive.write("\n")
+                archive.write(server_config)
 
-            col4, col5, col6 = st.columns(3)
+        elif theme_option == "Claro":
+            with open(config_archive, "w") as archive:
+                archive.write(light_theme)
+                archive.write("\n")
+                archive.write(server_config)
 
-            with col4:
+    def main_menu(self):
+        """
+        Menu de troca de tema.
+        """
 
-                st.subheader(body=":computer: Opções")
+        col4, col5, col6 = st.columns(3)
 
-                with st.expander(label="Aparência", expanded=True):
-                    selected_theme = st.radio(label="Tema", options=["Escuro", "Claro"])
+        with col4:
 
-                theme_confirm_option = st.button(label=":white_check_mark: Confirmar opção")
+            st.subheader(body=":computer: Opções")
 
-            if selected_theme != "" and theme_confirm_option:
-                with col5:
-                    with st.spinner(text="Aguarde..."):
-                        sleep(2.5)
-                        change_theme(selected_theme)
+            with st.expander(label="Aparência", expanded=True):
+                selected_theme = st.radio(label="Tema", options=["Escuro", "Claro"])
+
+            theme_confirm_option = st.button(label=":white_check_mark: Confirmar opção")
+
+        if selected_theme != "" and theme_confirm_option:
+            with col5:
+                with st.spinner(text="Aguarde..."):
                     sleep(2.5)
-                    st.rerun()
-
-        self.main_menu = main_menu
+                    self.change_theme(selected_theme)
+                sleep(2.5)
+                st.rerun()

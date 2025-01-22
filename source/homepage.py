@@ -7,78 +7,101 @@ import streamlit as st
 
 
 class Home:
+    """
+    Classe com funções para exibição de dados na página inicial.
+    """
 
-    def __init__(self):
+    def general_information(self):
+        """
+        Realiza a consulta da quantidade de senhas cadastradas pelo usuário.
+
+        Returns
+        -------
+        user_passwords_quantity: A quantidade de senhas que o usuário já cadastrou.
+        """
 
         query_executor = QueryExecutor()
-        check_password = PasswordValidator()
 
-        def general_information():
-            user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
-            user_passwords_quantity = query_executor.treat_simple_result(user_passwords_quantity, to_remove_list)
+        user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
+        user_passwords_quantity = query_executor.treat_simple_result(user_passwords_quantity, to_remove_list)
 
-            return user_passwords_quantity
+        return user_passwords_quantity
 
-        def password_analysis():
-                
-            user_passwords = query_executor.complex_consult_query(user_passwords_query, params=(logged_user, logged_user_password))
-            user_passwords = query_executor.treat_numerous_simple_result(user_passwords, to_remove_list)
+    def password_analysis(self):
+        """
+        Realiza a análise das senhas.
 
-            empty_password = ''
-            password_strength = ''
+        Returns
+        -------
+        very_low (int): Quantidade de senhas classificadas como "Muito Fraca".\n
+        low (int): Quantidade de senhas classificadas como "Fraca".\n
+        medium (int): Quantidade de senhas classificadas como "Média".\n
+        strong (int): Quantidade de senhas classificadas como "Forte".\n
+        very_strong (int): Quantidade de senhas classificadas como "Muito Forte".
+        """
+        
+        query_executor = QueryExecutor()
+        password_validator = PasswordValidator()
+            
+        user_passwords = query_executor.complex_consult_query(user_passwords_query, params=(logged_user, logged_user_password))
+        user_passwords = query_executor.treat_numerous_simple_result(user_passwords, to_remove_list)
 
-            very_low = 0
-            low = 0
-            medium = 0
-            strong = 0
-            very_strong = 0
+        empty_password = ''
+        password_strength = ''
 
-            for i in range(0, len(user_passwords)):
+        very_low = 0
+        low = 0
+        medium = 0
+        strong = 0
+        very_strong = 0
 
-                empty_password = user_passwords[i]
-                password_strength = check_password.check_password_strength(empty_password)
+        for i in range(0, len(user_passwords)):
 
-                if password_strength == "Muito Fraca":
-                    very_low += 1
-                elif password_strength == "Fraca":
-                    low += 1
-                elif password_strength == "Média":
-                    medium += 1
-                elif password_strength == "Forte":
-                    strong += 1
-                elif password_strength == "Muito Forte":
-                    very_strong += 1
-                
-            return very_low, low, medium, strong, very_strong
+            empty_password = user_passwords[i]
+            password_strength = password_validator.check_password_strength(empty_password)
 
-        def show_home_page():
+            if password_strength == "Muito Fraca":
+                very_low += 1
+            elif password_strength == "Fraca":
+                low += 1
+            elif password_strength == "Média":
+                medium += 1
+            elif password_strength == "Forte":
+                strong += 1
+            elif password_strength == "Muito Forte":
+                very_strong += 1
+            
+        return very_low, low, medium, strong, very_strong
 
-            col1, col2, col3 = st.columns(3)
+    def main_menu(self):
+        """
+        Exibe a página inicial da aplicação.
+        """
 
-            with col1:
-                st.header(body=":closed_lock_with_key: Streamfort")
+        col1, col2, col3 = st.columns(3)
 
-            st.divider()
+        with col1:
+            st.header(body=":closed_lock_with_key: Streamfort")
 
-            col4, col5, col6 = st.columns(3)
+        st.divider()
 
-            with col5:
+        col4, col5, col6 = st.columns(3)
 
-                user_passwords_quantity = int(general_information())
+        with col5:
 
-                if user_passwords_quantity >= 1:
-                    get_very_low, get_low, get_medium, get_strong, get_very_strong = password_analysis()
+            user_passwords_quantity = int(self.general_information())
 
-                    with st.expander(label="Análise de Senhas", expanded=True):
-                        st.info(body="Senhas cadastradas: {}".format(user_passwords_quantity))
-                        st.divider()
-                        st.error(body="Senhas muito fracas: {}.".format(get_very_low))
-                        st.warning(body="Senhas fracas: {}.".format(get_low))
-                        st.info(body="Senhas médias: {}.".format(get_medium))
-                        st.info(body="Senhas fortes: {}.".format(get_strong))
-                        st.success(body="Senhas muito fortes: {}.".format(get_very_strong))
+            if user_passwords_quantity >= 1:
+                get_very_low, get_low, get_medium, get_strong, get_very_strong = self.password_analysis()
 
-                elif user_passwords_quantity == 0:
-                    st.warning(body="Você ainda não possui senhas cadastradas.")
+                with st.expander(label="Análise de Senhas", expanded=True):
+                    st.info(body="Senhas cadastradas: {}".format(user_passwords_quantity))
+                    st.divider()
+                    st.error(body="Senhas muito fracas: {}.".format(get_very_low))
+                    st.warning(body="Senhas fracas: {}.".format(get_low))
+                    st.info(body="Senhas médias: {}.".format(get_medium))
+                    st.info(body="Senhas fortes: {}.".format(get_strong))
+                    st.success(body="Senhas muito fortes: {}.".format(get_very_strong))
 
-        self.main_menu = show_home_page
+            elif user_passwords_quantity == 0:
+                st.warning(body="Você ainda não possui senhas cadastradas.")

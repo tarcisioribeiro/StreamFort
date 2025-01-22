@@ -1,3 +1,7 @@
+"""
+Dados do usuário.
+"""
+
 from dictionary.vars import to_remove_list
 from data.session_state import logged_user, logged_user_password
 from functions.query_executor import QueryExecutor

@@ -13,10 +13,16 @@ from time import sleep
 
 
 def logout():
+    """
+    Realiza o logout da aplicação.
+    """
     st.session_state.is_logged_in = False
     st.rerun()
 
 def HomePage():
+    """
+    Exibe a barra lateral e seu menu de opções.
+    """
 
     sidebar = st.sidebar
 

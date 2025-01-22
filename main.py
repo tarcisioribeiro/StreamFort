@@ -1,3 +1,7 @@
+"""
+Arquivo principal da aplicação.
+"""
+
 try:
 
     import mysql.connector

@@ -1,15 +1,39 @@
 import streamlit as st
 
 class PasswordValidator:
-    def __init__(self):
-        pass
+    """
+    Realiza a análise da validade e força de senhas.
+    """
 
     @staticmethod
     def check_password_validity(password):
+        """
+        Verifica se a senha informada é uma cadeia de caracteres.
+
+        Parameters
+        ----------
+        password: A senha a ser validada.
+
+        Returns
+        -------
+        isinstance(): bool -> Retorna se a senha é ou não uma cadeia de caracteres.
+        """
         return isinstance(password, str)
 
     @staticmethod
     def check_password_length(password):
+        """
+        Analisa o tamanho  da senha.
+
+        Parameters
+        ----------
+        password: A senha a ser analisada.
+
+        Returns
+        -------
+        str: O tamanho da senha (LOW, MEDIUM, STRONG).
+        """
+
         length = len(password)
         if length < 8:
             return "LOW"
@@ -20,8 +44,19 @@ class PasswordValidator:
 
     @staticmethod
     def check_password_strength(password):
+        """
+        Analisa a força da senha.
+
+        Parameters
+        ----------
+        password: A senha a ser analisada.
+
+        Returns
+        -------
+        str: A força da senha (Muito Fraca, Fraca, Média, Forte, Muito Forte).
+        """
         if not PasswordValidator.check_password_validity(password):
-            return ":rotating_light: A senha deve ser composta de caracteres."
+            return "A senha deve ser composta de caracteres."
 
         length_rating = PasswordValidator.check_password_length(password)
 
@@ -40,12 +75,3 @@ class PasswordValidator:
             return "Forte" if score < 4 else "Muito Forte"
 
         return "Senha inválida."
-
-if __name__ == "__main__":
-    password_validator = PasswordValidator()
-    password = st.text_input(label="Informe a senha: ", type="password")
-    confirm_button = st.button(label="Confirmar")
-    if confirm_button:
-        strength = password_validator.check_password_strength(password)
-        st.divider()
-        st.info(strength)

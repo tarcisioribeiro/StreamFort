@@ -50,18 +50,14 @@ class Passwords:
                     else:
                         with col3:
                             with st.spinner(text="Aguarde..."):
-                                sleep(2.5)
-                            cl1, col3 = st.columns(2)
-                            with col3:
-                                st.error('Há um ou mais campos vazios.')
+                                sleep(0.5)
+                            st.error('Há um ou mais campos vazios.')
 
                 elif send_button and confirm_values == False:
                     with col3:
                         with st.spinner(text="Aguarde..."):
-                            sleep(2.5)
-                        cl1, col3 = st.columns(2)
-                        with col3:
-                            st.warning(body="Você deve confirmar os dados antes de prosseguir.")
+                            sleep(0.5)
+                        st.warning(body="Você deve confirmar os dados antes de prosseguir.")
 
         def read_password():
 
@@ -340,7 +336,7 @@ class Passwords:
                                     sleep(2.5)
 
                                 delete_password_query = '''DELETE senhas FROM senhas WHERE nome_site = %s AND usuario_associado = %s AND documento_usuario_associado = %s;'''
-                                delete_password_values = (selected_option, logged_user_name, logged_user_password)
+                                delete_password_values = (selected_option, logged_user_name, logged_user_document)
 
                                 query_executor.insert_query(query=delete_password_query, values=delete_password_values, success_message="Senha excluída com sucesso!", error_message="Erro ao excluir senha:")
 

@@ -51,6 +51,12 @@ class BankAccount:
                     log_query_values = (logged_user, 'Cadastro', 'Cadastrou a conta {}'.format(query_values[0]))
                     query_executor.insert_query(query=log_query, values=log_query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
 
+                elif register_new_account and confirm_data == False:
+                    with col2:
+                        with st.spinner(text="Aguarde..."):
+                            sleep(0.5)
+                        st.warning(body="Você deve confirmar os dados antes de prosseguir.")
+
         def read_bank_accounts():
 
             user_accounts_quantity = query_executor.simple_consult_query(check_user_bank_accounts_query, params=(logged_user_name, logged_user_document))
@@ -350,7 +356,7 @@ class BankAccount:
 
                             if delete_account_button and confirm_account_deletion:
 
-                                with col3:
+                                with col2:
                                     with st.spinner(text="Aguarde..."):
                                         sleep(2.5)
                                 
@@ -364,7 +370,7 @@ class BankAccount:
                                     query_executor.insert_query(query=log_query, values=query_values, success_message='Log gravado.', error_message='Erro ao gravar log:')
 
                             elif delete_account_button and confirm_account_deletion == False:
-                                with col3:
+                                with col2:
                                     st.warning(body="Confirme a exclusão da conta.")
                     
                     elif safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == False:

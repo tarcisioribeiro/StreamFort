@@ -358,14 +358,20 @@ class Archives:
                                     delete_archive_button = st.button(label=":wastebasket: Deletar arquivo")
 
                                 if confirm_data_deletion and delete_archive_button:
+                                    
+                                    with col2:
+                                        with st.spinner(text="Aguarde..."):
+                                            sleep(2.5)
                                         
                                         delete_archive_query = '''
                                         DELETE arquivo_texto FROM arquivo_texto
                                         INNER JOIN
                                             usuarios ON arquivo_texto.usuario_associado = usuarios.nome
                                         AND arquivo_texto.documento_usuario_associado = usuarios.documento_usuario
-                                        WHERE arquivo_texto.nome_arquivo = %s;'''
-                                        archive_values = [selected_archive]
+                                        WHERE arquivo_texto.nome_arquivo = %s
+                                        AND arquivo_texto.usuario_associado = %s
+                                        AND arquivo_texto.documento_usuario_associado = %s;'''
+                                        archive_values = (selected_archive, logged_user_name, logged_user_document)
 
                                         query_executor.insert_query(delete_archive_query, archive_values, "Arquivo deletado com sucesso!", "Erro ao deletar arquivo:")
 

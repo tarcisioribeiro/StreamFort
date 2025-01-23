@@ -36,16 +36,18 @@ class ChangeTheme:
         Menu de troca de tema.
         """
 
-        col4, col5, col6 = st.columns(3)
+        col4, col5 = st.columns(2)
 
         with col4:
 
             st.subheader(body=":computer: Opções")
 
             with st.expander(label="Aparência", expanded=True):
-                selected_theme = st.radio(label="Tema", options=["Escuro", "Claro"])
+                selected_theme = st.radio(
+                    label="Tema", options=["Escuro", "Claro"])
 
-            theme_confirm_option = st.button(label=":white_check_mark: Confirmar opção")
+            theme_confirm_option = st.button(
+                label=":white_check_mark: Confirmar opção")
 
         if selected_theme != "" and theme_confirm_option:
             with col5:

@@ -19,7 +19,6 @@ class QueryExecutor:
         success_message (str): A mensagem a ser exibida caso a consulta seja inserida com sucesso.\n
         error_message (str): A mensagem a ser exibida caso a consulta apresente erros ao ser inserida.
         """
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
@@ -44,7 +43,6 @@ class QueryExecutor:
         query (str): A consulta a ser inserida.\n
         params (tuple): A tupla com os valores a serem consultados.
         """
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
@@ -70,7 +68,6 @@ class QueryExecutor:
         ----------
         query (str): A consulta a ser inserida.
         """
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
@@ -102,8 +99,6 @@ class QueryExecutor:
         -------
         lists (list): A lista com as listas de cada valor da consulta.
         """
-
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
@@ -138,7 +133,6 @@ class QueryExecutor:
         -------
         complex_value (list): A lista com os valores da consulta.
         """
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
@@ -168,7 +162,6 @@ class QueryExecutor:
         -------
         complex_value (list): A lista com os valores da consulta.
         """
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
@@ -199,11 +192,11 @@ class QueryExecutor:
         -------
         final_result (str): O valor tratado.
         """
-
         final_result = str(value_to_treat)
-        
+
         for i in range(0, len(values_to_remove)):
-            final_result = final_result.replace("{}".format(values_to_remove[i]), "")
+            final_result = final_result.replace(
+                "{}".format(values_to_remove[i]), "")
 
         return final_result
 
@@ -220,21 +213,21 @@ class QueryExecutor:
         -------
         final_list (list): Os valores tratados.
         """
-
         aux_str = ""
         aux_list = []
-        
+
         for i in range(0, len(values_to_treat)):
             aux_str = str(values_to_treat[i])
             aux_list.append(aux_str)
 
         final_str = ""
         final_list = []
-        
+
         for i in range(0, len(aux_list)):
             final_str = str(aux_list[i])
             for i in range(0, len(values_to_remove)):
-                final_str = final_str.replace("{}".format(values_to_remove[i]), "")
+                final_str = final_str.replace(
+                    "{}".format(values_to_remove[i]), "")
             final_list.append(final_str)
 
         return final_list
@@ -252,7 +245,6 @@ class QueryExecutor:
         -------
         final_result (str): O valor tratado.
         """
-
         aux_str = ""
         aux_list = []
 
@@ -265,9 +257,10 @@ class QueryExecutor:
             for i in range(0, len(aux_list)):
                 final_str = str(aux_list[i])
                 for i in range(0, len(values_to_remove)):
-                    final_str = final_str.replace("{}".format(values_to_remove[i]), "")
+                    final_str = final_str.replace(
+                        "{}".format(values_to_remove[i]), "")
                 final_list.append(final_str)
-        
+
         return final_list
 
     def check_if_value_exists(self, query):
@@ -282,7 +275,6 @@ class QueryExecutor:
         -------
         bool: Retorna se o dado consultado existe ou não no banco de dados.
         """
-
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         cursor.execute(query)
@@ -298,10 +290,10 @@ class QueryExecutor:
         table_field (str): O campo da tabela que será atualizado.\n
         id_list (list): Os id's de identificação dos registros que serão atualizados.
         """
-
         for i in range(0, len(id_list)):
 
-            update_id_query = """UPDATE {} SET pago = 'S' WHERE id_{} = {}""".format(table, table_field, id_list[i])
+            update_id_query = """UPDATE {} SET pago = 'S' WHERE id_{} = {}""".format(
+                table, table_field, id_list[i])
 
             try:
                 connection = mysql.connector.connect(**db_config)
@@ -326,7 +318,6 @@ class QueryExecutor:
         success_message (str): A mensagem que será exibida caso a atualização seja concluída.\n
         error_message (str): A mensagem que será exibida caso ocorram erros durante a atualização.
         """
-
         try:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()

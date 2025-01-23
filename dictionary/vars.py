@@ -12,8 +12,6 @@ absolute_app_path = os.getcwd()
 
 operational_system = os.name
 
-menu_options = ["Selecione uma opção", "Senhas", "Arquivos", "Cartões", "Contas Bancárias"]
-
 dark_theme = '''[theme]
 primaryColor="#bd93f9"
 backgroundColor="#282a36"
@@ -79,10 +77,14 @@ if os.name == "posix":
     }
 
 field_names: list = ["Site", "Link", "Login", "Senha"]
-bank_account_field_names: list = ["Nome", "Agência", "Número da Conta", "Senha bancária", "Senha digital"]
+bank_account_field_names: list = [
+    "Nome", "Agência", "Número da Conta", "Senha bancária", "Senha digital"]
 
-to_remove_list: list = ["'", ")", "(", ",", "Decimal", "[", "]", "\\", "datetime.date"]
-to_remove_archive_list: list = ["'", ")", "(", ",", "Decimal", "[", "]", "datetime.date",]
+to_remove_list: list = [
+    "'", ")", "(", ",", "Decimal", "[", "]", "\\", "datetime.date"]
+to_remove_archive_list: list = [
+    "'", ")", "(", ",", "Decimal", "[", "]", "datetime.date",]
 
-financial_institution_list = ['Mercado Pago', 'Itaú', 'Nubank', 'Bradesco', 'Sicoob', 'C6 Bank', 'Banco do Brasil', 'Pagbank', 'Picpay']
+financial_institution_list = ['Mercado Pago', 'Itaú', 'Nubank',
+                              'Bradesco', 'Sicoob', 'C6 Bank', 'Banco do Brasil', 'Pagbank', 'Picpay']
 financial_institution_list.sort()

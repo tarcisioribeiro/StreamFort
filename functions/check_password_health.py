@@ -1,10 +1,10 @@
 import streamlit as st
 
+
 class PasswordValidator:
     """
     Realiza a análise da validade e força de senhas.
     """
-
     @staticmethod
     def check_password_validity(password):
         """
@@ -33,7 +33,6 @@ class PasswordValidator:
         -------
         str: O tamanho da senha (LOW, MEDIUM, STRONG).
         """
-
         length = len(password)
         if length < 8:
             return "LOW"

@@ -15,7 +15,6 @@ class Variables:
         name: O nome da variável a ser criada.\n
         value: O valor da variável que está sendo criada.
         """
-
         globals()[name] = value
 
     def debug_variable(self, variable):
@@ -26,7 +25,6 @@ class Variables:
         ----------
         variable: A variável a ser analisada.
         """
-
         variable_type = type(variable).__name__
 
         st.info(body="Tipo: {}.".format(variable_type))

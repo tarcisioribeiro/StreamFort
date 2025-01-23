@@ -9,7 +9,7 @@ class Documents:
     def validate_credit_card(self, card_number: str):
         """
         Realiza a validação do número de cartões de crédito.
-        
+
         Parameters
         ----------
         card_number (str): O número do cartão de crédito.
@@ -19,14 +19,13 @@ class Documents:
         bool
             Se o cartão é válido ou inválido.
         """
-
         total = 0
 
         st.info("Validando cartão...")
 
         if len(card_number) != 16:
             return False
-        
+
         elif len(card_number) == 16:
 
             if " " in card_number:
@@ -49,7 +48,7 @@ class Documents:
     def validate_owner_document(self, owner_document: str):
         """
         Realiza a validação do documento pessoal do usuário.
-        
+
         Parameters
         ----------
         owner_document (str): O número do documento pessoal.
@@ -59,7 +58,6 @@ class Documents:
         bool
             Se o documento é válido ou inválido.
         """
-
         if len(owner_document) != 11:
             st.error(
                 body="O documento pessoal não tem menos e nem mais que 11 caracteres."
@@ -83,7 +81,8 @@ class Documents:
             second_sum_value = 0
 
             for i in range(0, 9):
-                second_sum_value += int(owner_document_list[i]) * second_counter
+                second_sum_value += int(
+                    owner_document_list[i]) * second_counter
                 second_counter = second_counter - 1
 
             second_sum_value += first_division_rest * second_counter
@@ -93,7 +92,8 @@ class Documents:
             if first_division_rest == int(
                 owner_document_list[9]
             ) and second_division_rest == int(owner_document_list[10]):
-                st.success(body="O documento {} é válido.".format(owner_document))
+                st.success(
+                    body="O documento {} é válido.".format(owner_document))
                 return True
             else:
                 st.error(body="O documento {} é inválido.".format(owner_document))

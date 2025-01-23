@@ -1,6 +1,5 @@
 import streamlit as st
 from data.session_state import logged_user
-from dictionary.vars import menu_options
 from functions.login import User
 from functions.query_executor import QueryExecutor
 from source.archives import Archives
@@ -9,6 +8,7 @@ from source.credit_cards import CreditCards
 from source.homepage import Home
 from source.passwords import Passwords
 from source.configuration.main import Configuration
+from source.utilities.main import Utilities
 from time import sleep
 
 
@@ -18,6 +18,7 @@ def logout():
     """
     st.session_state.is_logged_in = False
     st.rerun()
+
 
 def HomePage():
     """
@@ -37,10 +38,12 @@ def HomePage():
         "Arquivos": Archives(),
         "Cartões": CreditCards(),
         "Contas Bancárias": BankAccount(),
-        "Configurações": Configuration()
+        "Configurações": Configuration(),
+        "Utilitários": Utilities()
     }
 
-    sidebar_choice = st.sidebar.selectbox(label="Menu", options=sidebar_menu_dictionary.keys())
+    sidebar_choice = st.sidebar.selectbox(
+        label="Menu", options=sidebar_menu_dictionary.keys())
 
     sidebar.divider()
 
@@ -59,9 +62,10 @@ def HomePage():
             query_executor = QueryExecutor()
             log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
             log_values = (logged_user, "Logoff", "O usuário realizou logoff.")
-            query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+            query_executor.insert_query(
+                log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
-            with st.spinner("Aguarde um momento..."):    
+            with st.spinner("Aguarde um momento..."):
                 sleep(1.25)
                 st.toast("Saindo do sistema...")
                 sleep(1.25)

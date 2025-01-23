@@ -15,7 +15,6 @@ class GetActualTime:
         -------
         hour (str): A hora atual.
         """
-
         now = datetime.datetime.now()
         hour = now.strftime("%H:%M:%S")
         return hour
@@ -24,7 +23,6 @@ class GetActualTime:
         """
         Exibe a hora atual.
         """
-
         actual_hour = self.get_actual_time()
         st.info(body="Hora atual: {}".format(actual_hour))
 
@@ -36,7 +34,6 @@ class GetActualTime:
         -------
         data (str): A data atual.
         """
-
         now = datetime.datetime.now()
         data = now.strftime("%Y-%m-%d")
         return data

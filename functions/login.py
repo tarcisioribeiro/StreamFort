@@ -23,12 +23,12 @@ class User:
 
         Parameters
         ----------
-        user: Nome do usuário que está realizando o login.\n
+        user: Nome do usuário que está realizando o login.
         password: Senha do usuário que está realizando o login.
 
         Returns
         -------
-        bool: A validade do login.\n
+        bool: A validade do login.
         hashed_password (str): A senha do usuário encriptada.
         """
         connection = mysql.connector.connect(**db_config)
@@ -49,7 +49,7 @@ class User:
 
         Returns
         -------
-        name (str): O nome do usuário.\n
+        name (str): O nome do usuário.
         sex (str): O sexo do usuário.
         """
         query_executor = QueryExecutor()

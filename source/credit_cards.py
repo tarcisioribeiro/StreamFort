@@ -21,7 +21,8 @@ class CreditCards:
 
         Returns
         -------
-        is_card_name_available (bool): Se o nome do cartão está disponível ou não.
+        is_card_name_available : bool
+            Se o nome do cartão está disponível ou não.
         """
         is_card_name_available: bool
 
@@ -45,7 +46,8 @@ class CreditCards:
 
         Returns
         -------
-        user_credit_cards_number (int): Número de cartões registrados pelo cliente.
+        user_credit_cards_number : int
+            Número de cartões registrados pelo cliente.
         """
         user_credit_cards_number = QueryExecutor().simple_consult_query(search_user_credit_cards_number, params=(logged_user_name, logged_user_document))
         user_credit_cards_number = QueryExecutor().treat_simple_result(user_credit_cards_number, to_remove_list)
@@ -59,7 +61,8 @@ class CreditCards:
 
         Returns
         -------
-        credit_cards_options (list): Lista com o nome dos cartões.
+        credit_cards_options : list
+            Lista com o nome dos cartões.
         """
         credit_cards_options = []
 

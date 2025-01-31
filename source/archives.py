@@ -4,7 +4,6 @@ from dictionary.sql import search_user_archives_quantity, search_user_archives_n
 from dictionary.vars import to_remove_list, to_remove_archive_list
 from functions.query_executor import QueryExecutor
 from functions.login import User
-from functions.variables import Variables
 from time import sleep
 import streamlit as st
 
@@ -76,7 +75,6 @@ class Archives:
         col1, col2 = st.columns(2)
 
         with col1:
-
             with st.expander(label="Entrada de Dados", expanded=True):
                 archive_name = st.text_input(label="Nome do arquivo", max_chars=100,help="É necessário definir um nome para identificação e consulta posterior.")
                 uploaded_file = st.file_uploader(label="Escolha um arquivo de texto", type=["txt"], help="São permitidos arquivos de texto, na extensão '.txt'. O tamanho do arquivo não pode exceder 200 MB.")
@@ -109,7 +107,6 @@ class Archives:
                     archive_values = (archive_name, content,logged_user_name, logged_user_document)
 
                     if content is not None:
-
                         QueryExecutor().insert_query(archive_query, archive_values,"Upload do arquivo realizado com sucesso!", "Erro ao fazer upload do arquivo:")
 
                         log_query = """INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)"""
@@ -141,7 +138,6 @@ class Archives:
         user_archives_quantity = self.get_user_archives_quantity()
 
         if user_archives_quantity >= 1:
-
             col1, col2 = st.columns(2)
 
             archives_names = self.get_archives_names()
@@ -157,11 +153,9 @@ class Archives:
                 consult_button = st.button(label=":file_folder: Consultar arquivo")
 
                 if consult_button and confirm_selection:
-
                     is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
 
                     if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
-
                         with st.spinner(text="Aguarde..."):
                             sleep(2.5)
 
@@ -231,7 +225,6 @@ class Archives:
         user_archives_quantity = self.get_user_archives_quantity()
 
         if user_archives_quantity >= 1:
-
             col1, col2 = st.columns(2)
 
             archives_names = self.get_archives_names()
@@ -245,11 +238,9 @@ class Archives:
                     confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
                     if confirm_selection:
-
                         is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
 
                         if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
-
                             with st.spinner(text="Aguarde..."):
                                 sleep(0.5)
 
@@ -329,7 +320,6 @@ class Archives:
                                         archive_values = (new_archive_name, content, logged_user_name, logged_user_document)
 
                                         if content is not None:
-
                                             QueryExecutor().insert_query(archive_query, archive_values, "Upload do arquivo realizado com sucesso!", "Erro ao fazer upload do arquivo:")
 
                                             log_query = """INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)"""
@@ -367,7 +357,6 @@ class Archives:
         user_archives_quantity = self.get_user_archives_quantity()
 
         if user_archives_quantity >= 1:
-
             col1, col2 = st.columns(2)
 
             archives_names = self.get_archives_names()
@@ -381,9 +370,7 @@ class Archives:
                     confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
                     if confirm_selection:
-
                         is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
-
                         if safe_password != "" and confirm_safe_password != "" and confirm_safe_password == safe_password and is_password_valid == True:
 
                             with st.spinner(text="Aguarde..."):
@@ -425,11 +412,9 @@ class Archives:
 
                                     st.code(display_content)
                                     confirm_data_deletion = st.checkbox(label="Confirmar exclusão dos dados")
-
                                 delete_archive_button = st.button(label=":wastebasket: Deletar arquivo")
 
                             if confirm_data_deletion and delete_archive_button:
-
                                 with col2:
                                     with st.spinner(text="Aguarde..."):
                                         sleep(2.5)
@@ -456,7 +441,6 @@ class Archives:
                                     sleep(0.5)
                                 with st.expander(label="Validação dos dados", expanded=True):
                                     st.error(body="A senha informada é inválida.")
-
                         elif safe_password != confirm_safe_password:
                             with col2:
                                 with st.spinner(text="Aguarde..."):

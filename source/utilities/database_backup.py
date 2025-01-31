@@ -19,8 +19,10 @@ class Backup:
 
         Parameters
         ----------
-        backup_path (str): Diretório em qual o backup será salvo.\n
-        operational_system (str): Sistema operacional sobre o qual a aplicação está sendo executado.
+        backup_path : str
+            Diretório em qual o backup será salvo.
+        operational_system : str
+            Sistema operacional sobre o qual a aplicação está sendo executado.
         """
 
         time = GetActualTime()
@@ -94,7 +96,6 @@ class Backup:
                         if os.path.exists(backup_directory):
                             self.make_backup(backup_directory)
                         else:
-                            st.error(body="O diretório {} não existe em sua máquina. Informe um diretório real.".format(
-                                backup_directory))
+                            st.error(body="O diretório {} não existe em sua máquina. Informe um diretório real.".format(backup_directory))
                     elif backup_directory == "":
                         st.error(body="O caminho do diretório está vazio ou não preenchido.")

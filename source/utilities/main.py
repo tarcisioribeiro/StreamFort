@@ -20,8 +20,7 @@ class Utilities:
         with col1:
             st.header(body=":desktop_computer: Utilitários")
         with col2:
-            selected_option = st.selectbox(
-                label="Menu", options=menu_options.keys())
+            selected_option = st.selectbox(label="Menu", options=menu_options.keys())
         st.divider()
         if selected_option:
             option = menu_options[selected_option]

@@ -24,7 +24,6 @@ def HomePage():
     """
     Exibe a barra lateral e seu menu de opções.
     """
-
     sidebar = st.sidebar
 
     with sidebar:
@@ -42,8 +41,7 @@ def HomePage():
         "Utilitários": Utilities()
     }
 
-    sidebar_choice = st.sidebar.selectbox(
-        label="Menu", options=sidebar_menu_dictionary.keys())
+    sidebar_choice = st.sidebar.selectbox(label="Menu", options=sidebar_menu_dictionary.keys())
 
     sidebar.divider()
 
@@ -53,7 +51,7 @@ def HomePage():
     if sidebar_reload_button:
         with sidebar:
             with st.spinner(text="Recarregando..."):
-                sleep(1.25)
+                sleep(2.5)
                 st.rerun()
 
     if sidebar_logoff_button:
@@ -62,13 +60,12 @@ def HomePage():
             query_executor = QueryExecutor()
             log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
             log_values = (logged_user, "Logoff", "O usuário realizou logoff.")
-            query_executor.insert_query(
-                log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+            query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
             with st.spinner("Aguarde um momento..."):
-                sleep(1.25)
+                sleep(2.5)
                 st.toast("Saindo do sistema...")
-                sleep(1.25)
+                sleep(2.5)
                 logout()
 
     if sidebar_choice:
@@ -78,7 +75,7 @@ def HomePage():
     elif sidebar.button(label=":lock: Sair"):
         with sidebar:
             with st.spinner("Aguarde um momento..."):
-                sleep(1.25)
+                sleep(2.5)
                 st.toast("Saindo do sistema...")
-                sleep(1.25)
+                sleep(2.5)
                 logout()

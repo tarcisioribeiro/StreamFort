@@ -12,14 +12,14 @@ class Passwords:
     """
     Classe que representa as senhas, com as quatro funções básicas de um CRUD.
     """
-
     def check_if_account_name_already_exists(self, account: str):
         """
         Verifica se o nome da conta já foi utilizado anteriormente.
 
         Returns
         -------
-        is_account_name_available (bool): Se o nome de conta está disponível ou não.
+        is_account_name_available : bool
+            Se o nome de conta está disponível ou não.
         """
         is_account_name_available: bool
 
@@ -43,7 +43,8 @@ class Passwords:
 
         Returns
         -------
-        user_passwords_quantity (int): A quantidade de senhas cadastradas pelo usuário.
+        user_passwords_quantity : int
+            A quantidade de senhas cadastradas pelo usuário.
         """
         user_passwords_quantity = QueryExecutor().simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
         user_passwords_quantity = QueryExecutor().treat_simple_result(user_passwords_quantity, to_remove_list)
@@ -57,7 +58,8 @@ class Passwords:
 
         Returns
         -------
-        user_accounts (list): Lista com os nomes das contas do usuário.
+        user_accounts : list
+            Lista com os nomes das contas do usuário.
         """
         user_accounts = []
 

@@ -12,8 +12,10 @@ class Variables:
 
         Parameters
         ----------
-        name: O nome da variável a ser criada.\n
-        value: O valor da variável que está sendo criada.
+        name
+            O nome da variável a ser criada.
+        value
+            O valor da variável que está sendo criada.
         """
         globals()[name] = value
 
@@ -23,7 +25,8 @@ class Variables:
 
         Parameters
         ----------
-        variable: A variável a ser analisada.
+        variable
+            A variável a ser analisada.
         """
         variable_type = type(variable).__name__
 

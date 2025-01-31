@@ -12,7 +12,8 @@ class Documents:
 
         Parameters
         ----------
-        card_number (str): O número do cartão de crédito.
+        card_number : str
+            O número do cartão de crédito.
 
         Returns
         -------
@@ -51,7 +52,8 @@ class Documents:
 
         Parameters
         ----------
-        owner_document (str): O número do documento pessoal.
+        owner_document : str
+            O número do documento pessoal.
 
         Returns
         -------

@@ -25,23 +25,19 @@ class PasswordGenerator:
         for i in range(8, 21):
             password_length_options.append(i)
 
-        password_elements_options = [
-            "Letras maiúsculas", "Letras minúsculas", "Números", "Caracteres especiais"]
+        password_elements_options = ["Letras maiúsculas", "Letras minúsculas", "Números", "Caracteres especiais"]
 
         col1, col2 = st.columns(2)
 
         with col1:
             with st.expander(label="Opções", expanded=True):
-                password_length = st.select_slider(
-                    label="Comprimento da senha", options=password_length_options, help="Comprimento da senha em caracteres.")
-                password_elements = st.multiselect(
-                    label="Opções", options=password_elements_options, help="Elementos opcionais para a senha. Caso nenhum seja selecionado, serão incluídas letras minúsculas.", placeholder="Selecione uma opção")
+                password_length = st.select_slider(label="Comprimento da senha", options=password_length_options, help="Comprimento da senha em caracteres.")
+                password_elements = st.multiselect(label="Opções", options=password_elements_options, help="Elementos opcionais para a senha. Caso nenhum seja selecionado, serão incluídas letras minúsculas.", placeholder="Selecione uma opção")
                 confirm_options = st.checkbox(label="Confirmar opções")
             generate_password_button = st.button(label=":key: Gerar senha")
 
         with col2:
-            data_validation_expander = st.expander(
-                label="Validação dos dados", expanded=True)
+            data_validation_expander = st.expander(label="Validação dos dados", expanded=True)
 
             if confirm_options and generate_password_button:
                 with st.spinner(text="Aguarde..."):

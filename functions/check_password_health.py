@@ -12,11 +12,13 @@ class PasswordValidator:
 
         Parameters
         ----------
-        password: A senha a ser validada.
+        password
+            A senha a ser validada.
 
         Returns
         -------
-        isinstance(): bool -> Retorna se a senha é ou não uma cadeia de caracteres.
+        isinstance() : bool
+            Retorna se a senha é ou não uma cadeia de caracteres.
         """
         return isinstance(password, str)
 
@@ -27,11 +29,13 @@ class PasswordValidator:
 
         Parameters
         ----------
-        password: A senha a ser analisada.
+        password
+            A senha a ser analisada.
 
         Returns
         -------
-        str: O tamanho da senha (LOW, MEDIUM, STRONG).
+        str
+            O tamanho da senha (LOW, MEDIUM, STRONG).
         """
         length = len(password)
         if length < 8:
@@ -48,11 +52,13 @@ class PasswordValidator:
 
         Parameters
         ----------
-        password: A senha a ser analisada.
+        password
+            A senha a ser analisada.
 
         Returns
         -------
-        str: A força da senha (Muito Fraca, Fraca, Média, Forte, Muito Forte).
+        str
+            A força da senha (Muito Fraca, Fraca, Média, Forte, Muito Forte).
         """
         if not PasswordValidator.check_password_validity(password):
             return "A senha deve ser composta de caracteres."

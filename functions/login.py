@@ -23,13 +23,17 @@ class User:
 
         Parameters
         ----------
-        user: Nome do usuário que está realizando o login.
-        password: Senha do usuário que está realizando o login.
+        user
+            Nome do usuário que está realizando o login.
+        password
+            Senha do usuário que está realizando o login.
 
         Returns
         -------
-        bool: A validade do login.
-        hashed_password (str): A senha do usuário encriptada.
+        bool
+            A validade do login.
+        hashed_password : str
+            A senha do usuário encriptada.
         """
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
@@ -49,17 +53,17 @@ class User:
 
         Returns
         -------
-        name (str): O nome do usuário.
-        sex (str): O sexo do usuário.
+        name : str
+            O nome do usuário.
+        sex : str
+            O sexo do usuário.
         """
         query_executor = QueryExecutor()
 
-        name = query_executor.simple_consult_query(
-            name_query, params=(logged_user, logged_user_password))
+        name = query_executor.simple_consult_query(name_query, params=(logged_user, logged_user_password))
         name = query_executor.treat_simple_result(name, to_remove_list)
 
-        sex = query_executor.simple_consult_query(
-            sex_query, params=(logged_user, logged_user_password))
+        sex = query_executor.simple_consult_query(sex_query, params=(logged_user, logged_user_password))
         sex = query_executor.treat_simple_result(sex, to_remove_list)
 
         return name, sex
@@ -104,16 +108,12 @@ class User:
                                 st.toast("Login bem-sucedido!")
 
                                 log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES (%s, %s, %s)'''
-                                log_values = (user, 'Acesso',
-                                              'O usuário acessou o sistema.')
-                                query_executor.insert_query(
-                                    log_query, log_values, "Log gravado.", "Erro ao gravar log:")
+                                log_values = (user, 'Acesso', 'O usuário acessou o sistema.')
+                                query_executor.insert_query(log_query, log_values, "Log gravado.", "Erro ao gravar log:")
 
                                 with open("data/session_state.py", "w") as archive:
-                                    archive.write(
-                                        "logged_user = '{}'\n".format(user))
-                                    archive.write(
-                                        "logged_user_password = {}\n".format(hashed_password))
+                                    archive.write("logged_user = '{}'\n".format(user))
+                                    archive.write("logged_user_password = {}\n".format(hashed_password))
                                     sleep(1)
                                     os.chmod("data/session_state.py", 0o600)
                                 sleep(1)
@@ -122,5 +122,4 @@ class User:
                             st.rerun()
 
                         else:
-                            st.error(
-                                "Login falhou. Verifique suas credenciais.")
+                            st.error("Login falhou. Verifique suas credenciais.")

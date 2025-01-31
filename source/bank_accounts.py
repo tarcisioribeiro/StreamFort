@@ -225,8 +225,8 @@ class BankAccount:
                                 st.write(bank_account_field_names[i])
                                 aux_string = str(result_list[i])
                                 aux_string = aux_string.replace('"', '')
-                                if aux_string[0] == 'b':
-                                    aux_string = aux_string.replace('b', '')
+                                if aux_string.startswith('b'):
+                                    aux_string = aux_string[1:]
                                 st.code(body="{}".format(aux_string))
 
                             log_query = '''INSERT into logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
@@ -324,8 +324,8 @@ class BankAccount:
                                 st.write(bank_account_field_names[i])
                                 aux_string = str(result_list[i])
                                 aux_string = aux_string.replace('"', '')
-                                if aux_string[0] == 'b':
-                                    aux_string = aux_string.replace('b', '')
+                                if aux_string.startswith('b'):
+                                    aux_string = aux_string[1:]
                                 st.code(body="{}".format(aux_string))
 
                             account_password = st.text_input(
@@ -448,8 +448,8 @@ class BankAccount:
                                 st.write(bank_account_field_names[i])
                                 aux_string = str(result_list[i])
                                 aux_string = aux_string.replace('"', '')
-                                if aux_string[0] == 'b':
-                                    aux_string = aux_string.replace('b', '')
+                                if aux_string.startswith('b'):
+                                    aux_string = aux_string[1:]
                                 st.code(body="{}".format(aux_string))
 
                             confirm_account_deletion = st.checkbox(

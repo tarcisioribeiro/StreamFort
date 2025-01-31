@@ -13,7 +13,8 @@ class GetActualTime:
 
         Returns
         -------
-        hour (str): A hora atual.
+        hour : str
+            A hora atual.
         """
         now = datetime.datetime.now()
         hour = now.strftime("%H:%M:%S")
@@ -32,7 +33,8 @@ class GetActualTime:
 
         Returns
         -------
-        data (str): A data atual.
+        data : str
+            A data atual.
         """
         now = datetime.datetime.now()
         data = now.strftime("%Y-%m-%d")

@@ -26,9 +26,15 @@ try:
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
     actual_path = os.getcwd()
-
+    
     software_env_path = '{}/.env'.format(actual_path)
     session_state_path = '{}/data/session_state.py'.format(actual_path)
+
+    if not os.path.isfile(session_state_path):
+
+        with open(session_state_path, 'w') as session_state_archive:
+            session_state_archive.write("logged_user = ''")
+            session_state_archive.write("\nlogged_user_password = ''")
 
     if not os.path.isfile(software_env_path):
         from time import sleep
@@ -107,15 +113,8 @@ try:
                     with cl2:
                         st.warning(body="Você deve confirmar os dados antes de prosseguir.")
 
-    if not os.path.isfile(session_state_path):
-
-        with open(session_state_path, 'w') as session_state_archive:
-            session_state_archive.write("logged_user = ''")
-            session_state_archive.write("\nlogged_user_password = ''")
-
     if os.path.isfile(software_env_path):
         
-
         try:
             from dictionary.sql import check_user_query
             from dictionary.vars import db_config, to_remove_list

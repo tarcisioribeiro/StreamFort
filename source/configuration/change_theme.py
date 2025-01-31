@@ -14,7 +14,8 @@ class ChangeTheme:
 
         Parameters
         ----------
-        theme_option (str): Tema escolhido pelo usuário.
+        theme_option : str
+            Tema escolhido pelo usuário.
         """
 
         config_archive: str = absolute_app_path + "/.streamlit/config.toml"
@@ -43,11 +44,9 @@ class ChangeTheme:
             st.subheader(body=":computer: Opções")
 
             with st.expander(label="Aparência", expanded=True):
-                selected_theme = st.radio(
-                    label="Tema", options=["Escuro", "Claro"])
+                selected_theme = st.radio(label="Tema", options=["Escuro", "Claro"])
 
-            theme_confirm_option = st.button(
-                label=":white_check_mark: Confirmar opção")
+            theme_confirm_option = st.button(label=":white_check_mark: Confirmar opção")
 
         if selected_theme != "" and theme_confirm_option:
             with col5:

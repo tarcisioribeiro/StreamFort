@@ -72,7 +72,6 @@ class Backup:
         """
         Menu do backup de dados.
         """
-
         col4, col5 = st.columns(2)
 
         with col4:
@@ -80,13 +79,9 @@ class Backup:
                 placeholder_text = "Ex: /home/'usuario'/Downloads"
             elif operational_system == "nt":
                 placeholder_text = "Ex: C:\\Users\\usuario\\Downloads"
-
             with st.expander(label=":floppy_disk: Backup de dados", expanded=True):
-                backup_directory = st.text_input(
-                    label="Diretório de backup", placeholder=placeholder_text)
-
-            backup_confirm_button = st.button(
-                label=":white_check_mark: Confirmar diretório")
+                backup_directory = st.text_input(label="Diretório de backup", placeholder=placeholder_text)
+            backup_confirm_button = st.button(label=":white_check_mark: Confirmar diretório")
 
         if backup_confirm_button:
             with col5:
@@ -102,5 +97,4 @@ class Backup:
                             st.error(body="O diretório {} não existe em sua máquina. Informe um diretório real.".format(
                                 backup_directory))
                     elif backup_directory == "":
-                        st.error(
-                            body="O caminho do diretório está vazio ou não preenchido.")
+                        st.error(body="O caminho do diretório está vazio ou não preenchido.")

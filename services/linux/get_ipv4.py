@@ -9,7 +9,8 @@ def get_ipv4_addresses():
 
     Returns
     -------
-    ipv4_list (list): A lista com os endereços IPV4 identificados na máquina.
+    ipv4_list : list
+        A lista com os endereços IPV4 identificados na máquina.
     """
 
     ipv4_list = []

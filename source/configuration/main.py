@@ -13,9 +13,7 @@ class Configuration:
         Menu principal.
         """
 
-        menu_options = {
-            "Aparência": ChangeTheme()
-        }
+        menu_options = {"Aparência": ChangeTheme()}
 
         col1, col2, col3 = st.columns(3)
 
@@ -24,8 +22,7 @@ class Configuration:
 
         with col2:
 
-            selected_option = st.selectbox(
-                label="Menu", options=menu_options.keys())
+            selected_option = st.selectbox(label="Menu", options=menu_options.keys())
 
         st.divider()
 

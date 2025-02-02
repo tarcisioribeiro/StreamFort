@@ -79,8 +79,10 @@ class Passwords:
         """
         Função para criação de uma nova senha.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
+
+        st.info(logged_user_document)
 
         col1, col2 = st.columns(2)
         with col2:
@@ -109,7 +111,7 @@ class Passwords:
                             with data_validator_expander:
                                 st.success(body="Nome de conta válida.")
                         insert_password_query = "INSERT INTO senhas(nome_site, url_site, login, senha, usuario_associado, documento_usuario_associado) VALUES(%s, %s, %s, %s, %s, %s)"
-                        query_values = (site, url, login, password,logged_user_name, logged_user_document)
+                        query_values = (site, url, login, password, logged_user_name, logged_user_document)
                         QueryExecutor().insert_query(query=insert_password_query, values=query_values,success_message='Senha cadastrada com sucesso!', error_message='Erro ao cadastrar senha:')
                         log_query = '''INSERT INTO logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES(%s, %s, %s)'''
                         log_query_values = (logged_user, 'Cadastro', 'Cadastrou a senha {} associada ao email {}'.format(query_values[0], query_values[3]))

@@ -79,8 +79,8 @@ class BankAccount:
         """
         Função para criação de uma nova conta.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         col1, col2, col3 = st.columns(3)
 
@@ -141,8 +141,8 @@ class BankAccount:
         """
         Função para a consulta de uma conta bancária.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_accounts_quantity = self.get_user_accounts_quantity()
 
@@ -237,8 +237,8 @@ class BankAccount:
         """
         Função para a atualização de uma conta bancária.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_accounts_quantity = self.get_user_accounts_quantity()
 
@@ -348,8 +348,8 @@ class BankAccount:
         """
         Função para a exclusão de uma conta bancária.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_accounts_quantity = self.get_user_accounts_quantity()
 

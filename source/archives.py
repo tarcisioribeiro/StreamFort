@@ -76,8 +76,8 @@ class Archives:
         """
         Função para criação de um novo arquivo.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         col1, col2 = st.columns(2)
 
@@ -142,8 +142,8 @@ class Archives:
         """
         Função para a consulta de um arquivo.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_archives_quantity = self.get_user_archives_quantity()
 
@@ -233,8 +233,8 @@ class Archives:
         """
         Função para a atualização de um arquivo.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_archives_quantity = self.get_user_archives_quantity()
 
@@ -368,8 +368,8 @@ class Archives:
         """
         Função para a exclusão de um arquivo.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_archives_quantity = self.get_user_archives_quantity()
 

@@ -82,8 +82,8 @@ class CreditCards:
         """
         Função para criação de um novo cartão de cŕedito.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         st.divider()
 
@@ -192,8 +192,8 @@ class CreditCards:
         """
         Função para a consulta de um cartão de crédito.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_credit_cards_number = self.get_user_credit_cards_number()
 
@@ -282,8 +282,8 @@ class CreditCards:
         """
         Função para a atualização de um cartão de crédito.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_credit_cards_number = self.get_user_credit_cards_number()
 
@@ -399,8 +399,8 @@ class CreditCards:
         """
         Função para a exclusão de um cartão de crédito.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_credit_cards_number = self.get_user_credit_cards_number()
 

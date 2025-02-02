@@ -1,9 +1,7 @@
-from data.session_state import logged_user
-from data.user_data import logged_user_name, logged_user_document
 from dictionary.sql import search_user_archives_quantity, search_user_archives_name
 from dictionary.vars import to_remove_list, to_remove_archive_list
 from functions.query_executor import QueryExecutor
-from functions.login import User
+from functions.login import Login
 from time import sleep
 import streamlit as st
 
@@ -22,6 +20,8 @@ class Archives:
         is_archive_name_available (bool): Se o nome do arquivo está disponível ou não.
         """
         is_archive_name_available: bool
+
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
 
         cards_with_parameter_name_query = """SELECT COUNT(id_arquivo) FROM arquivo_texto WHERE nome_arquivo = %s AND usuario_associado = %s AND documento_usuario_associado = %s;"""
         query_values = (archive_name, logged_user_name, logged_user_document)
@@ -45,6 +45,8 @@ class Archives:
         -------
         user_archives_quantity (int): A quantidade de arquivos registrados pelo usuário.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+
         user_archives_quantity = QueryExecutor().simple_consult_query(search_user_archives_quantity, params=(logged_user_name, logged_user_document))
         user_archives_quantity = QueryExecutor().treat_simple_result(user_archives_quantity, to_remove_list)
         user_archives_quantity = int(user_archives_quantity)
@@ -59,6 +61,8 @@ class Archives:
         -------
         archives_names (list): A lista com o nome dos arquivos.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+
         archives_names = []
         user_archives_name = QueryExecutor().complex_consult_query(search_user_archives_name, params=(logged_user_name, logged_user_document))
         user_archives_name = QueryExecutor().treat_numerous_simple_result(user_archives_name, to_remove_list)
@@ -72,6 +76,9 @@ class Archives:
         """
         Função para criação de um novo arquivo.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         col1, col2 = st.columns(2)
 
         with col1:
@@ -104,7 +111,7 @@ class Archives:
                             st.success(body="Nome de arquivo disponível.")
 
                     archive_query = "INSERT INTO arquivo_texto (nome_arquivo, conteudo, usuario_associado, documento_usuario_associado) VALUES (%s, %s, %s, %s)"
-                    archive_values = (archive_name, content,logged_user_name, logged_user_document)
+                    archive_values = (archive_name, content, logged_user_name, logged_user_document)
 
                     if content is not None:
                         QueryExecutor().insert_query(archive_query, archive_values,"Upload do arquivo realizado com sucesso!", "Erro ao fazer upload do arquivo:")
@@ -135,6 +142,9 @@ class Archives:
         """
         Função para a consulta de um arquivo.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_archives_quantity = self.get_user_archives_quantity()
 
         if user_archives_quantity >= 1:
@@ -153,7 +163,8 @@ class Archives:
                 consult_button = st.button(label=":file_folder: Consultar arquivo")
 
                 if consult_button and confirm_selection:
-                    is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                    
+                    is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                     if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
                         with st.spinner(text="Aguarde..."):
@@ -222,6 +233,9 @@ class Archives:
         """
         Função para a atualização de um arquivo.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_archives_quantity = self.get_user_archives_quantity()
 
         if user_archives_quantity >= 1:
@@ -238,7 +252,7 @@ class Archives:
                     confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
                     if confirm_selection:
-                        is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                        is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                         if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
                             with st.spinner(text="Aguarde..."):
@@ -354,6 +368,9 @@ class Archives:
         """
         Função para a exclusão de um arquivo.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_archives_quantity = self.get_user_archives_quantity()
 
         if user_archives_quantity >= 1:
@@ -370,7 +387,7 @@ class Archives:
                     confirm_selection = st.checkbox(label="Confirmar dados", value=False)
 
                     if confirm_selection:
-                        is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                        is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
                         if safe_password != "" and confirm_safe_password != "" and confirm_safe_password == safe_password and is_password_valid == True:
 
                             with st.spinner(text="Aguarde..."):

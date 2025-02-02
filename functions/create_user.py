@@ -1,8 +1,8 @@
-from data.session_state import logged_user
 from dictionary.sql import check_user_query
 from dictionary.vars import to_remove_list
 from functions.query_executor import QueryExecutor
 from functions.validate_document import Documents
+from functions.login import Login
 from time import sleep
 import streamlit as st
 import bcrypt
@@ -87,6 +87,7 @@ class CreateUser:
         """
         Menu principal da criação de usuário.
         """
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
 
         query_executor = QueryExecutor()
         document = Documents()

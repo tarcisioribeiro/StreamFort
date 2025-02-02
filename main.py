@@ -3,7 +3,6 @@ Arquivo principal da aplicação.
 """
 
 try:
-
     import mysql.connector
     import os
     import streamlit as st
@@ -28,13 +27,6 @@ try:
     actual_path = os.getcwd()
     
     software_env_path = '{}/.env'.format(actual_path)
-    session_state_path = '{}/data/session_state.py'.format(actual_path)
-
-    if not os.path.isfile(session_state_path):
-
-        with open(session_state_path, 'w') as session_state_archive:
-            session_state_archive.write("logged_user = ''")
-            session_state_archive.write("\nlogged_user_password = ''")
 
     if not os.path.isfile(software_env_path):
         from time import sleep
@@ -123,9 +115,7 @@ try:
             connection = mysql.connector.connect(**db_config)
             
             if connection.is_connected():
-                
                 query_executor = QueryExecutor()
-
                 check_user_quantity = query_executor.simple_consult_brute_query(check_user_query)
                 check_user_quantity = query_executor.treat_simple_result(check_user_quantity, to_remove_list)
                 check_user_quantity = int(check_user_quantity)
@@ -137,21 +127,18 @@ try:
                     create_user.main_menu()
 
                 elif check_user_quantity >= 1:
-
-                    from functions.login import User
+                    from functions.login import Login
                     from source.app import HomePage
 
                     def main():
 
                         if "is_logged_in" not in st.session_state:
                             st.session_state.is_logged_in = False
-
                         if st.session_state.is_logged_in:
                             HomePage()
                         else:
-                            call_user = User()
+                            call_user = Login()
                             call_user.get_login()
-
 
                     if __name__ == "__main__":
                         main()

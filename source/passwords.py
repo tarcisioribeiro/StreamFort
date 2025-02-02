@@ -1,9 +1,7 @@
-from data.session_state import logged_user, logged_user_password
-from data.user_data import logged_user_name, logged_user_document
 from dictionary.vars import field_names, to_remove_list
 from dictionary.sql import search_accounts_query, check_user_passwords_quantity_query
 from functions.query_executor import QueryExecutor
-from functions.login import User
+from functions.login import Login
 from time import sleep
 import streamlit as st
 
@@ -21,6 +19,8 @@ class Passwords:
         is_account_name_available : bool
             Se o nome de conta está disponível ou não.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+
         is_account_name_available: bool
 
         accounts_with_parameter_name_query = """SELECT COUNT(id_senha) FROM senhas WHERE nome_site = %s AND usuario_associado = %s AND documento_usuario_associado = %s;"""
@@ -46,6 +46,8 @@ class Passwords:
         user_passwords_quantity : int
             A quantidade de senhas cadastradas pelo usuário.
         """
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
+
         user_passwords_quantity = QueryExecutor().simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
         user_passwords_quantity = QueryExecutor().treat_simple_result(user_passwords_quantity, to_remove_list)
         user_passwords_quantity = int(user_passwords_quantity)
@@ -61,6 +63,8 @@ class Passwords:
         user_accounts : list
             Lista com os nomes das contas do usuário.
         """
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
+
         user_accounts = []
 
         accounts = QueryExecutor().complex_consult_query(query=search_accounts_query, params=(logged_user, logged_user_password))
@@ -75,6 +79,9 @@ class Passwords:
         """
         Função para criação de uma nova senha.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         col1, col2 = st.columns(2)
         with col2:
             data_validator_expander = st.expander(label="Validação dos dados", expanded=True)
@@ -96,8 +103,7 @@ class Passwords:
                     with st.spinner(text="Aguarde..."):
                         sleep(2.5)
                 if site != '' and url != '' and login != '' and password != '':
-                    is_name_available = self.check_if_account_name_already_exists(
-                        account=site)
+                    is_name_available = self.check_if_account_name_already_exists(account=site)
                     if is_name_available:
                         with col2:
                             with data_validator_expander:
@@ -130,6 +136,9 @@ class Passwords:
         """
         Função para a consulta de uma senha.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_passwords_quantity = self.get_user_passwords_quantity()
 
         if user_passwords_quantity == 0:
@@ -174,7 +183,7 @@ class Passwords:
             result_list = QueryExecutor().treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
 
             if confirm_selection and consult_button:
-                is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
                 if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
                     with col2:
                         with st.spinner(text="Aguarde..."):
@@ -227,6 +236,9 @@ class Passwords:
         """
         Função para a atualização de uma senha.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_passwords_quantity = self.get_user_passwords_quantity()
 
         if user_passwords_quantity == 0:
@@ -270,7 +282,7 @@ class Passwords:
             result_list = QueryExecutor().treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
 
             if confirm_selection:
-                is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
                 if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
                     with col2:
                         with st.spinner(text="Aguarde..."):
@@ -313,6 +325,9 @@ class Passwords:
         """
         Função para a exclusão de uma senha.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_passwords_quantity = self.get_user_passwords_quantity()
 
         if user_passwords_quantity == 0:
@@ -348,7 +363,7 @@ class Passwords:
             result_list = QueryExecutor().treat_complex_result(values_to_treat=result_list, values_to_remove=to_remove_list)
 
             if confirm_selection:
-                is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
                 if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
 
                     with col2:

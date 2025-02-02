@@ -1,8 +1,8 @@
 from dictionary.sql import user_passwords_query, check_user_passwords_quantity_query
-from data.session_state import logged_user, logged_user_password
 from dictionary.vars import to_remove_list
 from functions.check_password_health import PasswordValidator
 from functions.query_executor import QueryExecutor
+from functions.login import Login
 import streamlit as st
 
 
@@ -20,6 +20,8 @@ class Home:
         user_passwords_quantity
             A quantidade de senhas que o usuário já cadastrou.
         """
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
+
         query_executor = QueryExecutor()
 
         user_passwords_quantity = query_executor.simple_consult_query(check_user_passwords_quantity_query, params=(logged_user, logged_user_password))
@@ -44,6 +46,7 @@ class Home:
         very_strong : int
             Quantidade de senhas classificadas como "Muito Forte".
         """
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         query_executor = QueryExecutor()
         password_validator = PasswordValidator()

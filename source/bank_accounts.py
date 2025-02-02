@@ -1,9 +1,7 @@
-from data.session_state import logged_user
-from data.user_data import logged_user_name, logged_user_document
 from dictionary.sql import check_user_bank_accounts_query, search_bank_accounts_query
 from dictionary.vars import financial_institution_list, to_remove_list, bank_account_field_names
 from functions.query_executor import QueryExecutor
-from functions.login import User
+from functions.login import Login
 from time import sleep
 import streamlit as st
 
@@ -21,6 +19,8 @@ class BankAccount:
         is_bank_account_name_available : bool
             Se o nome de conta bancária está disponível ou não.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+
         is_bank_account_name_available: bool
 
         bank_accounts_with_parameter_name_query = """SELECT COUNT(id_conta) FROM contas_bancarias WHERE nome_conta = %s AND nome_proprietario_conta = %s AND documento_proprietario_conta = %s;"""
@@ -46,6 +46,8 @@ class BankAccount:
         user_accounts_quantity : int
             Quantidade de contas registradas pelo usuário.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+
         user_accounts_quantity = QueryExecutor().simple_consult_query(check_user_bank_accounts_query, params=(logged_user_name, logged_user_document))
         user_accounts_quantity = QueryExecutor().treat_simple_result(user_accounts_quantity, to_remove_list)
         user_accounts_quantity = int(user_accounts_quantity)
@@ -61,6 +63,8 @@ class BankAccount:
         bank_accounts : list
             Lista com os nomes das contas bancárias.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+
         user_bank_accounts = []
 
         bank_accounts = QueryExecutor().complex_consult_query(query=search_bank_accounts_query, params=(logged_user_name, logged_user_document))
@@ -75,6 +79,9 @@ class BankAccount:
         """
         Função para criação de uma nova conta.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         col1, col2, col3 = st.columns(3)
 
         with col1:
@@ -134,6 +141,9 @@ class BankAccount:
         """
         Função para a consulta de uma conta bancária.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_accounts_quantity = self.get_user_accounts_quantity()
 
         if user_accounts_quantity == 0:
@@ -179,7 +189,7 @@ class BankAccount:
 
             if confirm_password_selection and consult_button:
 
-                is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                 if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
 
@@ -227,6 +237,9 @@ class BankAccount:
         """
         Função para a atualização de uma conta bancária.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_accounts_quantity = self.get_user_accounts_quantity()
 
         if user_accounts_quantity == 0:
@@ -270,7 +283,7 @@ class BankAccount:
 
             if confirm_selection:
 
-                is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                 if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
 
@@ -335,6 +348,9 @@ class BankAccount:
         """
         Função para a exclusão de uma conta bancária.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_accounts_quantity = self.get_user_accounts_quantity()
 
         if user_accounts_quantity == 0:
@@ -384,7 +400,7 @@ class BankAccount:
 
             if confirm_password_selection:
 
-                is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                 if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
 

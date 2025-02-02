@@ -1,9 +1,7 @@
-from data.session_state import logged_user
-from data.user_data import logged_user_name, logged_user_document
 from dictionary.sql import search_user_credit_cards_number, search_user_credit_cards_names
 from dictionary.vars import to_remove_list, today
 from functions.get_actual_time import GetActualTime
-from functions.login import User
+from functions.login import Login
 from functions.query_executor import QueryExecutor
 from functions.validate_document import Documents
 from time import sleep
@@ -24,6 +22,8 @@ class CreditCards:
         is_card_name_available : bool
             Se o nome do cartão está disponível ou não.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+
         is_card_name_available: bool
 
         cards_with_parameter_name_query = """SELECT COUNT(id_cartao) FROM cartao_credito WHERE nome_cartao = %s AND proprietario_cartao = %s AND documento_titular = %s;"""
@@ -49,6 +49,8 @@ class CreditCards:
         user_credit_cards_number : int
             Número de cartões registrados pelo cliente.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+
         user_credit_cards_number = QueryExecutor().simple_consult_query(search_user_credit_cards_number, params=(logged_user_name, logged_user_document))
         user_credit_cards_number = QueryExecutor().treat_simple_result(user_credit_cards_number, to_remove_list)
         user_credit_cards_number = int(user_credit_cards_number)
@@ -64,6 +66,8 @@ class CreditCards:
         credit_cards_options : list
             Lista com o nome dos cartões.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+
         credit_cards_options = []
 
         user_credit_cards_names = QueryExecutor().complex_consult_query(search_user_credit_cards_names, params=(logged_user_name, logged_user_document))
@@ -78,6 +82,9 @@ class CreditCards:
         """
         Função para criação de um novo cartão de cŕedito.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         st.divider()
 
         def validate_card_values(card_name: str, card_number: str, owner_on_card_name: str, expiration_date: str, actual_date: str, security_code: str):
@@ -185,6 +192,9 @@ class CreditCards:
         """
         Função para a consulta de um cartão de crédito.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_credit_cards_number = self.get_user_credit_cards_number()
 
         st.divider()
@@ -205,7 +215,7 @@ class CreditCards:
 
                 if confirm_selection and consult_button:
 
-                    is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                    is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                     if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
 
@@ -272,6 +282,9 @@ class CreditCards:
         """
         Função para a atualização de um cartão de crédito.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_credit_cards_number = self.get_user_credit_cards_number()
 
         st.divider()
@@ -290,7 +303,7 @@ class CreditCards:
 
                 if confirm_selection:
 
-                    is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                    is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                     if safe_password != "" and confirm_safe_password != "" and safe_password == confirm_safe_password and is_password_valid == True:
 
@@ -386,6 +399,9 @@ class CreditCards:
         """
         Função para a exclusão de um cartão de crédito.
         """
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+
         user_credit_cards_number = self.get_user_credit_cards_number()
 
         st.divider()
@@ -404,7 +420,7 @@ class CreditCards:
 
                 if confirm_selection:
 
-                    is_password_valid, hashed_password = User().check_login(logged_user, safe_password)
+                    is_password_valid, hashed_password = Login().check_login(logged_user, safe_password)
 
                     if confirm_safe_password != "" and safe_password != "" and confirm_safe_password == safe_password and is_password_valid == True:
                         card_field_names = ["Cartão", "Nome do titular no cartão", "Data da validade", "Código de segurança"]

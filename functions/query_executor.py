@@ -131,6 +131,45 @@ class QueryExecutor:
             if connection.is_connected():
                 connection.close()
 
+    def complex_compund_brute_query(self, query: str, list_quantity: int):
+        """
+        Realiza uma consulta composta no banco de dados, de acordo com os parametros informados.
+
+        Parameters
+        ----------
+        query : str
+            A consulta a ser inserida.
+        list_quantity : int
+            A quantidade de listas que deverão ser criadas.
+        params : tuple
+            A tupla com os valores a serem consultados.
+
+        Returns
+        -------
+        lists : list
+            A lista com as listas de cada valor da consulta.
+        """
+        try:
+            connection = mysql.connector.connect(**db_config)
+            cursor = connection.cursor()
+            cursor.execute(query)
+
+            lists = [[] for _ in range(list_quantity)]
+
+            for row in cursor.fetchall():
+                for i in range(list_quantity):
+                    lists[i].append(row[i])
+
+            return lists
+
+        except mysql.connector.Error as err:
+            st.error("Erro ao consultar dados compostos: {}".format(err))
+            return None
+
+        finally:
+            if connection.is_connected():
+                connection.close()
+
     def complex_consult_query(self, query: str, params: tuple):
         """
         Realiza uma consulta complexa no banco de dados, de acordo com os parametros informados.

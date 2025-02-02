@@ -159,9 +159,16 @@ class Login:
 
         return name, sex
 
-    def show_user(self, name, sex):
+    def show_user(self, name: str, sex: str):
         """
         Exibe o avatar e nome do usuário.
+
+        Parameters
+        ----------
+        name: str
+            O nome do usuário.
+        sex: str
+            O sexo do usuário.
         """
         if sex == "M":
             st.image(image="{}/library/images/man.png".format(absolute_app_path))

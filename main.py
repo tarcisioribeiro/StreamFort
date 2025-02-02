@@ -122,9 +122,7 @@ try:
 
                 if check_user_quantity == 0:
                     from functions.create_user import CreateUser
-
-                    create_user = CreateUser()
-                    create_user.main_menu()
+                    CreateUser().main_menu()
 
                 elif check_user_quantity >= 1:
                     from functions.login import Login

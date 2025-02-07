@@ -82,8 +82,6 @@ class Passwords:
         logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
         logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
-        st.info(logged_user_document)
-
         col1, col2 = st.columns(2)
         with col2:
             data_validator_expander = st.expander(label="Validação dos dados", expanded=True)
@@ -138,8 +136,8 @@ class Passwords:
         """
         Função para a consulta de uma senha.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_login_password")
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user_name, logged_user_document = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
         user_passwords_quantity = self.get_user_passwords_quantity()
 

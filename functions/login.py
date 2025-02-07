@@ -138,23 +138,18 @@ class Login:
         sex : str
             O sexo do usuário.
         """
+
         logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
-        aux_string = ''
-        if logged_user_password.startswith('b'):
-            aux_string = logged_user_password[1:]
-
-        logged_user_password = aux_string
-
-        name_query: str = "SELECT nome FROM usuarios WHERE login = '{}' AND senha = '{}';".format(logged_user, logged_user_password)
+        name_query: str = "SELECT nome FROM usuarios WHERE login = %s AND senha = %s;"
         sex_query: str = "SELECT sexo FROM usuarios WHERE login = %s; AND senha = %s;"
 
         query_executor = QueryExecutor()
 
-        name = query_executor.simple_consult_brute_query(name_query)
+        name = query_executor.simple_consult_query(query=name_query, params=(logged_user, logged_user_password))
         name = query_executor.treat_simple_result(name, to_remove_list)
 
-        sex = query_executor.simple_consult_query(sex_query, params=(logged_user, logged_user_password))
+        sex = query_executor.simple_consult_query(query=sex_query, params=(logged_user, logged_user_password))
         sex = query_executor.treat_simple_result(sex, to_remove_list)
 
         return name, sex

@@ -42,7 +42,7 @@ def HomePage():
     sidebar = st.sidebar
 
     with sidebar:
-        logged_user, logged_user_password = Login().get_user_data(return_option="user_doc_name")
+        logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
         name, sex = Login().check_user(logged_user, logged_user_password)
         Login().show_user(name, sex)
 

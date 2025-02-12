@@ -37,10 +37,10 @@ class Login:
             SELECT usuarios.nome, usuarios.documento_usuario
             FROM usuarios
             INNER JOIN usuarios_logados ON usuarios.id_usuario = usuarios_logados.usuario_id
-            WHERE usuarios_logados.sessao_id = '{}';
-            """.format(st.session_state.sessao_id)
+            WHERE usuarios_logados.sessao_id = %s;
+            """
 
-            user_data = QueryExecutor().complex_compund_brute_query(query=user_data_query, list_quantity=2)
+            user_data = QueryExecutor().complex_compund_query(query=user_data_query, list_quantity=2, params=(st.session_state.sessao_id,))
             user_data = QueryExecutor().treat_complex_result(values_to_treat=user_data, values_to_remove=to_remove_list)
 
             user_name = user_data[0]

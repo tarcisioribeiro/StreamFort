@@ -121,11 +121,11 @@ try:
                 check_user_quantity = int(check_user_quantity)
 
                 if check_user_quantity == 0:
-                    from functions.create_user import CreateUser
+                    from functions.login import CreateUser
                     CreateUser().main_menu()
 
                 elif check_user_quantity >= 1:
-                    from functions.login import Login
+                    from functions.login import Menu
                     from source.app import HomePage
 
                     def main():
@@ -135,8 +135,7 @@ try:
                         if st.session_state.is_logged_in:
                             HomePage()
                         else:
-                            call_user = Login()
-                            call_user.get_login()
+                            Menu().main_menu()
 
                     if __name__ == "__main__":
                         main()

@@ -88,7 +88,7 @@ class Home:
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.header(body=":closed_lock_with_key: Streamfort")
+            st.header(body=":closed_lock_with_key: StreamFort")
 
         st.divider()
 

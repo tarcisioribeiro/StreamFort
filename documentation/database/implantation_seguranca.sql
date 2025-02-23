@@ -102,7 +102,7 @@ CREATE TABLE `logs_atividades` (
   `id_log` int NOT NULL AUTO_INCREMENT,
   `data_log` date NOT NULL DEFAULT (curdate()),
   `horario_log` time NOT NULL DEFAULT (curtime()),
-  `usuario_log` varchar(15) NOT NULL,
+  `usuario_log` varchar(25) NOT NULL,
   `tipo_log` varchar(100) NOT NULL,
   `conteudo_log` text NOT NULL,
   PRIMARY KEY (`id_log`),

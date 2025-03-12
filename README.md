@@ -1,6 +1,6 @@
 # 🔒 StreamFort
 
-![StreamFort](documentation/images/main.png)
+![StreamFort](reference/images/main.png)
 
 Um aplicativo de gerenciamento de senhas, arquivos confidenciais, cartões e contas. Feito em **[Python](https://www.python.org/)**, através do framework **[Streamlit](https://streamlit.io/)**, integra-se ao banco de dados **[MySQL](https://www.mysql.com/)**, permitindo o armazenamento de informações confidenciais.
 
@@ -27,27 +27,27 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 
    ---
 
-   ![Login](documentation/images/login.png)
+   ![Login](reference/images/login.png)
    *Tela de login.*
 
    ---
 
-   ![Tela Inicial](documentation/images/home.png)
+   ![Tela Inicial](reference/images/home.png)
    *Tela inicial mostrando a análise de senhas.*
 
    ---
 
-   ![Cadastro de Contas](documentation/images/passwords.png)
+   ![Cadastro de Contas](reference/images/passwords.png)
    *Tela de cadastro de senhas.*
 
    ---
 
-   ![Cadastro de Cartões](documentation/images/credit_card.png)
+   ![Cadastro de Cartões](reference/images/credit_card.png)
    *Tela de cadastro de cartões de crédito.*
 
    ---
 
-   ![Cadastro de faturas](documentation/images/archives.png)
+   ![Cadastro de faturas](reference/images/archives.png)
    *Tela de upload de arquivos.*
 
    ---
@@ -58,7 +58,7 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 <details>
    <summary>Documentação</summary>
 
-   [Documentação do Código](documentation/pages/index.html)
+   [Documentação do Código](reference/pages/index.html)
 
 </details>
 
@@ -81,7 +81,7 @@ Contribuições são sempre bem vindas! Se quiser ajudar a melhorar o projeto, v
 - Propor melhorias ou novas funcionalidades na aba **Issues** deste repositório;
 - Enviar pull requests com correções de bugs ou novos recursos.
 
-Certifique-se de ler o arquivo [CONTRIBUTING.md](documentation/markdown/CONTRIBUTING.md) antes de contribuir.
+Certifique-se de ler o arquivo [CONTRIBUTING.md](reference/markdown/CONTRIBUTING.md) antes de contribuir.
 
 ## 🐞 Relatório de Bugs e Problemas
 
@@ -97,8 +97,8 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 
 Para realizar a instalação, siga o passo a passo: 
 
-- [Instalação em ambientes Microsoft Windows](documentation/markdown/Windows_Installation.md)
-- [Instalação em ambientes GNU/Linux de base Debian](documentation/markdown/Linux_Installation.md)
+- [Instalação em ambientes Microsoft Windows](reference/markdown/Windows_Installation.md)
+- [Instalação em ambientes GNU/Linux de base Debian](reference/markdown/Linux_Installation.md)
 
 ---
 

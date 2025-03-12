@@ -9,6 +9,7 @@ from source.homepage import Home
 from source.passwords import Passwords
 from source.configuration.main import Configuration
 from source.utilities.main import Utilities
+from source.configuration.help import Help
 from time import sleep
 
 
@@ -20,7 +21,7 @@ def logout():
     logged_user, logged_user_password = Login().get_user_data(return_option="user_login_password")
 
     delete_session_query = """DELETE usuarios_logados FROM usuarios_logados WHERE nome_completo = %s AND documento = %s;"""
-    delete_session = QueryExecutor().insert_query(query=delete_session_query, values=(logged_user_name, logged_user_document), success_message="Logout efetuado.", error_message="Erro ao efetuar logout:")
+    QueryExecutor().insert_query(query=delete_session_query, values=(logged_user_name, logged_user_document), success_message="Logout efetuado.", error_message="Erro ao efetuar logout:")
 
     log_query = '''INSERT INTO seguranca.logs_atividades (usuario_log, tipo_log, conteudo_log) VALUES ( %s, %s, %s);'''
     log_values = (logged_user, "Logoff", "O usuário realizou logoff.")
@@ -60,8 +61,12 @@ def HomePage():
 
     sidebar.divider()
 
+    sidebar_help_button = sidebar.button(label=":question: Ajuda")
     sidebar_reload_button = sidebar.button(label=":cd: Recarregar")
     sidebar_logoff_button = sidebar.button(label=":lock: Sair")
+
+    if sidebar_help_button:
+        Help().main_menu()
 
     if sidebar_reload_button:
         with sidebar:

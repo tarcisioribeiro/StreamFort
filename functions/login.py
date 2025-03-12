@@ -227,9 +227,6 @@ class Login:
         user_document : str
             Documento do usuário logado.
         """
-        if not st.session_state.sessao_id:
-            st.session_state.sessao_id = ''
-
         user_login_query = ""
         user_data_query = ""
 

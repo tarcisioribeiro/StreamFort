@@ -121,6 +121,7 @@ try:
                 check_user_quantity = int(check_user_quantity)
 
                 if check_user_quantity == 0:
+                    st.session_state.sessao_id = ''
                     from functions.login import CreateUser
                     CreateUser().main_menu()
 

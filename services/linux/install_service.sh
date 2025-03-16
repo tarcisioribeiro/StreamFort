@@ -83,7 +83,7 @@ while true; do
   blue "Repita a senha: "
   read -s confirmation
   if [ "$password" = "$confirmation" ]; then
-    db_script="documentation/database/implantation_seguranca.sql"
+    db_script="reference/database/implantation_seguranca.sql"
     if [ -f "$db_script" ]; then
       blue "Executando script de implantação do banco de dados..."
       mysql -u root -p"$password" <"$db_script"

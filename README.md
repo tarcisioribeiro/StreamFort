@@ -6,7 +6,7 @@ Um aplicativo de gerenciamento de senhas, arquivos confidenciais, cartões e con
 
 ## 🛠 Sobre o Projeto
 
-Este projeto é um software livre e está disponível para uso, modificação e distribuição, de acordo com os termos da licença [**MIT**](LICENSE). Ele é mantido unicamente por mim, e contribuições da comunidade são muito bem vindas.
+Este projeto é um software livre e está disponível para uso, modificação e distribuição, de acordo com os termos da licença [**MIT**](reference/manuals/LICENSE). Ele é mantido unicamente por mim, e contribuições da comunidade são muito bem vindas.
 
 ## ✨ Funcionalidade
 
@@ -14,7 +14,6 @@ Este projeto é um software livre e está disponível para uso, modificação e 
 
 ## 🚧 Limitações
 
-- **Versão nativa para Windows**: Atualmente, o projeto não oferece suporte nativo para sistemas Microsoft Windows, devido a um erro na execução do Streamlit em conjunto com o conector MySQL para o Python, que faz com que o processo seja encerrado em sequência. Devido a isso, a alternativa é a execução do aplicativo através do **[Subsistema Linux para Windows](https://learn.microsoft.com/pt-br/windows/wsl/install)**;
 - **Escalabilidade**: A solução foi projetada para uso em rede local, apesar de ser possível o acesso externo através do encaminhamento das portas usadas pelo Streamlit, utilizando o utilitário **[Ngrok](https://ngrok.com/)**;
 
 - **Autenticação**: Não há suporte ao login por email e autenticação de dois fatores no momento, o que pode representar uma limitação de segurança.
@@ -97,8 +96,7 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 
 Para realizar a instalação, siga o passo a passo: 
 
-- [Instalação em ambientes Microsoft Windows](reference/markdown/Windows_Installation.md)
-- [Instalação em ambientes GNU/Linux de base Debian](reference/markdown/Linux_Installation.md)
+- [Instalação via Docker](reference/markdown/Installation.md)
 
 ---
 

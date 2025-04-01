@@ -20,4 +20,4 @@ EXPOSE 8552 20307
 COPY reference/services/wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-CMD service mysql start && /wait-for-it.sh 3306 -- streamlit run main.py --server.port=8552 --server.address=0.0.0.0
+CMD ["sh", "-c", "service mysql start && /wait-for-it.sh 3306 -- streamlit run main.py --server.port=8552 --server.address=0.0.0.0"]

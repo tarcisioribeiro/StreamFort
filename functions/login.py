@@ -16,6 +16,7 @@ class CreateUser:
 
     def hash_password(self, password: str) -> bytes:
         """
+        Realiza a encriptação da senha informada pelo usuário.
 
         Parameters
         ----------
@@ -111,25 +112,31 @@ class CreateUser:
         check_user_quantity = int(check_user_quantity)
 
         col1, col2, col3 = st.columns(3)
+
         with col1:
+            st.header(body=":closed_lock_with_key: StreamFort")
+
+        with col2:
             st.header(body=":floppy_disk: Cadastro de usuário")
+
         st.divider()
 
         col4, col5, col6 = st.columns(3)
 
         with col6:
+            st.subheader(body=":white_check_mark: Validação de Dados")
             data_validator_expander = st.expander(
-                label="Validação dos dados",
+                label="Aviso",
                 expanded=True
             )
 
         if check_user_quantity == 0:
-
             with col6:
                 with data_validator_expander:
                     st.warning(body="Cadastre o primeiro usuário.")
 
         with col4:
+            st.subheader(body=":computer: Entrada de Dados")
             with st.expander(label="Dados de login", expanded=True):
                 user_login = st.text_input(
                     label="Login de usuário",
@@ -158,6 +165,7 @@ class CreateUser:
         sex_options = {"Masculino": "M", "Feminino": "F"}
 
         with col5:
+            st.subheader(body=" ")
             with st.expander(label="Dados do usuário", expanded=True):
                 user_name = st.text_input(
                     label="Nome de usuário",

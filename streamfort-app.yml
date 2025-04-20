@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   app:
     image: streamfort-app
     ports:
       - "8552:8552"
     environment:
-      - DATABASE_HOST=db
+      - DATABASE_HOST=localhost
       - DATABASE_PORT=3306
       - DATABASE_USER=root
       - DATABASE_PASSWORD=123
@@ -19,7 +17,7 @@ services:
       - .:/app
 
   db:
-    image: mysql:8.0
+    image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: '123'
       MYSQL_DATABASE: 'seguranca'

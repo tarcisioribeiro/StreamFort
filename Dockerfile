@@ -3,9 +3,9 @@ FROM ubuntu:22.04
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-  python3.10 python3-pip mysql-server netcat \
-  curl wget nano \
-  && apt-get clean
+    python3.10 python3-pip mysql-server netcat \
+    curl wget nano \
+    && apt-get clean
 
 COPY . .
 

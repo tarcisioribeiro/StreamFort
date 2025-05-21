@@ -1,7 +1,14 @@
-from dictionary.sql import (
+from dictionary.sql.bank_account_queries import (
+    account_details_query,
+    bank_accounts_with_name_query,
     check_user_bank_accounts_query,
-    search_bank_accounts_query
+    delete_account_query,
+    insert_password_query,
+    search_bank_accounts_query,
+    update_account_query
 )
+from dictionary.sql.other_queries import log_query
+from dictionary.user_data import user_id, user_document
 from dictionary.vars import (
     financial_institution_list,
     to_remove_list,
@@ -29,28 +36,13 @@ class BankAccount:
         is_bank_account_name_available : bool
             Se o nome de conta bancária está disponível ou não.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_login_password"
-        )
 
         is_bank_account_name_available: bool
 
-        bank_accounts_with_name_query = """
-        SELECT
-            COUNT(id_conta)
-        FROM
-            contas_bancarias
-        WHERE
-            nome_conta = %s
-            AND
-                nome_proprietario_conta = %s
-            AND
-                documento_proprietario_conta = %s;
-        """
         query_values = (
             bank_account_name,
-            logged_user_name,
-            logged_user_document
+            user_id,
+            user_document
         )
 
         bank_accounts_with_name_quantity = (
@@ -83,16 +75,11 @@ class BankAccount:
         user_accounts_quantity : int
             Quantidade de contas registradas pelo usuário.
         """
-        logged_user_name, logged_user_document = (
-            Login().get_user_data(
-                return_option="user_doc_name"
-            )
-        )
 
         user_accounts_quantity = QueryExecutor().simple_consult_query(
             check_user_bank_accounts_query,
-            params=(logged_user_name,
-                    logged_user_document
+            params=(user_id,
+                    user_document
                     )
         )
         user_accounts_quantity = (
@@ -114,21 +101,16 @@ class BankAccount:
         bank_accounts : list
             Lista com os nomes das contas bancárias.
         """
-        logged_user_name, logged_user_document = (
-            Login().get_user_data(
-                return_option="user_doc_name"
-            )
-        )
 
         user_bank_accounts = []
 
         bank_accounts = QueryExecutor().complex_consult_query(
             query=search_bank_accounts_query,
-            params=(logged_user_name,
-                    logged_user_document
+            params=(user_id,
+                    user_document
                     )
         )
-        bank_accounts = QueryExecutor().treat_numerous_simple_result(
+        bank_accounts = QueryExecutor().treat_simple_results(
             bank_accounts,
             to_remove_list
         )
@@ -142,12 +124,6 @@ class BankAccount:
         """
         Função para criação de uma nova conta.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password"
-        )
 
         col1, col2, col3 = st.columns(3)
 
@@ -225,7 +201,7 @@ class BankAccount:
             if confirm_data and register_new_account:
                 with col3:
                     with st.spinner(text='Aguarde...'):
-                        sleep(2.5)
+                        sleep(1.25)
                 is_name_available = self.check_if_bank_account_exists(
                     bank_account_name=account_name
                 )
@@ -238,22 +214,6 @@ class BankAccount:
                         ):
                             st.success(body="Nome de conta válida.")
 
-                    insert_password_query = """
-                    INSERT INTO
-                        contas_bancarias (
-                            nome_conta,
-                            instituicao_financeira,
-                            codigo_instituicao_financeira,
-                            agencia,
-                            numero_conta,
-                            digito_conta,
-                            senha_bancaria_conta,
-                            senha_digital_conta,
-                            nome_proprietario_conta,
-                            documento_proprietario_conta
-                            )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """
                     query_values = (
                         account_name,
                         financial_institution,
@@ -263,8 +223,8 @@ class BankAccount:
                         account_digit,
                         account_password,
                         digital_account_password,
-                        logged_user_name,
-                        logged_user_document
+                        user_id,
+                        user_document
                     )
                     QueryExecutor().insert_query(
                         insert_password_query,
@@ -272,17 +232,8 @@ class BankAccount:
                         'Conta cadastrada com sucesso!',
                         'Erro ao cadastrar conta:'
                     )
-                    log_query = '''
-                    INSERT INTO
-                        logs_atividades (
-                            usuario_log,
-                            tipo_log,
-                            conteudo_log
-                        )
-                    VALUES (%s, %s, %s)
-                    '''
                     log_query_values = (
-                        logged_user,
+                        user_id,
                         'Cadastro',
                         'Cadastrou a conta {}'.format(
                             query_values[0]
@@ -327,12 +278,7 @@ class BankAccount:
         """
         Função para a consulta de uma conta bancária.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password"
-        )
+
         user_accounts_quantity = self.get_user_accounts_quantity()
         if user_accounts_quantity == 0:
             col1, col2, col3 = st.columns(3)
@@ -368,32 +314,13 @@ class BankAccount:
                 consult_button = st.button(
                     label=":file_folder: Consultar conta"
                 )
-            account_details_query = '''
-            SELECT
-                CONCAT('Conta: ',
-                        contas_bancarias.nome_conta,
-                        ' - Instituição: ',
-                        contas_bancarias.instituicao_financeira),
-                contas_bancarias.agencia,
-                CONCAT('',
-                        contas_bancarias.numero_conta,
-                        '-',
-                        contas_bancarias.digito_conta),
-                contas_bancarias.senha_bancaria_conta,
-                contas_bancarias.senha_digital_conta
-            FROM
-                contas_bancarias
-            WHERE
-                contas_bancarias.nome_conta = %s
-                    AND contas_bancarias.nome_proprietario_conta = %s
-                    AND contas_bancarias.documento_proprietario_conta = %s;
-            '''
+
             result_list = QueryExecutor().complex_consult_query(
                 query=account_details_query,
                 params=(
                     selected_option,
-                    logged_user_name,
-                    logged_user_document
+                    user_id,
+                    user_document
                 )
             )
             result_list = QueryExecutor().treat_complex_result(
@@ -402,7 +329,7 @@ class BankAccount:
             )
             if confirm_password_selection and consult_button:
                 is_password_valid, hashed_password = (
-                    Login().check_login(logged_user, safe_password)
+                    Login().check_login(user_id, safe_password)
                 )
                 if (
                     safe_password != ""
@@ -412,7 +339,7 @@ class BankAccount:
                 ):
                     with col2:
                         with st.spinner(text="Aguarde..."):
-                            sleep(2.5)
+                            sleep(1.25)
                         st.subheader(
                             body="""
                             :white_check_mark: Dados da Consulta
@@ -427,17 +354,9 @@ class BankAccount:
                                 if aux_string.startswith('b'):
                                     aux_string = aux_string[1:]
                                 st.code(body="{}".format(aux_string))
-                            log_query = '''
-                            INSERT INTO
-                                logs_atividades (
-                                    usuario_log,
-                                    tipo_log,
-                                    conteudo_log
-                                )
-                            VALUES (%s, %s, %s);
-                            '''
+
                             query_values = (
-                                logged_user,
+                                user_id,
                                 'Consulta',
                                 '''
                                 Consultou a conta bancária {}.
@@ -495,12 +414,7 @@ class BankAccount:
         """
         Função para a atualização de uma conta bancária.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password"
-        )
+
         user_accounts_quantity = self.get_user_accounts_quantity()
         if user_accounts_quantity == 0:
             col1, col2, col3 = st.columns(3)
@@ -528,32 +442,12 @@ class BankAccount:
                     )
                     confirm_selection = st.checkbox(label="Confirmar seleção")
 
-            account_details_query = '''
-            SELECT
-                CONCAT('Conta: ',
-                        contas_bancarias.nome_conta,
-                        ' - Instituição: ',
-                        contas_bancarias.instituicao_financeira),
-                contas_bancarias.agencia,
-                CONCAT('',
-                        contas_bancarias.numero_conta,
-                        '-',
-                        contas_bancarias.digito_conta),
-                contas_bancarias.senha_bancaria_conta,
-                contas_bancarias.senha_digital_conta
-            FROM
-                contas_bancarias
-            WHERE
-                contas_bancarias.nome_conta = %s
-                    AND contas_bancarias.nome_proprietario_conta = %s
-                    AND contas_bancarias.documento_proprietario_conta = %s;'''
-
             result_list = QueryExecutor().complex_consult_query(
                 query=account_details_query,
                 params=(
                     selected_option,
-                    logged_user_name,
-                    logged_user_document
+                    user_id,
+                    user_document
                 )
             )
             result_list = QueryExecutor().treat_complex_result(
@@ -562,7 +456,7 @@ class BankAccount:
             )
             if confirm_selection:
                 is_password_valid, hashed_password = Login().check_login(
-                    logged_user,
+                    user_id,
                     safe_password
                 )
                 if (
@@ -609,10 +503,13 @@ class BankAccount:
                             confirm_new_bank_account_data = st.checkbox(
                                 label="Confirmar novos dados"
                             )
-                        update_bank_account_button = st.button(
-                            label="""
-                            :arrows_counterclockwise: Atualizar dados da conta
-                            """
+                        update_bank_account_button = (
+                            st.button(
+                                label="""{} {}""".format(
+                                    ":arrows_counterclockwise:",
+                                    "Atualizador dados da conta"
+                                )
+                            )
                         )
                     if (
                         confirm_new_bank_account_data
@@ -622,26 +519,14 @@ class BankAccount:
                     ):
                         with col1:
                             with st.spinner(text="Aguarde..."):
-                                sleep(2.5)
-                        update_account_query = '''
-                        UPDATE
-                            contas_bancarias
-                        SET
-                            senha_bancaria_conta = %s,
-                            senha_digital_conta = %s
-                        WHERE
-                            nome_conta = %s
-                            AND
-                                nome_proprietario_conta = %s
-                            AND
-                                documento_proprietario_conta = %s;
-                        '''
+                                sleep(1.25)
+
                         update_account_values = (
                             account_password,
                             digital_account_password,
                             selected_option,
-                            logged_user_name,
-                            logged_user_document
+                            user_id,
+                            user_document
                         )
                         QueryExecutor().insert_query(
                             query=update_account_query,
@@ -649,17 +534,9 @@ class BankAccount:
                             success_message="Conta atualizada com sucesso!",
                             error_message="Erro ao atualizar conta:"
                         )
-                        log_query = '''
-                        INSERT INTO
-                            logs_atividades (
-                                usuario_log,
-                                tipo_log,
-                                conteudo_log
-                            )
-                        VALUES (%s, %s, %s);
-                        '''
+
                         query_values = (
-                            logged_user,
+                            user_id,
                             'Atualização',
                             '''
                             Atualizou a conta bancária {}
@@ -730,10 +607,7 @@ class BankAccount:
         """
         Função para a exclusão de uma conta bancária.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password")
+
         user_accounts_quantity = self.get_user_accounts_quantity()
         if user_accounts_quantity == 0:
             col1, col2, col3 = st.columns(3)
@@ -762,32 +636,13 @@ class BankAccount:
                     confirm_password_selection = st.checkbox(
                         label="Confirmar seleção"
                     )
-            account_details_query = '''
-            SELECT
-                CONCAT('Conta: ',
-                        contas_bancarias.nome_conta,
-                        ' - Instituição: ',
-                        contas_bancarias.instituicao_financeira),
-                contas_bancarias.agencia,
-                CONCAT('',
-                        contas_bancarias.numero_conta,
-                        '-',
-                        contas_bancarias.digito_conta),
-                contas_bancarias.senha_bancaria_conta,
-                contas_bancarias.senha_digital_conta
-            FROM
-                contas_bancarias
-            WHERE
-                contas_bancarias.nome_conta = %s
-                    AND contas_bancarias.nome_proprietario_conta = %s
-                    AND contas_bancarias.documento_proprietario_conta = %s;
-            '''
+
             result_list = QueryExecutor().complex_consult_query(
                 query=account_details_query,
                 params=(
                     selected_option,
-                    logged_user_name,
-                    logged_user_document
+                    user_id,
+                    user_document
                 )
             )
             result_list = QueryExecutor().treat_complex_result(
@@ -796,7 +651,7 @@ class BankAccount:
             )
             if confirm_password_selection:
                 is_password_valid, hashed_password = Login().check_login(
-                    logged_user,
+                    user_id,
                     safe_password
                 )
                 if (
@@ -831,23 +686,12 @@ class BankAccount:
                         if delete_account_button and confirm_account_deletion:
                             with col2:
                                 with st.spinner(text="Aguarde..."):
-                                    sleep(2.5)
-                                delete_account_query = '''
-                                DELETE
-                                    contas_bancarias
-                                FROM
-                                    contas_bancarias
-                                WHERE
-                                    nome_conta = %s
-                                    AND
-                                        nome_proprietario_conta = %s
-                                    AND
-                                        documento_proprietario_conta = %s;
-                                '''
+                                    sleep(1.25)
+
                                 delete_account_values = (
                                     selected_option,
-                                    logged_user_name,
-                                    logged_user_document
+                                    user_id,
+                                    user_document
                                 )
                                 QueryExecutor().insert_query(
                                     query=delete_account_query,
@@ -855,17 +699,9 @@ class BankAccount:
                                     success_message="Conta excluída.",
                                     error_message="Erro ao excluir conta:"
                                 )
-                                log_query = '''
-                                INSERT INTO
-                                    logs_atividades (
-                                        usuario_log,
-                                        tipo_log,
-                                        conteudo_log
-                                    )
-                                VALUES (%s, %s, %s);
-                                '''
+
                                 query_values = (
-                                    logged_user,
+                                    user_id,
                                     'Exclusão',
                                     '''
                                     Excluiu a conta bancária {}

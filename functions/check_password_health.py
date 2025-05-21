@@ -1,6 +1,3 @@
-import streamlit as st
-
-
 class PasswordValidator:
     """
     Realiza a análise da validade e força de senhas.

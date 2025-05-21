@@ -1,10 +1,16 @@
-from dictionary.sql import (
+from dictionary.sql.archive_queries import (
+    archive_content_query,
+    archives_with_name_query,
+    delete_archive_query,
+    insert_archive_query,
     search_user_archives_quantity,
     search_user_archives_name
 )
+from dictionary.sql.other_queries import log_query
+from dictionary.user_data import user_id, user_document
 from dictionary.vars import to_remove_list, to_remove_archive_list
-from functions.query_executor import QueryExecutor
 from functions.login import Login
+from functions.query_executor import QueryExecutor
 from time import sleep
 import streamlit as st
 
@@ -25,22 +31,7 @@ class Archives:
         """
         is_archive_name_available: bool
 
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_login_password")
-
-        archives_with_name_query = """
-        SELECT
-            COUNT(id_arquivo)
-        FROM
-            arquivo_texto
-        WHERE
-            nome_arquivo = %s
-            AND
-                usuario_associado = %s
-            AND
-                documento_usuario_associado = %s;
-        """
-        query_values = (archive_name, logged_user_name, logged_user_document)
+        query_values = (archive_name, user_id, user_document)
 
         archives_with_name_quantity = QueryExecutor().simple_consult_query(
             query=archives_with_name_query,
@@ -69,13 +60,10 @@ class Archives:
         -------
         user_archives_quantity (int): A quantidade de arquivos registrados.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
 
         user_archives_quantity = QueryExecutor().simple_consult_query(
             search_user_archives_quantity,
-            params=(logged_user_name, logged_user_document)
+            params=(user_id, user_document)
         )
         user_archives_quantity = QueryExecutor().treat_simple_result(
             user_archives_quantity, to_remove_list)
@@ -91,15 +79,13 @@ class Archives:
         -------
         archives_names (list): A lista com o nome dos arquivos.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
 
         archives_names = []
         user_archives_name = QueryExecutor().complex_consult_query(
             search_user_archives_name,
-            params=(logged_user_name, logged_user_document)
+            params=(user_id, user_document)
         )
-        user_archives_name = QueryExecutor().treat_numerous_simple_result(
+        user_archives_name = QueryExecutor().treat_simple_results(
             user_archives_name,
             to_remove_list
         )
@@ -113,11 +99,6 @@ class Archives:
         """
         Função para criação de um novo arquivo.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password"
-        )
 
         col1, col2 = st.columns(2)
 
@@ -141,7 +122,7 @@ class Archives:
                     content = uploaded_file.read().decode("utf-8")
                     with col2:
                         with st.spinner(text="Carregando arquivo..."):
-                            sleep(2.5)
+                            sleep(1.25)
                         st.subheader(
                             body=":white_check_mark: Validação do Arquivo")
                         if content != "":
@@ -166,7 +147,7 @@ class Archives:
                 ):
                     (
                         is_name_available
-                    ) = self.check_if_archive_name_already_exists(
+                    ) = self.check_if_archive_already_exists(
                         archive_name=archive_name
                     )
 
@@ -178,42 +159,23 @@ class Archives:
                             ):
                                 st.success(body="Nome de arquivo disponível.")
 
-                        archive_query = """
-                        INSERT INTO
-                            arquivo_texto (
-                                nome_arquivo,
-                                conteudo,
-                                usuario_associado,
-                                documento_usuario_associado
-                                )
-                        VALUES (%s, %s, %s, %s);
-                        """
                         archive_values = (
                             archive_name,
                             content,
-                            logged_user_name,
-                            logged_user_document
+                            user_id,
+                            user_document
                         )
 
                     if content is not None:
                         QueryExecutor().insert_query(
-                            archive_query,
+                            insert_archive_query,
                             archive_values,
                             "Upload do arquivo realizado com sucesso!",
                             "Erro ao fazer upload do arquivo:"
                         )
 
-                        log_query = """
-                        INSERT INTO
-                            logs_atividades (
-                                usuario_log,
-                                tipo_log,
-                                conteudo_log
-                                )
-                        VALUES(%s, %s, %s);
-                        """
                         log_query_values = (
-                            logged_user,
+                            user_id,
                             "Cadastro",
                             "Fez o upload do arquivo {}.".format(
                                 archive_name
@@ -232,7 +194,7 @@ class Archives:
                 ):
                     with col2:
                         with st.spinner(text=""):
-                            sleep(2.5)
+                            sleep(1.25)
                         st.subheader(
                             body=":white_check_mark: Validação do Arquivo")
                         if uploaded_file is None:
@@ -268,10 +230,6 @@ class Archives:
         """
         Função para a consulta de um arquivo.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password")
 
         user_archives_quantity = self.get_user_archives_quantity()
 
@@ -303,7 +261,7 @@ class Archives:
 
                 if consult_button and confirm_selection:
                     is_password_valid, hashed_password = Login().check_login(
-                        logged_user,
+                        user_id,
                         safe_password
                     )
 
@@ -314,33 +272,15 @@ class Archives:
                         and is_password_valid is True
                     ):
                         with st.spinner(text="Aguarde..."):
-                            sleep(2.5)
-
-                            archive_content_query = """
-                            SELECT
-                                txt.conteudo
-                            FROM
-                                arquivo_texto as txt
-                            INNER JOIN
-                                usuarios AS users
-                            ON txt.usuario_associado = users.nome
-                            AND
-                                txt.documento_usuario_associado = users.documento_usuario
-                            WHERE
-                                txt.nome_arquivo = %s
-                            AND
-                                txt.usuario_associado = %s
-                            AND
-                                txt.documento_usuario_associado = %s;
-                            """
+                            sleep(1.25)
 
                             archive_content = (
                                 QueryExecutor().simple_consult_query(
                                     archive_content_query,
                                     params=(
                                         selected_archive,
-                                        logged_user_name,
-                                        logged_user_document
+                                        user_id,
+                                        user_document
                                     )
                                 )
                             )
@@ -426,13 +366,6 @@ class Archives:
         """
         Função para a atualização de um arquivo.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(
-            return_option="user_doc_name"
-        )
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password"
-        )
 
         user_archives_quantity = self.get_user_archives_quantity()
 
@@ -463,7 +396,7 @@ class Archives:
                         (
                             is_password_valid,
                             hashed_password
-                        ) = Login().check_login(logged_user, safe_password)
+                        ) = Login().check_login(user_id, safe_password)
 
                         if (
                             safe_password != ""
@@ -474,30 +407,14 @@ class Archives:
                             with st.spinner(text="Aguarde..."):
                                 sleep(0.5)
 
-                            archive_content_query = """
-                            SELECT
-                                txt.nome_arquivo,
-                                txt.conteudo
-                            FROM
-                                arquivo_texto AS txt
-                            INNER JOIN
-                                usuarios AS users
-                            ON txt.usuario_associado = users.nome
-                            AND txt.documento_usuario_associado = users.documento_usuario
-                            WHERE
-                                txt.nome_arquivo = %s
-                                AND txt.usuario_associado = %s
-                                AND txt.documento_usuario_associado = %s;
-                            """
-
                             archive_content = (
                                 QueryExecutor().complex_compund_query(
                                     query=archive_content_query,
                                     list_quantity=2,
                                     params=(
                                         selected_archive,
-                                        logged_user_name,
-                                        logged_user_document
+                                        user_id,
+                                        user_document
                                     )
                                 )
                             )
@@ -583,7 +500,7 @@ class Archives:
                             if confirm_new_data and update_archive_button:
 
                                 with st.spinner(text="Aguarde..."):
-                                    sleep(2.5)
+                                    sleep(1.25)
 
                                 if (
                                     new_archive_name != ""
@@ -605,42 +522,23 @@ class Archives:
                                                     body="Nome disponível."
                                                 )
 
-                                        archive_query = """
-                                        INSERT INTO
-                                            arquivo_texto (
-                                                nome_arquivo,
-                                                conteudo,
-                                                usuario_associado,
-                                                documento_usuario_associado
-                                                )
-                                        VALUES (%s, %s, %s, %s)
-                                        """
                                         archive_values = (
                                             new_archive_name,
                                             content,
-                                            logged_user_name,
-                                            logged_user_document
+                                            user_id,
+                                            user_document
                                         )
 
                                         if content is not None:
                                             QueryExecutor().insert_query(
-                                                archive_query,
+                                                insert_archive_query,
                                                 archive_values,
                                                 "Upload realizado.",
                                                 "Erro ao fazer upload:"
                                             )
 
-                                            log_query = """
-                                            INSERT INTO
-                                                logs_atividades (
-                                                    usuario_log,
-                                                    tipo_log,
-                                                    conteudo_log
-                                                )
-                                            VALUES(%s, %s, %s)
-                                            """
                                             log_query_values = (
-                                                logged_user,
+                                                user_id,
                                                 "Atualização",
                                                 "Arquivo {} alterado.".format(
                                                     new_archive_name
@@ -700,10 +598,6 @@ class Archives:
         """
         Função para a exclusão de um arquivo.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password")
 
         user_archives_quantity = self.get_user_archives_quantity()
 
@@ -733,7 +627,7 @@ class Archives:
                     if confirm_selection:
                         (
                             is_password_valid, hashed_password
-                        ) = Login().check_login(logged_user, safe_password)
+                        ) = Login().check_login(user_id, safe_password)
                         if (
                             safe_password != ""
                             and confirm_safe_password != ""
@@ -743,32 +637,14 @@ class Archives:
                             with st.spinner(text="Aguarde..."):
                                 sleep(0.5)
 
-                            archive_content_query = """
-                            SELECT
-                                txt.nome_arquivo,
-                                txt.conteudo
-                            FROM
-                                arquivo_texto AS txt
-                            INNER JOIN
-                                usuarios AS users
-                                ON txt.usuario_associado = users.nome
-                            AND
-                                txt.documento_usuario_associado = users.documento_usuario
-                            WHERE
-                                txt.nome_arquivo = %s
-                            AND
-                                txt.usuario_associado = %s
-                                AND txt.documento_usuario_associado = %s;
-                            """
-
                             archive_content = (
                                 QueryExecutor().complex_compund_query(
                                     query=archive_content_query,
                                     list_quantity=2,
                                     params=(
                                         selected_archive,
-                                        logged_user_name,
-                                        logged_user_document
+                                        user_id,
+                                        user_document
                                     )
                                 )
                             )
@@ -815,23 +691,12 @@ class Archives:
                             if confirm_data_deletion and delete_archive_button:
                                 with col2:
                                     with st.spinner(text="Aguarde..."):
-                                        sleep(2.5)
+                                        sleep(1.25)
 
-                                    delete_archive_query = '''
-                                    DELETE txt FROM arquivo_texto AS txt
-                                    INNER JOIN usuarios AS users
-                                    ON txt.usuario_associado = users.nome
-                                    AND
-                                        txt.documento_usuario_associado = users.documento_usuario
-                                    WHERE
-                                    txt.nome_arquivo = %s
-                                    AND txt.usuario_associado = %s
-                                    AND txt.documento_usuario_associado = %s;
-                                    '''
                                     archive_values = (
                                         selected_archive,
-                                        logged_user_name,
-                                        logged_user_document
+                                        user_id,
+                                        user_document
                                     )
 
                                     QueryExecutor().insert_query(
@@ -840,17 +705,9 @@ class Archives:
                                         "Arquivo deletado com sucesso!",
                                         "Erro ao deletar arquivo:"
                                     )
-                                    log_query = """
-                                    INSERT INTO
-                                        logs_atividades (
-                                            usuario_log,
-                                            tipo_log,
-                                            conteudo_log
-                                        )
-                                    VALUES(%s, %s, %s)
-                                    """
+
                                     log_query_values = (
-                                        logged_user,
+                                        user_id,
                                         "Exclusão",
                                         "Arquivo {} excluído.".format(
                                             selected_archive

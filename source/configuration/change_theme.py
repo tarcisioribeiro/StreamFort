@@ -1,4 +1,6 @@
-from dictionary.vars import absolute_app_path, dark_theme, server_config, light_theme
+from dictionary.vars import (
+    absolute_app_path, dark_theme, server_config, light_theme
+)
 from time import sleep
 import streamlit as st
 
@@ -44,14 +46,19 @@ class ChangeTheme:
             st.subheader(body=":computer: Opções")
 
             with st.expander(label="Aparência", expanded=True):
-                selected_theme = st.radio(label="Tema", options=["Escuro", "Claro"])
+                selected_theme = st.radio(
+                    label="Tema",
+                    options=["Escuro", "Claro"]
+                )
 
-            theme_confirm_option = st.button(label=":white_check_mark: Confirmar opção")
+            theme_confirm_option = st.button(
+                label=":white_check_mark: Confirmar opção"
+            )
 
         if selected_theme != "" and theme_confirm_option:
             with col5:
                 with st.spinner(text="Aguarde..."):
-                    sleep(2.5)
+                    sleep(1.25)
                     self.change_theme(selected_theme)
-                sleep(2.5)
+                sleep(1.25)
                 st.rerun()

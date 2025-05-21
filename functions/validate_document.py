@@ -62,7 +62,9 @@ class Documents:
         """
         if len(owner_document) != 11:
             st.error(
-                body="O documento pessoal não tem menos e nem mais que 11 caracteres."
+                body="""
+                O documento pessoal não tem menos e nem mais que 11 caracteres.
+                """
             )
         else:
             st.info(body="Validando documento...")
@@ -98,5 +100,8 @@ class Documents:
                     body="O documento {} é válido.".format(owner_document))
                 return True
             else:
-                st.error(body="O documento {} é inválido.".format(owner_document))
+                st.error(body="O documento {} é inválido.".format(
+                    owner_document
+                    )
+                )
                 return False

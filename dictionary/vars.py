@@ -48,43 +48,68 @@ first_month_day = first_month_day.date()
 today = str(today)
 first_month_day = str(first_month_day)
 
-
-db_host = os.getenv("DB_HOST")
+db_host = os.getenv("DB_HOSTNAME")
 db_port = os.getenv("DB_PORT")
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
 db_database = os.getenv("DB_NAME")
 
-if os.name == "nt":
-    db_config = {
-        "host": db_host,
-        "port": db_port,
-        "user": db_user,
-        "password": db_password,
-        "database": db_database,
-        "use_pure": True,
-        "ssl_disabled": True,
-        "charset": "utf8"
-    }
+db_config = {
+    "host": db_host,
+    "port": db_port,
+    "user": db_user,
+    "password": db_password,
+    "database": db_database
+}
 
-if os.name == "posix":
-    db_config = {
-        "host": db_host,
-        "port": db_port,
-        "user": db_user,
-        "password": db_password,
-        "database": db_database
-    }
+field_names = [
+    "Site",
+    "Link",
+    "Login",
+    "Senha"
+]
 
-field_names: list = ["Site", "Link", "Login", "Senha"]
-bank_account_field_names: list = [
-    "Nome", "Agência", "Número da Conta", "Senha bancária", "Senha digital"]
+bank_account_field_names = [
+    "Nome",
+    "Agência",
+    "Número da Conta",
+    "Senha bancária",
+    "Senha digital"
+]
 
-to_remove_list: list = [
-    "'", ")", "(", ",", "Decimal", "[", "]", "\\", "datetime.date"]
-to_remove_archive_list: list = [
-    "'", ")", "(", ",", "Decimal", "[", "]", "datetime.date",]
+to_remove_list = [
+    "'",
+    ")",
+    "(",
+    ",",
+    "Decimal",
+    "[",
+    "]",
+    "\\",
+    "datetime.date"
+]
 
-financial_institution_list = ['Mercado Pago', 'Itaú', 'Nubank',
-                              'Bradesco', 'Sicoob', 'C6 Bank', 'Banco do Brasil', 'Pagbank', 'Picpay']
+to_remove_archive_list = [
+    "'",
+    ")",
+    "(",
+    ",",
+    "Decimal",
+    "[",
+    "]",
+    "datetime.date",
+]
+
+financial_institution_list = [
+    'Mercado Pago',
+    'Itaú',
+    'Nubank',
+    'Bradesco',
+    'Sicoob',
+    'C6 Bank',
+    'Banco do Brasil',
+    'Pagbank',
+    'Picpay'
+]
+
 financial_institution_list.sort()

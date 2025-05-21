@@ -5,10 +5,17 @@ import streamlit as st
 
 class QueryExecutor:
     """
-    Classe com métodos para inserção, atualização e tratamento de dados obtidos do banco de dados.
+    Classe com métodos para inserção,
+    atualização e tratamento de dados obtidos do banco de dados.
     """
 
-    def insert_query(self, query: str, values: tuple, success_message: str, error_message: str):
+    def insert_query(
+        self,
+        query: str,
+        values: tuple,
+        success_message: str,
+        error_message: str
+    ):
         """
         Realiza a inserção da consulta no banco de dados.
 
@@ -19,9 +26,9 @@ class QueryExecutor:
         values : tuple
             A tupla com os valores a serem inseridos.
         success_message : str
-            A mensagem a ser exibida caso a consulta seja inserida com sucesso.
+            A mensagem a ser exibida caso a query seja inserida com sucesso.
         error_message : str
-            A mensagem a ser exibida caso a consulta apresente erros ao ser inserida.
+            A mensagem a ser exibida caso a query apresente erros.
         """
         try:
             connection = mysql.connector.connect(**db_config)
@@ -40,7 +47,8 @@ class QueryExecutor:
 
     def simple_consult_query(self, query: str, params: tuple):
         """
-        Realiza uma consulta simples no banco de dados, de acordo com os parametros informados.
+        Realiza uma consulta simples no banco de dados,
+        de acordo com os parametros informados.
 
         Parameters
         ----------
@@ -66,35 +74,15 @@ class QueryExecutor:
             if connection.is_connected():
                 connection.close()
 
-    def simple_consult_brute_query(self, query: str):
+    def complex_compund_query(
+        self,
+        query: str,
+        list_quantity: int,
+        params: tuple
+    ):
         """
-        Realiza uma consulta simples no banco de dados.
-
-        Parameters
-        ----------
-        query : str
-            A consulta a ser inserida.
-        """
-        try:
-            connection = mysql.connector.connect(**db_config)
-            cursor = connection.cursor()
-            cursor.execute(query)
-            simple_value = cursor.fetchone()
-            cursor.close()
-            if simple_value is not None:
-                return simple_value
-            else:
-                return 0
-        except mysql.connector.Error as error:
-            st.toast(":warning: Erro ao consultar dado: {}".format(error))
-            st.error(error)
-        finally:
-            if connection.is_connected():
-                connection.close()
-
-    def complex_compund_query(self, query: str, list_quantity: int, params: tuple):
-        """
-        Realiza uma consulta composta no banco de dados, de acordo com os parametros informados.
+        Realiza uma consulta composta no banco de dados,
+        de acordo com os parametros informados.
 
         Parameters
         ----------
@@ -114,45 +102,6 @@ class QueryExecutor:
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
             cursor.execute(query, params, multi=True)
-
-            lists = [[] for _ in range(list_quantity)]
-
-            for row in cursor.fetchall():
-                for i in range(list_quantity):
-                    lists[i].append(row[i])
-
-            return lists
-
-        except mysql.connector.Error as err:
-            st.error("Erro ao consultar dados compostos: {}".format(err))
-            return None
-
-        finally:
-            if connection.is_connected():
-                connection.close()
-
-    def complex_compund_brute_query(self, query: str, list_quantity: int):
-        """
-        Realiza uma consulta composta no banco de dados, de acordo com os parametros informados.
-
-        Parameters
-        ----------
-        query : str
-            A consulta a ser inserida.
-        list_quantity : int
-            A quantidade de listas que deverão ser criadas.
-        params : tuple
-            A tupla com os valores a serem consultados.
-
-        Returns
-        -------
-        lists : list
-            A lista com as listas de cada valor da consulta.
-        """
-        try:
-            connection = mysql.connector.connect(**db_config)
-            cursor = connection.cursor()
-            cursor.execute(query)
 
             lists = [[] for _ in range(list_quantity)]
 
@@ -172,7 +121,8 @@ class QueryExecutor:
 
     def complex_consult_query(self, query: str, params: tuple):
         """
-        Realiza uma consulta complexa no banco de dados, de acordo com os parametros informados.
+        Realiza uma consulta complexa no banco de dados,
+        de acordo com os parametros informados.
 
         Parameters
         ----------
@@ -203,40 +153,10 @@ class QueryExecutor:
             if connection.is_connected():
                 connection.close()
 
-    def complex_consult_brute_query(self, query: str):
-        """
-        Realiza uma consulta complexa no banco de dados.
-
-        Parameters
-        ----------
-        query : str
-            A consulta a ser inserida.
-
-        Returns
-        -------
-        complex_value : list
-            A lista com os valores da consulta.
-        """
-        try:
-            connection = mysql.connector.connect(**db_config)
-            cursor = connection.cursor()
-            cursor.execute(query)
-            complex_value = cursor.fetchall()
-            cursor.close()
-            if complex_value is not None:
-                return complex_value
-            else:
-                return [0]
-        except mysql.connector.Error as error:
-            st.toast(":warning: Erro ao consultar dados: {}".format(error))
-            st.error(error)
-        finally:
-            if connection.is_connected():
-                connection.close()
-
     def treat_simple_result(self, value_to_treat: str, values_to_remove: list):
         """
-        Realiza o tratamento de uma cadeia de caracteres, de acordo com os parametros informados.
+        Realiza o tratamento de uma cadeia de caracteres,
+        de acordo com os parametros informados.
 
         Parameters
         ----------
@@ -258,9 +178,14 @@ class QueryExecutor:
 
         return final_result
 
-    def treat_numerous_simple_result(self, values_to_treat: list, values_to_remove: list):
+    def treat_simple_results(
+        self,
+        values_to_treat: list,
+        values_to_remove: list
+    ):
         """
-        Realiza o tratamento de varias cadeias de caracteres, de acordo com os parametros informados.
+        Realiza o tratamento de varias cadeias de caracteres,
+        de acordo com os parametros informados.
 
         Parameters
         ----------
@@ -295,7 +220,8 @@ class QueryExecutor:
 
     def treat_complex_result(self, values_to_treat, values_to_remove: list):
         """
-        Realiza o tratamento de uma cadeia de caracteres, de acordo com os parametros informados.
+        Realiza o tratamento de uma cadeia de caracteres,
+        de acordo com os parametros informados.
 
         Parameters
         ----------
@@ -346,38 +272,12 @@ class QueryExecutor:
         cursor.execute(query)
         return cursor.fetchone() is not None
 
-    def update_table_registers(self, table: str, table_field: str, id_list: list):
-        """
-        Realiza a atualização de registros no banco de dados, de acordo com os parametros informados.
-
-        Parameters
-        ----------
-        table : str
-            A tabela que será atualizada.
-        table_field : str
-            O campo da tabela que será atualizado.
-        id_list : list
-            Os id's de identificação dos registros que serão atualizados.
-        """
-        for i in range(0, len(id_list)):
-
-            update_id_query = """UPDATE {} SET pago = 'S' WHERE id_{} = {}""".format(
-                table, table_field, id_list[i])
-
-            try:
-                connection = mysql.connector.connect(**db_config)
-                cursor = connection.cursor()
-                cursor.execute(update_id_query)
-                connection.commit()
-                cursor.close()
-
-            except mysql.connector.Error as err:
-                st.toast(f"Erro ao pagar despesas do cartão: {err}")
-            finally:
-                if connection.is_connected():
-                    connection.close()
-
-    def update_table_unique_register(self, query: str, success_message: str, error_message: str):
+    def update_table_unique_register(
+        self,
+        query: str,
+        success_message: str,
+        error_message: str
+    ):
         """
         Realiza a atualização de um registro no banco de dados.
 
@@ -386,9 +286,9 @@ class QueryExecutor:
         query : str
             A consulta de atualização.
         success_message : str
-            A mensagem que será exibida caso a atualização seja concluída.\n
+            A mensagem que será exibida caso a atualização seja concluída.
         error_message : str
-            A mensagem que será exibida caso ocorram erros durante a atualização.
+            A mensagem a ser exibida caso ocorram erros durante a atualização.
         """
         try:
             connection = mysql.connector.connect(**db_config)

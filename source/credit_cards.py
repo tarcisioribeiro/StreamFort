@@ -1,7 +1,14 @@
-from dictionary.sql import (
+from dictionary.sql.credit_cards_queries import (
+    card_insert_query,
+    cards_with_name_query,
+    credit_card_data_query,
+    delete_card_query,
     search_user_credit_cards_number,
-    search_user_credit_cards_names
+    search_user_credit_cards_names,
+    update_card_query
 )
+from dictionary.sql.other_queries import log_query
+from dictionary.user_data import user_id, user_document
 from dictionary.vars import to_remove_list, today
 from functions.get_actual_time import GetActualTime
 from functions.login import Login
@@ -26,26 +33,13 @@ class CreditCards:
         is_card_name_available : bool
             Se o nome do cartão está disponível ou não.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_login_password"
-        )
 
         is_card_name_available: bool
 
-        cards_with_name_query = """
-        SELECT
-            COUNT(id_cartao)
-        FROM
-            cartao_credito
-        WHERE
-            nome_cartao = %s
-            AND proprietario_cartao = %s
-            AND documento_titular = %s;
-        """
         query_values = (
             credit_card_name,
-            logged_user_name,
-            logged_user_document
+            user_id,
+            user_document
         )
 
         cards_with_name_quantity = QueryExecutor().simple_consult_query(
@@ -74,15 +68,12 @@ class CreditCards:
         user_credit_cards_number : int
             Número de cartões registrados pelo cliente.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
 
         user_credit_cards_number = QueryExecutor().simple_consult_query(
             search_user_credit_cards_number,
             params=(
-                logged_user_name,
-                logged_user_document
+                user_id,
+                user_document
             )
         )
         user_credit_cards_number = QueryExecutor().treat_simple_result(
@@ -102,21 +93,18 @@ class CreditCards:
         credit_cards_options : list
             Lista com o nome dos cartões.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
 
         credit_cards_options = []
 
         user_credit_cards_names = QueryExecutor().complex_consult_query(
             search_user_credit_cards_names,
             params=(
-                logged_user_name,
-                logged_user_document
+                user_id,
+                user_document
             )
         )
         user_credit_cards_names = (
-            QueryExecutor().treat_numerous_simple_result(
+            QueryExecutor().treat_simple_results(
                 user_credit_cards_names,
                 to_remove_list
             )
@@ -130,12 +118,6 @@ class CreditCards:
         """
         Função para criação de um novo cartão de cŕedito.
         """
-        logged_user_name, logged_user_document = Login().get_user_data(
-            return_option="user_doc_name"
-        )
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password"
-        )
 
         st.divider()
 
@@ -212,7 +194,7 @@ class CreditCards:
             if register_button and confirm_data:
                 with col2:
                     with st.spinner(text="Aguarde..."):
-                        sleep(2.5)
+                        sleep(1.25)
                 if (
                         card_name != ''
                         and card_number != ''
@@ -265,25 +247,12 @@ class CreditCards:
                                                     body="Nome válido."
                                                 )
 
-                                        card_insert_query = """
-                                        INSERT INTO
-                                            seguranca.cartao_credito (
-                                                nome_cartao,
-                                                numero_cartao,
-                                                nome_titular,
-                                                proprietario_cartao,
-                                                documento_titular,
-                                                data_validade,
-                                                codigo_seguranca
-                                            )
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s);
-                                        """
                                         card_insert_values = (
                                             card_name,
                                             card_number,
                                             owner_on_card_name,
-                                            logged_user_name,
-                                            logged_user_document,
+                                            user_id,
+                                            user_document,
                                             expiration_date,
                                             security_code
                                         )
@@ -297,17 +266,9 @@ class CreditCards:
                                                 Erro ao cadastrar cartão:
                                             """
                                         )
-                                        log_query = '''
-                                        INSERT INTO
-                                            seguranca.logs_atividades (
-                                                usuario_log,
-                                                tipo_log,
-                                                conteudo_log
-                                            )
-                                        VALUES (%s, %s, %s);
-                                        '''
+
                                         log_values = (
-                                            logged_user,
+                                            user_id,
                                             'Cadastro',
                                             '''Cadastrou o cartão {}
                                             com o final {}.'''.format(
@@ -402,10 +363,6 @@ class CreditCards:
         """
         Função para a consulta de um cartão de crédito.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password")
 
         user_credit_cards_number = self.get_user_credit_cards_number()
 
@@ -442,7 +399,7 @@ class CreditCards:
                     (
                         is_password_valid, hashed_password
                     ) = Login().check_login(
-                        logged_user,
+                        user_id,
                         safe_password
                     )
 
@@ -460,52 +417,26 @@ class CreditCards:
                             "Código de segurança"
                         ]
 
-                        credit_card_data_query = '''
-                        SELECT
-                            CONCAT(
-                                cc.numero_cartao,
-                                ' - ',
-                                cc.nome_cartao
-                            ),
-                            cc.nome_titular,
-                            DATE_FORMAT(
-                                cc.data_validade,
-                                '%d/%m/%Y'
-                            ),
-                            cc.codigo_seguranca
-                        FROM
-                            cartao_credito AS cc
-                        INNER JOIN usuarios AS users
-                        ON
-                            cc.proprietario_cartao = users.nome
-                        AND
-                        cc.documento_titular = users.documento_usuario
-                        WHERE
-                            cc.proprietario_cartao = %s
-                        AND cc.documento_titular = %s
-                        AND cc.nome_cartao = %s;
-                        '''
-
                         credit_card_data = (
                             QueryExecutor().complex_compund_query(
                                 query=credit_card_data_query,
                                 list_quantity=4,
                                 params=(
-                                    logged_user_name,
-                                    logged_user_document,
+                                    user_id,
+                                    user_document,
                                     selected_user_card
                                 )
                             )
                         )
                         credit_card_data = (
-                            QueryExecutor().treat_numerous_simple_result(
+                            QueryExecutor().treat_simple_results(
                                 credit_card_data,
                                 to_remove_list
                             )
                         )
                         with col2:
                             with st.spinner(text="Aguarde..."):
-                                sleep(2.5)
+                                sleep(1.25)
                             st.subheader(
                                 body=":white_check_mark: Dados da Consulta"
                             )
@@ -519,17 +450,9 @@ class CreditCards:
 
                                 last_card_numbers = str(
                                     credit_card_data[1])[-4:]
-                                log_query = '''
-                                INSERT INTO
-                                    logs_atividades (
-                                        usuario_log,
-                                        tipo_log,
-                                        conteudo_log
-                                    )
-                                VALUES(%s, %s, %s)
-                                '''
+
                                 log_values = (
-                                    logged_user,
+                                    user_id,
                                     "Consulta",
                                     """Consultou os dados do
                                     cartão {} com o final {}.
@@ -590,10 +513,6 @@ class CreditCards:
         """
         Função para a atualização de um cartão de crédito.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password")
 
         user_credit_cards_number = self.get_user_credit_cards_number()
 
@@ -627,7 +546,7 @@ class CreditCards:
                         is_password_valid,
                         hashed_password
                     ) = Login().check_login(
-                        logged_user,
+                        user_id,
                         safe_password
                     )
                     if (
@@ -636,41 +555,20 @@ class CreditCards:
                         and safe_password == confirm_safe_password
                         and is_password_valid
                     ):
-                        credit_card_data_query = '''
-                        SELECT
-                            cc.nome_cartao,
-                            cc.numero_cartao,
-                            cc.nome_titular,
-                            DATE_FORMAT(
-                                cc.data_validade,
-                                '%d/%m/%Y'
-                                ),
-                            cc.codigo_seguranca
-                        FROM
-                            cartao_credito AS cc
-                                INNER JOIN
-                            usuarios AS users
-                            ON cc.proprietario_cartao = users.nome
-                        AND cc.documento_titular = users.documento_usuario
-                        WHERE
-                            cc.proprietario_cartao = %s
-                                AND cc.documento_titular = %s
-                                AND cc.nome_cartao = %s;
-                        '''
 
                         credit_card_data = (
                             QueryExecutor().complex_compund_query(
                                 query=credit_card_data_query,
-                                list_quantity=5,
+                                list_quantity=4,
                                 params=(
-                                    logged_user_name,
-                                    logged_user_document,
+                                    user_id,
+                                    user_document,
                                     selected_user_card
                                 )
                             )
                         )
                         credit_card_data = (
-                            QueryExecutor().treat_numerous_simple_result(
+                            QueryExecutor().treat_simple_results(
                                 credit_card_data,
                                 to_remove_list
                             )
@@ -726,11 +624,13 @@ class CreditCards:
                                     label="Confirmar dados",
                                     value=False
                                 )
-                            update_card_button = st.button(
-                                label="""
-                                :arrows_counterclockwise:
-                                Atualizar dados do cartão
-                                """)
+                            update_card_button = (
+                                st.button(label="""{} {}""".format(
+                                    ":arrows_counterclockwise:",
+                                    "Atualizar cartão"
+                                )
+                                )
+                            )
 
                             if (
                                 confirm_data
@@ -741,7 +641,7 @@ class CreditCards:
                             ):
                                 with col2:
                                     with st.spinner(text="Aguarde..."):
-                                        sleep(2.5)
+                                        sleep(1.25)
                                     st.subheader(
                                         body="""
                                         :white_check_mark: Validação dos Dados
@@ -774,16 +674,7 @@ class CreditCards:
                                             st.success(
                                                 body="Número de cartão válido."
                                             )
-                                    update_card_query = '''
-                                    UPDATE
-                                        cartao_credito
-                                    SET
-                                        numero_cartao = %s,
-                                        data_validade = %s,
-                                        codigo_seguranca = %s
-                                    WHERE
-                                        nome_cartao = %s;
-                                    '''
+
                                     update_card_values = (
                                         card_number,
                                         expiration_date,
@@ -798,17 +689,9 @@ class CreditCards:
                                         Erro ao atualizar cartão:
                                         """
                                     )
-                                    log_query = '''
-                                    INSERT INTO
-                                        logs_atividades (
-                                            usuario_log,
-                                            tipo_log,
-                                            conteudo_log
-                                        )
-                                    VALUES(%s, %s, %s)
-                                    '''
+
                                     log_values = (
-                                        logged_user,
+                                        user_id,
                                         "Atualização",
                                         """
                                         Atualizou o cartão {} com o final {}.
@@ -888,10 +771,7 @@ class CreditCards:
         """
         Função para a exclusão de um cartão de crédito.
         """
-        logged_user_name, logged_user_document = Login(
-        ).get_user_data(return_option="user_doc_name")
-        logged_user, logged_user_password = Login().get_user_data(
-            return_option="user_login_password")
+
         user_credit_cards_number = self.get_user_credit_cards_number()
 
         st.divider()
@@ -925,7 +805,7 @@ class CreditCards:
                         is_password_valid,
                         hashed_password
                     ) = Login().check_login(
-                        logged_user,
+                        user_id,
                         safe_password
                     )
 
@@ -942,44 +822,19 @@ class CreditCards:
                             "Código de segurança"
                         ]
 
-                        credit_card_data_query = '''
-                        SELECT
-                            CONCAT(
-                                cc.numero_cartao,
-                                ' - ',
-                                cc.nome_cartao
-                            ),
-                            cc.nome_titular,
-                            DATE_FORMAT(
-                                cc.data_validade,
-                                '%d/%m/%Y'
-                            ),
-                            cc.codigo_seguranca
-                        FROM
-                            cartao_credito AS cc
-                        INNER JOIN
-                            usuarios AS users
-                        ON cc.proprietario_cartao = users.nome
-                        AND cc.documento_titular = users.documento_usuario
-                        WHERE
-                            cc.proprietario_cartao = %s
-                        AND
-                            cc.documento_titular = %s
-                        AND cc.nome_cartao = %s;
-                        '''
                         credit_card_data = (
                             QueryExecutor().complex_compund_query(
                                 query=credit_card_data_query,
                                 list_quantity=4,
                                 params=(
-                                    logged_user_name,
-                                    logged_user_document,
+                                    user_id,
+                                    user_document,
                                     selected_user_card
                                 )
                             )
                         )
                         credit_card_data = (
-                            QueryExecutor().treat_numerous_simple_result(
+                            QueryExecutor().treat_simple_results(
                                 values_to_treat=credit_card_data,
                                 values_to_remove=to_remove_list
                             )
@@ -1010,22 +865,12 @@ class CreditCards:
                             ):
                                 with col2:
                                     with st.spinner(text="Aguarde..."):
-                                        sleep(2.5)
-                                delete_card_query = '''
-                                DELETE
-                                    cartao_credito
-                                FROM
-                                    cartao_credito
-                                WHERE
-                                    nome_cartao = %s
-                                    AND
-                                    proprietario_cartao = %s
-                                    AND documento_titular = %s;
-                                '''
+                                        sleep(1.25)
+
                                 delete_card_values = (
                                     selected_user_card,
-                                    logged_user_name,
-                                    logged_user_document
+                                    user_id,
+                                    user_document
                                 )
                                 QueryExecutor().insert_query(
                                     query=delete_card_query,
@@ -1035,17 +880,9 @@ class CreditCards:
                                 )
                                 last_card_numbers = str(
                                     credit_card_data[1])[-4:]
-                                log_query = '''
-                                INSERT INTO
-                                    logs_atividades (
-                                        usuario_log,
-                                        tipo_log,
-                                        conteudo_log
-                                    )
-                                VALUES(%s, %s, %s)
-                                '''
+
                                 log_values = (
-                                    logged_user,
+                                    user_id,
                                     "Exclusão",
                                     """
                                     Excluiu o cartão {} com o final {}.

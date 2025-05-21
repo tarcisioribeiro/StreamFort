@@ -11,14 +11,16 @@ class PasswordGenerator:
 
     def generate_password(self, password_length: int, password_elements: list):
         """
-        Gera uma senha de acordo com o tamanho da cadeia de caracteres e complexidade definidas pelo usuário.
+        Gera uma senha de acordo com o tamanho da cadeia de caracteres
+        e complexidade definidas pelo usuário.
 
         Parameters
         ----------
         password_length : int
             O comprimento da senha, definido pelo usuário.
         password_elements : list
-            Os elementos que irão compor a senha, como números, letras maiúsculas e minúsculas e caracteres especiais.
+            Os elementos que irão compor a senha, como números,
+            letras maiúsculas e minúsculas e caracteres especiais.
 
         Returns
         -------
@@ -51,7 +53,7 @@ class PasswordGenerator:
             random_element = ""
             random_choice = choice(password_elements)
             if random_choice == "lower_cases":
-               random_element = choice(lower_case_alphabet_list)
+                random_element = choice(lower_case_alphabet_list)
             elif random_choice == "upper_cases":
                 random_element = choice(upper_case_alphabet_list)
             elif random_choice == "numbers":
@@ -59,9 +61,9 @@ class PasswordGenerator:
             elif random_choice == "special_characters":
                 random_element = choice(special_characters_group_list)
             formatted_password += random_element
-            
+
         return formatted_password
-    
+
     def main_menu(self):
         """
         Menu principal.
@@ -83,23 +85,44 @@ class PasswordGenerator:
 
         with col1:
             with st.expander(label="Opções", expanded=True):
-                selected_password_length = st.select_slider(label="Comprimento da senha", options=password_length_options, help="Comprimento da senha em caracteres.")
-                password_elements_selection = st.multiselect(label="Opções", options=password_elements.keys(), help="Elementos opcionais para a senha. Caso nenhum seja selecionado, serão incluídas letras minúsculas.", placeholder="Selecione uma opção")
+                selected_password_length = st.select_slider(
+                    label="Comprimento da senha",
+                    options=password_length_options,
+                    help="Comprimento da senha em caracteres."
+                )
+                password_elements_selection = st.multiselect(
+                    label="Opções",
+                    options=password_elements.keys(),
+                    help="""
+                    Elementos opcionais para a senha.
+                    Caso nenhum seja selecionado,
+                    serão incluídas letras minúsculas.
+                    """,
+                    placeholder="Selecione uma opção"
+                    )
                 confirm_options = st.checkbox(label="Confirmar opções")
             generate_password_button = st.button(label=":key: Gerar senha")
 
         with col2:
-            data_validation_expander = st.expander(label="Validação dos dados", expanded=True)
+            data_validation_expander = st.expander(
+                label="Validação dos dados",
+                expanded=True
+            )
 
             if confirm_options and generate_password_button:
                 with st.spinner(text="Aguarde..."):
-                    sleep(2.5)
+                    sleep(1.25)
 
                 password_selected_elements = []
                 for i in range(0, len(password_elements_selection)):
-                    password_selected_elements.append(password_elements[password_elements_selection[i]])
+                    password_selected_elements.append(
+                        password_elements[password_elements_selection[i]]
+                    )
 
-                generated_password = self.generate_password(password_length=selected_password_length, password_elements=password_selected_elements)
+                generated_password = self.generate_password(
+                    password_length=selected_password_length,
+                    password_elements=password_selected_elements
+                )
 
                 with data_validation_expander:
                     st.write("Senha gerada:")

@@ -8,6 +8,7 @@ from dictionary.sql.other_queries import (
 )
 from dictionary.sql.user_queries import (
     check_if_user_document_exists_query,
+    check_user_id_query,
     insert_new_user_query,
     name_doc_query,
     name_query,
@@ -354,8 +355,6 @@ class CreateUser:
         Menu principal da criação de usuário.
         """
 
-        user_id, user_document = Login().get_user_data()
-
         document = Documents()
 
         check_user_quantity = QueryExecutor().simple_consult_query(
@@ -480,6 +479,21 @@ class CreateUser:
                                 new_user_values,
                                 "Novo usuário cadastrado com sucesso!",
                                 "Erro ao cadastrar novo usuário:"
+                            )
+
+                            user_id = QueryExecutor().simple_consult_query(
+                                check_user_id_query,
+                                (user_login, user_document)
+                            )
+                            user_id = QueryExecutor().treat_simple_result(
+                                user_id,
+                                to_remove_list
+                            )
+
+                            Login().register_login(
+                                user_id,
+                                user_name,
+                                user_document
                             )
 
                             log_values = (

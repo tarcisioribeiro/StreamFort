@@ -329,7 +329,7 @@ class BankAccount:
             )
             if confirm_password_selection and consult_button:
                 is_password_valid, hashed_password = (
-                    Login().check_login(user_id, safe_password)
+                    Login().get_user_password(user_id, safe_password)
                 )
                 if (
                     safe_password != ""
@@ -455,7 +455,7 @@ class BankAccount:
                 values_to_remove=to_remove_list
             )
             if confirm_selection:
-                is_password_valid, hashed_password = Login().check_login(
+                is_password_valid, hashed_password = Login().get_user_password(
                     user_id,
                     safe_password
                 )
@@ -650,7 +650,7 @@ class BankAccount:
                 values_to_remove=to_remove_list
             )
             if confirm_password_selection:
-                is_password_valid, hashed_password = Login().check_login(
+                is_password_valid, hashed_password = Login().get_user_password(
                     user_id,
                     safe_password
                 )

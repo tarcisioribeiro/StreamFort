@@ -398,7 +398,7 @@ class CreditCards:
 
                     (
                         is_password_valid, hashed_password
-                    ) = Login().check_login(
+                    ) = Login().get_user_password(
                         user_id,
                         safe_password
                     )
@@ -545,7 +545,7 @@ class CreditCards:
                     (
                         is_password_valid,
                         hashed_password
-                    ) = Login().check_login(
+                    ) = Login().get_user_password(
                         user_id,
                         safe_password
                     )
@@ -804,7 +804,7 @@ class CreditCards:
                     (
                         is_password_valid,
                         hashed_password
-                    ) = Login().check_login(
+                    ) = Login().get_user_password(
                         user_id,
                         safe_password
                     )

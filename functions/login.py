@@ -40,6 +40,8 @@ class Login:
         """
         if 'session_id' not in st.session_state:
             st.session_state.session_id = str(uuid.uuid4())
+        elif 'session_id' in st.session_state:
+            pass
 
         user_data = QueryExecutor().complex_compund_query(
             query=user_data_query,
@@ -88,6 +90,41 @@ class Login:
             return (
                 bcrypt.checkpw(
                     password.encode('utf-8'),
+                    hashed_password
+                ),
+                hashed_password)
+        return False, '0'
+
+    def get_user_password(self, user_id, safe_password):
+        """
+        Coleta a senha do usuário.
+
+        Parameters
+        ----------
+        user_id
+            ID do usuário.
+        safe_password
+            Senha do usuário.
+
+        Returns
+        -------
+        bool
+            A validade do login.
+        hashed_password : str
+            A senha do usuário encriptada.
+        """
+
+        query = """SELECT senha FROM usuarios WHERE id = %s;"""
+        result = QueryExecutor().simple_consult_query(
+            query,
+            (user_id,)
+        )
+
+        if result:
+            hashed_password = result[0]
+            return (
+                bcrypt.checkpw(
+                    safe_password.encode('utf-8'),
                     hashed_password
                 ),
                 hashed_password)
@@ -205,8 +242,15 @@ class Login:
             with st.container():
                 with st.expander(label=":computer: Login", expanded=True):
 
-                    user = st.text_input(":closed_lock_with_key: Usuário")
-                    password = st.text_input(":key: Senha", type="password")
+                    user = st.text_input(
+                        label=":closed_lock_with_key: Usuário",
+                        key="user"
+                    )
+                    password = st.text_input(
+                        label=":key: Senha",
+                        type="password",
+                        key="psswd"
+                    )
                     login_button = st.button(label=":unlock: Entrar")
 
                     if login_button:
@@ -398,6 +442,7 @@ class CreateUser:
                     label="Login de usuário",
                     max_chars=25,
                     help="Deve conter apenas letras minúsculas, sem espaços.",
+                    key="user_login"
                 )
                 user_password = st.text_input(
                     label="Senha de usuário",
@@ -427,10 +472,12 @@ class CreateUser:
                     label="Nome de usuário",
                     max_chars=100,
                     help="Informe aqui seu nome completo.",
+                    key="user_name"
                 )
                 user_document = st.text_input(
                     label="Documento do usuário",
-                    help="Informe seu CPF neste campo."
+                    help="Informe seu CPF neste campo.",
+                    key="user_document"
                 )
                 user_sex = st.selectbox(
                     label="Sexo do usuário", options=sex_options.keys())

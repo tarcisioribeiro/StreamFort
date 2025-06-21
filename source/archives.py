@@ -260,9 +260,11 @@ class Archives:
                     label=":file_folder: Consultar arquivo")
 
                 if consult_button and confirm_selection:
-                    is_password_valid, hashed_password = Login().check_login(
-                        user_id,
-                        safe_password
+                    is_password_valid, hashed_password = (
+                        Login().get_user_password(
+                            user_id,
+                            safe_password
+                        )
                     )
 
                     if (
@@ -396,7 +398,7 @@ class Archives:
                         (
                             is_password_valid,
                             hashed_password
-                        ) = Login().check_login(user_id, safe_password)
+                        ) = Login().get_user_password(user_id, safe_password)
 
                         if (
                             safe_password != ""
@@ -627,7 +629,7 @@ class Archives:
                     if confirm_selection:
                         (
                             is_password_valid, hashed_password
-                        ) = Login().check_login(user_id, safe_password)
+                        ) = Login().get_user_password(user_id, safe_password)
                         if (
                             safe_password != ""
                             and confirm_safe_password != ""

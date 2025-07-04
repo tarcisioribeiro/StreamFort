@@ -8,7 +8,6 @@ from dictionary.sql.bank_account_queries import (
     update_account_query
 )
 from dictionary.sql.other_queries import log_query
-from dictionary.user_data import user_id, user_document
 from dictionary.vars import (
     financial_institution_list,
     to_remove_list,
@@ -25,6 +24,8 @@ class BankAccount:
     Classe que representa as contas bancárias,
     com as quatro funções básicas de um CRUD.
     """
+    def __init__(self):
+        self.user_id, self.user_document = Login().get_user_data()
 
     def check_if_bank_account_exists(self, bank_account_name: str):
         """
@@ -41,8 +42,8 @@ class BankAccount:
 
         query_values = (
             bank_account_name,
-            user_id,
-            user_document
+            self.user_id,
+            self.user_document
         )
 
         bank_accounts_with_name_quantity = (
@@ -78,8 +79,8 @@ class BankAccount:
 
         user_accounts_quantity = QueryExecutor().simple_consult_query(
             check_user_bank_accounts_query,
-            params=(user_id,
-                    user_document
+            params=(self.user_id,
+                    self.user_document
                     )
         )
         user_accounts_quantity = (
@@ -106,8 +107,8 @@ class BankAccount:
 
         bank_accounts = QueryExecutor().complex_consult_query(
             query=search_bank_accounts_query,
-            params=(user_id,
-                    user_document
+            params=(self.user_id,
+                    self.user_document
                     )
         )
         bank_accounts = QueryExecutor().treat_simple_results(
@@ -223,8 +224,8 @@ class BankAccount:
                         account_digit,
                         account_password,
                         digital_account_password,
-                        user_id,
-                        user_document
+                        self.user_id,
+                        self.user_document
                     )
                     QueryExecutor().insert_query(
                         insert_password_query,
@@ -233,7 +234,7 @@ class BankAccount:
                         'Erro ao cadastrar conta:'
                     )
                     log_query_values = (
-                        user_id,
+                        self.user_id,
                         'Cadastro',
                         'Cadastrou a conta {}'.format(
                             query_values[0]
@@ -319,8 +320,8 @@ class BankAccount:
                 query=account_details_query,
                 params=(
                     selected_option,
-                    user_id,
-                    user_document
+                    self.user_id,
+                    self.user_document
                 )
             )
             result_list = QueryExecutor().treat_complex_result(
@@ -329,7 +330,7 @@ class BankAccount:
             )
             if confirm_password_selection and consult_button:
                 is_password_valid, hashed_password = (
-                    Login().get_user_password(user_id, safe_password)
+                    Login().get_user_password(self.user_id, safe_password)
                 )
                 if (
                     safe_password != ""
@@ -356,7 +357,7 @@ class BankAccount:
                                 st.code(body="{}".format(aux_string))
 
                             query_values = (
-                                user_id,
+                                self.user_id,
                                 'Consulta',
                                 '''
                                 Consultou a conta bancária {}.
@@ -446,8 +447,8 @@ class BankAccount:
                 query=account_details_query,
                 params=(
                     selected_option,
-                    user_id,
-                    user_document
+                    self.user_id,
+                    self.user_document
                 )
             )
             result_list = QueryExecutor().treat_complex_result(
@@ -456,7 +457,7 @@ class BankAccount:
             )
             if confirm_selection:
                 is_password_valid, hashed_password = Login().get_user_password(
-                    user_id,
+                    self.user_id,
                     safe_password
                 )
                 if (
@@ -525,8 +526,8 @@ class BankAccount:
                             account_password,
                             digital_account_password,
                             selected_option,
-                            user_id,
-                            user_document
+                            self.user_id,
+                            self.user_document
                         )
                         QueryExecutor().insert_query(
                             query=update_account_query,
@@ -536,7 +537,7 @@ class BankAccount:
                         )
 
                         query_values = (
-                            user_id,
+                            self.user_id,
                             'Atualização',
                             '''
                             Atualizou a conta bancária {}
@@ -641,8 +642,8 @@ class BankAccount:
                 query=account_details_query,
                 params=(
                     selected_option,
-                    user_id,
-                    user_document
+                    self.user_id,
+                    self.user_document
                 )
             )
             result_list = QueryExecutor().treat_complex_result(
@@ -651,7 +652,7 @@ class BankAccount:
             )
             if confirm_password_selection:
                 is_password_valid, hashed_password = Login().get_user_password(
-                    user_id,
+                    self.user_id,
                     safe_password
                 )
                 if (
@@ -690,8 +691,8 @@ class BankAccount:
 
                                 delete_account_values = (
                                     selected_option,
-                                    user_id,
-                                    user_document
+                                    self.user_id,
+                                    self.user_document
                                 )
                                 QueryExecutor().insert_query(
                                     query=delete_account_query,
@@ -701,7 +702,7 @@ class BankAccount:
                                 )
 
                                 query_values = (
-                                    user_id,
+                                    self.user_id,
                                     'Exclusão',
                                     '''
                                     Excluiu a conta bancária {}

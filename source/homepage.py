@@ -2,7 +2,7 @@ from dictionary.sql.password_queries import (
     user_passwords_query,
     check_user_passwords_quantity_query
 )
-from dictionary.user_data import user_id, user_document
+from functions.login import Login
 from dictionary.vars import to_remove_list
 from functions.check_password_health import PasswordValidator
 from functions.query_executor import QueryExecutor
@@ -13,6 +13,8 @@ class Home:
     """
     Classe com funções para exibição de dados na página inicial.
     """
+    def __init__(self):
+        self.user_id, self.user_document = Login().get_user_data()
 
     def general_information(self):
         """
@@ -26,7 +28,7 @@ class Home:
 
         user_passwords_quantity = QueryExecutor().simple_consult_query(
             check_user_passwords_quantity_query,
-            params=(user_id, user_document)
+            params=(self.user_id, self.user_document)
         )
         user_passwords_quantity = QueryExecutor().treat_simple_result(
             user_passwords_quantity,
@@ -55,7 +57,7 @@ class Home:
 
         user_passwords = QueryExecutor().complex_consult_query(
             user_passwords_query,
-            params=(user_id, user_document)
+            params=(self.user_id, self.user_document)
         )
         user_passwords = QueryExecutor().treat_simple_results(
             user_passwords,

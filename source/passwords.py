@@ -1,4 +1,3 @@
-from dictionary.user_data import user_id, user_document
 from dictionary.vars import field_names, to_remove_list
 from dictionary.sql.other_queries import log_query
 from dictionary.sql.password_queries import (
@@ -20,6 +19,8 @@ class Passwords:
     """
     Classe que representa as senhas, com as quatro funções básicas de um CRUD.
     """
+    def __init__(self):
+        self.user_id, self.user_document = Login().get_user_data()
 
     def check_if_account_name_already_exists(
             self,
@@ -36,7 +37,7 @@ class Passwords:
 
         is_account_name_available: bool
 
-        query_values = (account, user_id, user_document)
+        query_values = (account, self.user_id, self.user_document)
         accounts_with_name_quantity = QueryExecutor().simple_consult_query(
             query=accounts_with_parameter_name_query,
             params=query_values
@@ -68,7 +69,7 @@ class Passwords:
 
         user_passwords_quantity = QueryExecutor().simple_consult_query(
             check_user_passwords_quantity_query,
-            params=(user_id, user_document)
+            params=(self.user_id, self.user_document)
         )
         user_passwords_quantity = QueryExecutor().treat_simple_result(
             user_passwords_quantity,
@@ -92,7 +93,7 @@ class Passwords:
 
         accounts = QueryExecutor().complex_consult_query(
             query=search_accounts_query,
-            params=(user_id, user_document)
+            params=(self.user_id, self.user_document)
         )
         accounts = QueryExecutor().treat_simple_results(
             accounts,
@@ -157,8 +158,8 @@ class Passwords:
                             url,
                             login,
                             password,
-                            user_id,
-                            user_document
+                            self.user_id,
+                            self.user_document
                         )
                         QueryExecutor().insert_query(
                             query=insert_password_query,
@@ -168,7 +169,7 @@ class Passwords:
                         )
 
                         log_query_values = (
-                            user_id,
+                            self.user_id,
                             'Cadastro',
                             'Cadastrou a senha {} no email {}'.format(
                                 query_values[0],
@@ -259,8 +260,8 @@ class Passwords:
 
             account_details_values = (
                 selected_option,
-                user_id,
-                user_document
+                self.user_id,
+                self.user_document
             )
 
             result_list = QueryExecutor().complex_consult_query(
@@ -274,7 +275,7 @@ class Passwords:
 
             if confirm_selection and consult_button:
                 is_password_valid, hashed_password = Login().get_user_password(
-                    user_id,
+                    self.user_id,
                     safe_password
                 )
                 if (
@@ -299,7 +300,7 @@ class Passwords:
                                 st.code(body="{}".format(aux_string))
 
                             query_values = (
-                                user_id,
+                                self.user_id,
                                 'Consulta',
                                 'Consultou a senha do site {}'.format(
                                     selected_option
@@ -419,8 +420,8 @@ class Passwords:
 
             account_details_values = (
                 selected_option,
-                user_id,
-                user_document
+                self.user_id,
+                self.user_document
             )
 
             result_list = QueryExecutor().complex_consult_query(
@@ -434,7 +435,7 @@ class Passwords:
 
             if confirm_selection:
                 is_password_valid, hashed_password = Login().get_user_password(
-                    user_id,
+                    self.user_id,
                     safe_password
                 )
                 if (
@@ -480,8 +481,8 @@ class Passwords:
                                 login,
                                 password,
                                 selected_option,
-                                user_id,
-                                user_document
+                                self.user_id,
+                                self.user_document
                             )
                             QueryExecutor().insert_query(
                                 query=update_site_query,
@@ -491,7 +492,7 @@ class Passwords:
                             )
 
                             query_values = (
-                                user_id,
+                                self.user_id,
                                 'Atualização',
                                 'Atualizou a senha do site {}.'.format(
                                     selected_option
@@ -566,8 +567,8 @@ class Passwords:
 
             account_details_values = (
                 selected_option,
-                user_id,
-                user_document
+                self.user_id,
+                self.user_document
             )
             result_list = QueryExecutor().complex_consult_query(
                 query=account_details_query,
@@ -580,7 +581,7 @@ class Passwords:
 
             if confirm_selection:
                 is_password_valid, hashed_password = Login().get_user_password(
-                    user_id,
+                    self.user_id,
                     safe_password
                 )
                 if (
@@ -617,8 +618,8 @@ class Passwords:
 
                             delete_password_values = (
                                 selected_option,
-                                user_id,
-                                user_document
+                                self.user_id,
+                                self.user_document
                             )
                             QueryExecutor().insert_query(
                                 query=delete_password_query,
@@ -628,7 +629,7 @@ class Passwords:
                             )
 
                             query_values = (
-                                user_id,
+                                self.user_id,
                                 'Exclusão',
                                 'Excluiu a senha do site {}'.format(
                                     selected_option

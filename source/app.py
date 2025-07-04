@@ -1,6 +1,5 @@
 import streamlit as st
 from dictionary.sql.other_queries import delete_session_query
-from dictionary.user_data import user_id, user_document
 from functions.login import Login
 from functions.query_executor import QueryExecutor
 from source.archives import Archives
@@ -12,6 +11,9 @@ from source.configuration.main import Configuration
 from source.utilities.main import Utilities
 from source.configuration.help import Help
 from time import sleep
+
+
+user_id, user_document = Login().get_user_data()
 
 
 def logout():

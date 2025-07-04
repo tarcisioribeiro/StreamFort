@@ -7,7 +7,6 @@ from dictionary.sql.archive_queries import (
     search_user_archives_name
 )
 from dictionary.sql.other_queries import log_query
-from dictionary.user_data import user_id, user_document
 from dictionary.vars import to_remove_list, to_remove_archive_list
 from functions.login import Login
 from functions.query_executor import QueryExecutor
@@ -20,6 +19,8 @@ class Archives:
     Classe que representa os arquivos,
     com as quatro funções básicas de um CRUD.
     """
+    def __init__(self):
+        self.user_id, self.user_document = Login().get_user_data()
 
     def check_if_archive_already_exists(self, archive_name: str):
         """
@@ -31,7 +32,7 @@ class Archives:
         """
         is_archive_name_available: bool
 
-        query_values = (archive_name, user_id, user_document)
+        query_values = (archive_name, self.user_id, self.user_document)
 
         archives_with_name_quantity = QueryExecutor().simple_consult_query(
             query=archives_with_name_query,
@@ -63,7 +64,7 @@ class Archives:
 
         user_archives_quantity = QueryExecutor().simple_consult_query(
             search_user_archives_quantity,
-            params=(user_id, user_document)
+            params=(self.user_id, self.user_document)
         )
         user_archives_quantity = QueryExecutor().treat_simple_result(
             user_archives_quantity, to_remove_list)
@@ -83,7 +84,7 @@ class Archives:
         archives_names = []
         user_archives_name = QueryExecutor().complex_consult_query(
             search_user_archives_name,
-            params=(user_id, user_document)
+            params=(self.user_id, self.user_document)
         )
         user_archives_name = QueryExecutor().treat_simple_results(
             user_archives_name,
@@ -162,8 +163,8 @@ class Archives:
                         archive_values = (
                             archive_name,
                             content,
-                            user_id,
-                            user_document
+                            self.user_id,
+                            self.user_document
                         )
 
                     if content is not None:
@@ -175,7 +176,7 @@ class Archives:
                         )
 
                         log_query_values = (
-                            user_id,
+                            self.user_id,
                             "Cadastro",
                             "Fez o upload do arquivo {}.".format(
                                 archive_name
@@ -262,7 +263,7 @@ class Archives:
                 if consult_button and confirm_selection:
                     is_password_valid, hashed_password = (
                         Login().get_user_password(
-                            user_id,
+                            self.user_id,
                             safe_password
                         )
                     )
@@ -281,8 +282,8 @@ class Archives:
                                     archive_content_query,
                                     params=(
                                         selected_archive,
-                                        user_id,
-                                        user_document
+                                        self.user_id,
+                                        self.user_document
                                     )
                                 )
                             )
@@ -398,7 +399,10 @@ class Archives:
                         (
                             is_password_valid,
                             hashed_password
-                        ) = Login().get_user_password(user_id, safe_password)
+                        ) = Login().get_user_password(
+                            self.user_id,
+                            safe_password
+                        )
 
                         if (
                             safe_password != ""
@@ -415,8 +419,8 @@ class Archives:
                                     list_quantity=2,
                                     params=(
                                         selected_archive,
-                                        user_id,
-                                        user_document
+                                        self.user_id,
+                                        self.user_document
                                     )
                                 )
                             )
@@ -527,8 +531,8 @@ class Archives:
                                         archive_values = (
                                             new_archive_name,
                                             content,
-                                            user_id,
-                                            user_document
+                                            self.user_id,
+                                            self.user_document
                                         )
 
                                         if content is not None:
@@ -540,7 +544,7 @@ class Archives:
                                             )
 
                                             log_query_values = (
-                                                user_id,
+                                                self.user_id,
                                                 "Atualização",
                                                 "Arquivo {} alterado.".format(
                                                     new_archive_name
@@ -629,7 +633,10 @@ class Archives:
                     if confirm_selection:
                         (
                             is_password_valid, hashed_password
-                        ) = Login().get_user_password(user_id, safe_password)
+                        ) = Login().get_user_password(
+                            self.user_id,
+                            safe_password
+                        )
                         if (
                             safe_password != ""
                             and confirm_safe_password != ""
@@ -645,8 +652,8 @@ class Archives:
                                     list_quantity=2,
                                     params=(
                                         selected_archive,
-                                        user_id,
-                                        user_document
+                                        self.user_id,
+                                        self.user_document
                                     )
                                 )
                             )
@@ -697,8 +704,8 @@ class Archives:
 
                                     archive_values = (
                                         selected_archive,
-                                        user_id,
-                                        user_document
+                                        self.user_id,
+                                        self.user_document
                                     )
 
                                     QueryExecutor().insert_query(
@@ -709,7 +716,7 @@ class Archives:
                                     )
 
                                     log_query_values = (
-                                        user_id,
+                                        self.user_id,
                                         "Exclusão",
                                         "Arquivo {} excluído.".format(
                                             selected_archive

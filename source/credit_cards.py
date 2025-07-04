@@ -8,7 +8,6 @@ from dictionary.sql.credit_cards_queries import (
     update_card_query
 )
 from dictionary.sql.other_queries import log_query
-from dictionary.user_data import user_id, user_document
 from dictionary.vars import to_remove_list, today
 from functions.get_actual_time import GetActualTime
 from functions.login import Login
@@ -23,6 +22,8 @@ class CreditCards:
     Classe que representa os cartões de crédito,
     com as quatro funções básicas de um CRUD.
     """
+    def __init__(self):
+        self.user_id, self.user_document = Login().get_user_data()
 
     def check_if_card_name_already_exists(self, credit_card_name: str):
         """
@@ -38,8 +39,8 @@ class CreditCards:
 
         query_values = (
             credit_card_name,
-            user_id,
-            user_document
+            self.user_id,
+            self.user_document
         )
 
         cards_with_name_quantity = QueryExecutor().simple_consult_query(
@@ -72,8 +73,8 @@ class CreditCards:
         user_credit_cards_number = QueryExecutor().simple_consult_query(
             search_user_credit_cards_number,
             params=(
-                user_id,
-                user_document
+                self.user_id,
+                self.user_document
             )
         )
         user_credit_cards_number = QueryExecutor().treat_simple_result(
@@ -99,8 +100,8 @@ class CreditCards:
         user_credit_cards_names = QueryExecutor().complex_consult_query(
             search_user_credit_cards_names,
             params=(
-                user_id,
-                user_document
+                self.user_id,
+                self.user_document
             )
         )
         user_credit_cards_names = (
@@ -251,8 +252,8 @@ class CreditCards:
                                             card_name,
                                             card_number,
                                             owner_on_card_name,
-                                            user_id,
-                                            user_document,
+                                            self.user_id,
+                                            self.user_document,
                                             expiration_date,
                                             security_code
                                         )
@@ -268,7 +269,7 @@ class CreditCards:
                                         )
 
                                         log_values = (
-                                            user_id,
+                                            self.user_id,
                                             'Cadastro',
                                             '''Cadastrou o cartão {}
                                             com o final {}.'''.format(
@@ -399,7 +400,7 @@ class CreditCards:
                     (
                         is_password_valid, hashed_password
                     ) = Login().get_user_password(
-                        user_id,
+                        self.user_id,
                         safe_password
                     )
 
@@ -422,8 +423,8 @@ class CreditCards:
                                 query=credit_card_data_query,
                                 list_quantity=4,
                                 params=(
-                                    user_id,
-                                    user_document,
+                                    self.user_id,
+                                    self.user_document,
                                     selected_user_card
                                 )
                             )
@@ -452,7 +453,7 @@ class CreditCards:
                                     credit_card_data[1])[-4:]
 
                                 log_values = (
-                                    user_id,
+                                    self.user_id,
                                     "Consulta",
                                     """Consultou os dados do
                                     cartão {} com o final {}.
@@ -546,7 +547,7 @@ class CreditCards:
                         is_password_valid,
                         hashed_password
                     ) = Login().get_user_password(
-                        user_id,
+                        self.user_id,
                         safe_password
                     )
                     if (
@@ -561,8 +562,8 @@ class CreditCards:
                                 query=credit_card_data_query,
                                 list_quantity=4,
                                 params=(
-                                    user_id,
-                                    user_document,
+                                    self.user_id,
+                                    self.user_document,
                                     selected_user_card
                                 )
                             )
@@ -691,7 +692,7 @@ class CreditCards:
                                     )
 
                                     log_values = (
-                                        user_id,
+                                        self.user_id,
                                         "Atualização",
                                         """
                                         Atualizou o cartão {} com o final {}.
@@ -805,7 +806,7 @@ class CreditCards:
                         is_password_valid,
                         hashed_password
                     ) = Login().get_user_password(
-                        user_id,
+                        self.user_id,
                         safe_password
                     )
 
@@ -827,8 +828,8 @@ class CreditCards:
                                 query=credit_card_data_query,
                                 list_quantity=4,
                                 params=(
-                                    user_id,
-                                    user_document,
+                                    self.user_id,
+                                    self.user_document,
                                     selected_user_card
                                 )
                             )
@@ -869,8 +870,8 @@ class CreditCards:
 
                                 delete_card_values = (
                                     selected_user_card,
-                                    user_id,
-                                    user_document
+                                    self.user_id,
+                                    self.user_document
                                 )
                                 QueryExecutor().insert_query(
                                     query=delete_card_query,
@@ -882,7 +883,7 @@ class CreditCards:
                                     credit_card_data[1])[-4:]
 
                                 log_values = (
-                                    user_id,
+                                    self.user_id,
                                     "Exclusão",
                                     """
                                     Excluiu o cartão {} com o final {}.

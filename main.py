@@ -25,33 +25,7 @@ actual_path = os.getcwd()
 software_env_path = '{}/.env'.format(actual_path)
 
 if not os.path.isfile(software_env_path):
-    from time import sleep
-    import streamlit as st
-
-    try:
-        connection = mysql.connector.connect(
-            host='db',
-            database='seguranca',
-            user='root',
-            password='123',
-            port=20307
-        )
-
-        if connection.is_connected():
-            with open(software_env_path, 'w') as env_archive:
-                env_archive.write("DB_PORT=20307")
-                env_archive.write("\nDB_HOSTNAME=db")
-                env_archive.write("\nDB_USER=root")
-                env_archive.write("\nDB_NAME=seguranca")
-                env_archive.write("\nDB_PASSWORD=123")
-            sleep(1.25)
-            st.rerun()
-
-    except mysql.connector.Error as error:
-        st.error(body="Erro ao conectar ao MySQL: {} .".format(
-            error
-            ),
-        )
+    pass
 
 if os.path.isfile(software_env_path):
 

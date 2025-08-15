@@ -107,7 +107,7 @@ class QueryExecutor:
 
             for row in cursor.fetchall():
                 for i in range(list_quantity):
-                    lists[i].append(row[i])
+                    lists[i].append(row[i])  # type: ignore
 
             return lists
 
@@ -153,7 +153,7 @@ class QueryExecutor:
             if connection.is_connected():
                 connection.close()
 
-    def treat_simple_result(self, value_to_treat: str, values_to_remove: list):
+    def treat_simple_result(self, value_to_treat, values_to_remove):
         """
         Realiza o tratamento de uma cadeia de caracteres,
         de acordo com os parametros informados.
@@ -218,7 +218,7 @@ class QueryExecutor:
 
         return final_list
 
-    def treat_complex_result(self, values_to_treat, values_to_remove: list):
+    def treat_complex_result(self, values_to_treat, values_to_remove):
         """
         Realiza o tratamento de uma cadeia de caracteres,
         de acordo com os parametros informados.

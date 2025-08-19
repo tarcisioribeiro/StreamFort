@@ -2,7 +2,11 @@
 
 ![StreamFort](reference/images/main.png)
 
-Um aplicativo de gerenciamento de senhas, arquivos confidenciais, cartões e contas. Feito em **[Python](https://www.python.org/)**, através do framework **[Streamlit](https://streamlit.io/)**, integra-se ao banco de dados **[MySQL](https://www.mysql.com/)**, permitindo o armazenamento de informações confidenciais.
+Um aplicativo de gerenciamento de senhas, arquivos confidenciais,
+cartões e contas. Feito em **[Python](https://www.python.org/)**,
+através do framework **[Streamlit](https://streamlit.io/)**,
+integra-se ao banco de dados **[MySQL](https://www.mysql.com/)**,
+permitindo o armazenamento de informações confidenciais.
 
 ## 🛠 Sobre o Projeto
 
@@ -91,14 +95,6 @@ Se encontrar algum bug ou problema, você pode informa-lo na aba **Issues** dest
 - Mensagens de erro relevantes.
 
 ⚠️ **Atenção:** Este projeto é desenvolvido e mantido em meu tempo livre e, por isso, os bugs reportados serão analisados e corrigidos conforme a minha disponibilidade. Agradeço pela paciência e compreensão.
-
-## Instalação
-
-Para realizar a instalação, siga o passo a passo: 
-
-- [Instalação via Docker](reference/markdown/Installation.md)
-
----
 
 ## 📜 Licença
 

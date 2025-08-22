@@ -1,4 +1,4 @@
-from source.configuration.change_theme import ChangeTheme
+from frontend.configuration.change_theme import ChangeTheme
 import streamlit as st
 
 
@@ -21,7 +21,10 @@ class Configuration:
 
         with col2:
 
-            selected_option = st.selectbox(label="Menu", options=menu_options.keys())
+            selected_option = st.selectbox(
+                label="Menu",
+                options=menu_options.keys()
+            )
 
         st.divider()
 

@@ -12,16 +12,22 @@ RUN apt-get update && \
   echo "keyboard-configuration  keyboard-configuration/variantcode  select  " | debconf-set-selections && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
   keyboard-configuration console-setup \
-  python3.10 python3-pip netcat curl wget nano && \
+  python3.10 python3-pip python3-dev \
+  build-essential pkg-config \
+  default-libmysqlclient-dev \
+  netcat curl wget nano && \
   apt-get clean
 
 ENV LANG=pt_BR.UTF-8
 ENV LANGUAGE=pt_BR:pt
 ENV LC_ALL=pt_BR.UTF-8
+ENV TZ=America/Sao_Paulo
 
 COPY . .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --upgrade pip setuptools wheel
+ENV PIP_DEFAULT_TIMEOUT=180 PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN python3 -m pip install --no-cache-dir --timeout 180 --retries 10 -r requirements.txt
 
 EXPOSE 8552
 

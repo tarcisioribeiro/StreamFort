@@ -9,7 +9,11 @@ class PasswordGenerator:
     Classe com métodos para a geração de senhas fortes.
     """
 
-    def generate_password(self, password_length: int, password_elements: list):
+    def generate_password(
+        self,
+        password_length: int,
+        password_elements: list
+    ) -> str:
         """
         Gera uma senha de acordo com o tamanho da cadeia de caracteres
         e complexidade definidas pelo usuário.
